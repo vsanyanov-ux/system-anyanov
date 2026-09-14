@@ -42,9 +42,7 @@ export const ManifestoModal: React.FC<ManifestoModalProps> = ({ isOpen, onClose 
 
         {/* Manifesto Core Quote */}
         <div className="p-5 bg-gradient-to-br from-amber-500/10 via-slate-950 to-indigo-500/10 rounded-2xl border border-amber-500/30 text-slate-100 font-medium leading-relaxed italic text-sm sm:text-base">
-          «Все люди хотят выглядеть стильно. И все люди хотят прилагать при этом минимум усилий. И чтобы это было безошибочно.  
-          Система позволяет: прилагать минимум усилий и избежать ошибок.  
-          Система призвана сделать людей стильными легко и безошибочно.»
+          «Каждый хочет выглядеть стильно, не тратя на это часы и не сомневаясь в выборе. Система Аньянова берет эту задачу на себя: она делает подбор образа легким, интуитивным и на 100% безошибочным.»
         </div>
 
         {/* Social Engineering Banner */}

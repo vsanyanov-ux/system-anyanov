@@ -1,4 +1,6 @@
 import { PerfumeItem } from '../types';
+import { STORAGE_KEYS } from '../constants/storage';
+import { safeGetJson, safeSetJson } from '../utils/storage';
 
 export interface ShelfPreset {
   id: string;
@@ -425,6 +427,40 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     }
   },
 
+  {
+    id: 'lattafa-musamam',
+    name: 'Musamam',
+    brand: 'Lattafa',
+    xCoord: -0.35,
+    yCoord: -0.20,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Пряный шафран, смолистый акигалавуд, благородный ладан и лаванда',
+    bestOccasion: 'Вечер, деловой статус, прохладный сезон, уверенный доминант',
+    whyFitsOutfit: 'Минерально-смолистые грани ладана и акигалавуда подчеркивают строгую архитектуру пиджаков, пальто и кашемира.',
+    colorTheme: 'from-amber-600 via-stone-800 to-black',
+    pyramid: {
+      top: ['Шафран', 'Итальянский мандарин', 'Лаванда'],
+      heart: ['Amberwood', 'Кедр из Вирджинии', 'Египетская герань'],
+      base: ['Акигалавуд', 'Сомалийский ладан', 'Лабданум']
+    }
+  },
+  {
+    id: 'lattafa-musamam-white-intense',
+    name: 'Musamam White Intense',
+    brand: 'Lattafa',
+    xCoord: 0.62,
+    yCoord: 0.25,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Сливочный кокос, солнечный сандал, амброксан, курортный гедонизм',
+    bestOccasion: 'Летний вечер, терраса ресторана, свидание, курортный отдых, Smart Casual',
+    whyFitsOutfit: 'Тропическая сливочность сандала и кокоса безупречно раскрывается на натуральном льне и шелке, подчеркивая атмосферу непринужденной роскоши.',
+    colorTheme: 'from-amber-300 via-yellow-500 to-amber-700',
+    pyramid: {
+      top: ['Бергамот', 'Апельсин', 'Специи'],
+      heart: ['Кокос', 'Иланг-иланг', 'Амброксан'],
+      base: ['Сандал', 'Бензоин', 'Мускус']
+    }
+  },
   {
     id: 'chanel-allure-homme-sport',
     name: 'Allure Homme Sport',
@@ -981,6 +1017,7 @@ export const SHELF_PRESETS: ShelfPreset[] = [
     name: 'Арабский хит-парад (Lattafa & Afnan)',
     description: 'Сверхстойкие комплиментарные фавориты с восточным характером.',
     perfumeIds: [
+      'lattafa-musamam-white-intense',
       'lattafa-khamrah',
       'lattafa-asad',
       'afnan-turathi-blue',
@@ -1003,3 +1040,60 @@ export const SHELF_PRESETS: ShelfPreset[] = [
     ],
   },
 ];
+
+/**
+ * Получить список кастомных ароматов пользователя из LocalStorage
+ */
+export function getCustomPerfumes(): PerfumeItem[] {
+  return safeGetJson<PerfumeItem[]>(
+    STORAGE_KEYS.CUSTOM_PERFUMES,
+    [],
+    (data): data is PerfumeItem[] => Array.isArray(data)
+  );
+}
+
+/**
+ * Сохранить пользовательский аромат в LocalStorage и синхронизировать с PERFUME_DATABASE
+ */
+export function saveCustomPerfume(perfume: PerfumeItem): void {
+  const current = getCustomPerfumes();
+  const filtered = current.filter((p) => p.id !== perfume.id);
+  const updated = [perfume, ...filtered];
+  safeSetJson(STORAGE_KEYS.CUSTOM_PERFUMES, updated);
+
+  const idx = PERFUME_DATABASE.findIndex((p) => p.id === perfume.id);
+  if (idx >= 0) {
+    PERFUME_DATABASE[idx] = perfume;
+  } else {
+    PERFUME_DATABASE.push(perfume);
+  }
+}
+
+/**
+ * Удалить пользовательский аромат
+ */
+export function deleteCustomPerfume(id: string): void {
+  const current = getCustomPerfumes();
+  const updated = current.filter((p) => p.id !== id);
+  safeSetJson(STORAGE_KEYS.CUSTOM_PERFUMES, updated);
+
+  const idx = PERFUME_DATABASE.findIndex((p) => p.id === id);
+  if (idx >= 0) {
+    PERFUME_DATABASE.splice(idx, 1);
+  }
+}
+
+// Загрузка сохраненных пользовательских флаконов в общую базу при запуске приложения
+if (typeof window !== 'undefined') {
+  try {
+    const savedCustom = getCustomPerfumes();
+    savedCustom.forEach((p) => {
+      if (!PERFUME_DATABASE.some((item) => item.id === p.id)) {
+        PERFUME_DATABASE.push(p);
+      }
+    });
+  } catch {
+    // Безопасный фоллбек для SSR / среды тестирования
+  }
+}
+
