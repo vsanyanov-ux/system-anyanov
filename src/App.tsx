@@ -11,6 +11,7 @@ import { FragranceShelfModal } from './components/FragranceShelfModal';
 import { PeriodicTableModal } from './components/PeriodicTableModal';
 import { CorePrincipleView } from './components/CorePrincipleView';
 import { BenchmarkTableView } from './components/BenchmarkTableView';
+import { SmartConciergeBar } from './components/SmartConciergeBar';
 import { getQuadrantInfo } from './engine/anyanovMatrix';
 import { compileAnyanovOutfit } from './engine/outfitCompiler';
 import { matchAnyanovPerfume } from './engine/fragranceMatcher';
@@ -170,6 +171,14 @@ export function App() {
 
       {/* 2. Main Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+        {/* Умный AI-Консьерж: свободный текстовый ввод на естественном языке */}
+        <SmartConciergeBar
+          currentCoords={coords}
+          onApplyCoords={(newCoords) => {
+            setCoords(newCoords);
+          }}
+        />
+
         {activeTab === 'benchmarks' ? (
           /* РЕЖИМ ЭТАЛОНОВ 21: Интерактивная таблица эталонов, зеркало духов и 21 элемент гардероба */
           <BenchmarkTableView
