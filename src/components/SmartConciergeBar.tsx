@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Sparkles, ArrowRight, CheckCircle2, RotateCcw, Compass, Tag } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Sparkles, ArrowRight, CheckCircle2, RotateCcw, Compass, Tag, ShieldAlert, Cpu, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 import { AnyanovCoordinates } from '../types';
-import { parseNaturalLanguageQuery, CONCIERGE_SUGGESTIONS, SemanticParseResult } from '../engine/semanticParser';
+import { CONCIERGE_SUGGESTIONS } from '../engine/semanticParser';
+import { ADKAgentRunner, AgentRunResult } from '../engine/adk/runtime';
 
 interface SmartConciergeBarProps {
   onApplyCoords: (coords: AnyanovCoordinates) => void;
@@ -10,20 +11,40 @@ interface SmartConciergeBarProps {
 
 export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
   onApplyCoords,
+  currentCoords,
 }) => {
   const [inputText, setInputText] = useState('');
-  const [lastResult, setLastResult] = useState<SemanticParseResult | null>(null);
+  const [agentResult, setAgentResult] = useState<AgentRunResult | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showReasoning, setShowReasoning] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCalibrate = (textToParse?: string) => {
+  // Сохраняем инстанс раннера в ref для сохранения Session истории диалога
+  const runnerRef = useRef<ADKAgentRunner>(new ADKAgentRunner({ currentCoords }));
+
+  const handleCalibrate = async (textToParse?: string, confirmed: boolean = false) => {
     const text = (textToParse ?? inputText).trim();
     if (!text) return;
 
-    const result = parseNaturalLanguageQuery(text);
-    setLastResult(result);
-    onApplyCoords(result.coords);
-    setInputText(text);
-    setIsExpanded(true);
+    setIsLoading(true);
+    try {
+      const result = await runnerRef.current.run(text, { confirmed });
+      setAgentResult(result);
+      setInputText(text);
+      setIsExpanded(true);
+
+      if (result.success) {
+        onApplyCoords(result.state.currentCoords);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmApproval = () => {
+    if (inputText) {
+      handleCalibrate(inputText, true);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -39,9 +60,11 @@ export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
   };
 
   const handleReset = () => {
-    setLastResult(null);
+    setAgentResult(null);
     setInputText('');
     setIsExpanded(false);
+    setShowReasoning(false);
+    runnerRef.current = new ADKAgentRunner({ currentCoords });
   };
 
   return (
@@ -59,14 +82,15 @@ export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
               Умный AI-Консьерж Системы Аньянова
-              <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Natural Language 8D
+              <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                <Cpu className="w-3 h-3" />
+                Google ADK 2.5
               </span>
             </h3>
           </div>
         </div>
 
-        {lastResult && (
+        {agentResult && (
           <button
             onClick={handleReset}
             className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors cursor-pointer"
@@ -91,11 +115,17 @@ export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
         </div>
         <button
           onClick={() => handleCalibrate()}
-          disabled={!inputText.trim()}
+          disabled={!inputText.trim() || isLoading}
           className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
         >
-          <span>Окалибровать</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          {isLoading ? (
+            <span className="animate-pulse">Обработка...</span>
+          ) : (
+            <>
+              <span>Окалибровать</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </>
+          )}
         </button>
       </div>
 
@@ -116,46 +146,103 @@ export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
         ))}
       </div>
 
-      {/* Результат распознавания (если выполнена калибровка) */}
-      {lastResult && isExpanded && (
-        <div className="mt-3 p-3.5 rounded-xl bg-slate-950/70 border border-emerald-500/30 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
-          <div className="flex items-center justify-between">
+      {/* ⚠️ ADK Approval Gate Banner (если сработал Guardrail) */}
+      {agentResult?.pendingApproval?.required && (
+        <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/50 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
+          <div className="flex items-start gap-2.5">
+            <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span>Google ADK Guardrail: Требуется подтверждение (Approval Gate)</span>
+              </div>
+              <p className="text-xs text-amber-200/90 leading-relaxed">
+                {agentResult.pendingApproval.reason}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              onClick={handleConfirmApproval}
+              className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs rounded-lg transition-colors cursor-pointer shadow-md shadow-amber-500/20"
+            >
+              Подтвердить и применить образ
+            </button>
+            <button
+              onClick={handleReset}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition-colors cursor-pointer"
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Результат распознавания (успешная калибровка) */}
+      {agentResult?.success && isExpanded && (
+        <div className="mt-3 p-3.5 rounded-xl bg-slate-950/70 border border-emerald-500/30 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <span className="text-xs font-semibold text-emerald-300">
-                {lastResult.summary}
+                {agentResult.finalMessage}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
+            <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
               <Compass className="w-3.5 h-3.5 text-amber-400" />
-              <span>X: {lastResult.coords.socialX > 0 ? `+${lastResult.coords.socialX}` : lastResult.coords.socialX}</span>
+              <span>X: {agentResult.state.currentCoords.socialX > 0 ? `+${agentResult.state.currentCoords.socialX.toFixed(2)}` : agentResult.state.currentCoords.socialX.toFixed(2)}</span>
               <span>•</span>
-              <span>Y: {lastResult.coords.thermoY > 0 ? `+${lastResult.coords.thermoY}` : lastResult.coords.thermoY}</span>
+              <span>Y: {agentResult.state.currentCoords.thermoY > 0 ? `+${agentResult.state.currentCoords.thermoY.toFixed(2)}` : agentResult.state.currentCoords.thermoY.toFixed(2)}</span>
               <span>•</span>
-              <span>FI: {lastResult.coords.formalIndex}</span>
+              <span>FI: {agentResult.state.currentCoords.formalIndex} ({agentResult.state.currentCoords.formalIndex === 1 ? 'Casual' : agentResult.state.currentCoords.formalIndex === 2 ? 'Smart Casual' : 'Formal'})</span>
               <span>•</span>
-              <span>{lastResult.coords.temperatureC > 0 ? `+${lastResult.coords.temperatureC}` : lastResult.coords.temperatureC}°C</span>
+              <span>{agentResult.state.currentCoords.temperatureC > 0 ? `+${agentResult.state.currentCoords.temperatureC}` : agentResult.state.currentCoords.temperatureC}°C</span>
             </div>
           </div>
 
-          {/* Распознанные смысловые факторы */}
-          {lastResult.detectedFactors.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1.5 pt-1">
-              {lastResult.detectedFactors.map((factor, idx) => (
-                <div
-                  key={idx}
-                  className="p-2 rounded-lg bg-slate-900/90 border border-slate-800 flex flex-col gap-0.5"
-                >
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-amber-400 font-medium uppercase tracking-wider">
-                      {factor.category}
-                    </span>
-                    <span className="text-slate-300 font-semibold truncate max-w-[120px]">
-                      {factor.label}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-slate-400 line-clamp-1">
-                    {factor.impact}
+          {/* Парфюмерная гармония (ReAct Step 2) */}
+          {agentResult.state.matchedFragrance && (
+            <div className="p-2.5 rounded-lg bg-slate-900/90 border border-amber-500/20 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  Сольфеджио 8D
+                </span>
+                <span className="text-slate-300">
+                  Резонансный парфюм: <strong className="text-white">{agentResult.state.matchedFragrance.name}</strong> ({agentResult.state.matchedFragrance.brand})
+                </span>
+              </div>
+              {agentResult.state.solfeggio && (
+                <span className="text-[11px] font-medium text-amber-400">
+                  {agentResult.state.solfeggio.stateLabel}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Инспекция ADK Reasoning & OpenInference Telemetry */}
+          <div className="pt-1 border-t border-slate-800/80 flex items-center justify-between">
+            <button
+              onClick={() => setShowReasoning(!showReasoning)}
+              className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <Activity className="w-3 h-3 text-cyan-400" />
+              <span>Цепочка рассуждений агента ({agentResult.reasoningSteps.length} шагов)</span>
+              {showReasoning ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
+
+            {agentResult.telemetrySpan && (
+              <span className="text-[10px] font-mono text-slate-500">
+                Trace: {agentResult.telemetrySpan.traceId} • {agentResult.telemetrySpan.durationMs || 12}ms
+              </span>
+            )}
+          </div>
+
+          {showReasoning && (
+            <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1 max-h-48 overflow-y-auto">
+              {agentResult.reasoningSteps.map((step, idx) => (
+                <div key={idx} className="leading-relaxed">
+                  <span className="text-cyan-400 mr-1.5">[{idx + 1}]</span>
+                  <span className={step.includes('Guardrail') || step.includes('Approval') ? 'text-amber-300' : step.includes('Harmony') ? 'text-emerald-300' : 'text-slate-300'}>
+                    {step}
                   </span>
                 </div>
               ))}

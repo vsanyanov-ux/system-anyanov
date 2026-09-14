@@ -26,6 +26,7 @@ import {
   GoldenMirrorPair
 } from '../data/golden21';
 import { WARDROBE_ITEMS } from '../data/wardrobeItems';
+import { getPerfumeBottleImage } from '../data/fragrances';
 
 interface BenchmarkTableViewProps {
   currentCoords: AnyanovCoordinates;
@@ -725,10 +726,31 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Col 1: Fragrance Specs & Pyramid */}
                   <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
-                    <div className="text-[11px] font-mono text-amber-400 font-bold uppercase flex items-center gap-2">
-                      <Droplets className="w-3.5 h-3.5" />
-                      <span>Ольфакторный профиль</span>
+                    <div className="flex items-center justify-between">
+                      <div className="text-[11px] font-mono text-amber-400 font-bold uppercase flex items-center gap-2">
+                        <Droplets className="w-3.5 h-3.5" />
+                        <span>Ольфакторный профиль</span>
+                      </div>
+                      {getPerfumeBottleImage(currentPerfume) && (
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                          <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                          <span>Флакон эталона</span>
+                        </span>
+                      )}
                     </div>
+
+                    {getPerfumeBottleImage(currentPerfume) && (
+                      <div className="relative w-full h-36 bg-slate-900/60 rounded-xl border border-slate-800/80 p-2 flex items-center justify-center overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 to-transparent blur-md pointer-events-none" />
+                        <img
+                          src={getPerfumeBottleImage(currentPerfume)!}
+                          alt={currentPerfume.name}
+                          className="h-full w-auto max-w-[120px] object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] filter group-hover:scale-105 transition-transform select-none z-10"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+
                     <div className="text-xs text-slate-300 leading-relaxed italic">
                       «{currentPerfume.dominantVibe}»
                     </div>
@@ -862,23 +884,41 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
 
                 {/* Fragrance Section */}
                 <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="text-[11px] font-mono text-amber-400/90 uppercase tracking-wider">
-                        {perfume.brand}
+                  <div className="flex items-start gap-3">
+                    {(() => {
+                      const bottleImg = getPerfumeBottleImage(perfume);
+                      if (!bottleImg) return null;
+                      return (
+                        <div className="w-12 h-16 shrink-0 bg-slate-950/80 rounded-xl border border-slate-800 p-1 flex items-center justify-center overflow-hidden shadow-inner">
+                          <img
+                            src={bottleImg}
+                            alt={perfume.name}
+                            className="max-h-full max-w-full object-contain drop-shadow"
+                            loading="lazy"
+                          />
+                        </div>
+                      );
+                    })()}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-1">
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-mono text-amber-400/90 uppercase tracking-wider truncate">
+                            {perfume.brand}
+                          </div>
+                          <div className="text-base font-black text-white tracking-tight group-hover:text-amber-300 transition-colors truncate">
+                            {perfume.name}
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="text-[10px] font-mono text-slate-400 block">
+                            [{perfume.xCoord > 0 ? `+${perfume.xCoord}` : perfume.xCoord},{' '}
+                            {perfume.yCoord > 0 ? `+${perfume.yCoord}` : perfume.yCoord}]
+                          </span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
+                            {perfume.diffusion}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-base font-black text-white tracking-tight group-hover:text-amber-300 transition-colors">
-                        {perfume.name}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[10px] font-mono text-slate-400 block">
-                        [{perfume.xCoord > 0 ? `+${perfume.xCoord}` : perfume.xCoord},{' '}
-                        {perfume.yCoord > 0 ? `+${perfume.yCoord}` : perfume.yCoord}]
-                      </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
-                        {perfume.diffusion}
-                      </span>
                     </div>
                   </div>
 
@@ -1000,10 +1040,28 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                     <tr key={p.id} className="hover:bg-slate-800/40 transition-colors group">
                       <td className="py-3 px-4 font-mono text-slate-500 font-bold">#{canonicalIndex}</td>
                       <td className="py-3 px-4">
-                        <div className="font-bold text-white text-sm group-hover:text-amber-300 transition-colors">
-                          {p.name}
+                        <div className="flex items-center gap-3">
+                          {(() => {
+                            const bottleImg = getPerfumeBottleImage(p);
+                            if (!bottleImg) return null;
+                            return (
+                              <div className="w-8 h-10 shrink-0 bg-slate-950/80 rounded border border-slate-800 p-0.5 flex items-center justify-center overflow-hidden shadow-inner">
+                                <img
+                                  src={bottleImg}
+                                  alt={p.name}
+                                  className="max-h-full max-w-full object-contain drop-shadow"
+                                  loading="lazy"
+                                />
+                              </div>
+                            );
+                          })()}
+                          <div className="min-w-0">
+                            <div className="font-bold text-white text-sm group-hover:text-amber-300 transition-colors truncate">
+                              {p.name}
+                            </div>
+                            <div className="text-[11px] text-amber-400/80 font-mono uppercase truncate">{p.brand}</div>
+                          </div>
                         </div>
-                        <div className="text-[11px] text-amber-400/80 font-mono uppercase">{p.brand}</div>
                       </td>
                       <td className="py-3 px-4 font-mono">
                         <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-300 text-[10px]">

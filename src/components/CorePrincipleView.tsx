@@ -15,10 +15,12 @@ import {
   Flame,
   Droplets,
   Atom,
-  AlertTriangle
+  AlertTriangle,
+  HeartHandshake
 } from 'lucide-react';
 import { AnyanovCoordinates, OutfitStack, PerfumeItem, SolfeggioAnalysis, NoteEngineAnalysis } from '../types';
 import { PERFUME_DATABASE } from '../data/fragrances';
+import { HUMAN_VIBE_ARCHETYPES } from '../data/humanScents';
 import { analyzePeriodicNotesSynergy } from '../engine/periodicNotesEngine';
 
 interface CorePrincipleViewProps {
@@ -37,6 +39,7 @@ interface CorePrincipleViewProps {
   gapAdvice?: string;
   totalShelfCount?: number;
   onOpenShelf?: () => void;
+  onOpenHumanFinder?: () => void;
 }
 
 interface CoreArchetype {
@@ -143,7 +146,8 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
   hasWardrobeGap = false,
   gapAdvice,
   totalShelfCount = 0,
-  onOpenShelf
+  onOpenShelf,
+  onOpenHumanFinder
 }) => {
   // Определяем, какой архетип сейчас ближе всего
   const currentArchetype = ARCHETYPES.reduce((prev, curr) => {
@@ -159,6 +163,11 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
 
   // Выбранный для показа парфюм (в режиме каталога показываем гарантированный эталон ситуации)
   const displayPerfume = isCatalogMode ? canonicalPerfume : perfume;
+
+  // Человеческая бытовая ассоциация
+  const humanArchetype = useMemo(() => {
+    return HUMAN_VIBE_ARCHETYPES.find((a) => a.targetPerfumeId === displayPerfume.id);
+  }, [displayPerfume.id]);
 
   // Динамический пересчет синергии нот для отображаемого парфюма
   const effectiveNotesEngine = useMemo(() => {
@@ -533,6 +542,50 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
                   «{displayPerfume.whyFitsOutfit}»
                 </p>
               </div>
+
+              {/* Человеческий вайб аромата без заумных нот */}
+              {humanArchetype ? (
+                <div className="p-3 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900/80 to-blue-950/40 border border-cyan-500/30 flex items-center justify-between gap-3 text-xs">
+                  <div className="flex items-start gap-2.5">
+                    <HeartHandshake className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-bold text-cyan-300 text-[10px] font-mono uppercase tracking-wider">
+                          Вайб на человеческом языке:
+                        </span>
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-500/40 font-medium">
+                          {humanArchetype.shortTag}
+                        </span>
+                      </div>
+                      <p className="text-slate-100 text-xs font-semibold mt-0.5">
+                        {humanArchetype.title}
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                        {humanArchetype.metaphors.join(' • ')}
+                      </p>
+                    </div>
+                  </div>
+                  {onOpenHumanFinder && (
+                    <button
+                      onClick={onOpenHumanFinder}
+                      className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 px-2.5 py-1 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/40 transition-colors shrink-0 cursor-pointer"
+                    >
+                      Все вайбы →
+                    </button>
+                  )}
+                </div>
+              ) : onOpenHumanFinder && (
+                <div className="p-2.5 rounded-xl bg-slate-950/50 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                  <span className="text-[11px]">Не знаете химию пирамиды?</span>
+                  <button
+                    onClick={onOpenHumanFinder}
+                    className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
+                  >
+                    <HeartHandshake className="w-3 h-3" />
+                    Подобрать по ассоциациям
+                  </button>
+                </div>
+              )}
 
               {/* Ключевые ноты */}
               <div className="space-y-2">

@@ -61,9 +61,17 @@ export function compileAnyanovOutfit(
 
   const pickBest = (layer: 'L4' | 'L3' | 'L2' | 'L1'): WardrobeItem => {
     const list = suitableItems(layer);
-    const pool = list.length > 0 ? list : basePool.filter(i => i.layer === layer);
-    const sorted = [...pool].sort((a, b) => scoreItem(b) - scoreItem(a));
-    return sorted[0];
+    const pool = list.length > 0 ? list : basePool.filter((i) => i.layer === layer);
+    let bestItem = pool[0];
+    let bestScore = -Infinity;
+    for (const item of pool) {
+      const score = scoreItem(item);
+      if (score > bestScore) {
+        bestScore = score;
+        bestItem = item;
+      }
+    }
+    return bestItem;
   };
 
   // L1: Обувь

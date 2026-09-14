@@ -34,8 +34,8 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
   const tempMatch = q.match(/([+-]?\d{1,2})\s*(?:°|град|c\b)/);
   if (tempMatch) {
     const parsedTemp = parseInt(tempMatch[1], 10);
-    if (!isNaN(parsedTemp) && parsedTemp >= -20 && parsedTemp <= 45) {
-      temperatureC = Math.max(-15, Math.min(35, parsedTemp));
+    if (!isNaN(parsedTemp) && parsedTemp >= -25 && parsedTemp <= 50) {
+      temperatureC = Math.max(-20, Math.min(45, parsedTemp));
       detectedFactors.push({
         category: 'Погода',
         label: `${temperatureC > 0 ? '+' : ''}${temperatureC}°C`,
@@ -91,7 +91,7 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
       impact: 'Собранность, аналитический фокус, надежность и аккуратность',
     });
     summary = 'Профессиональный фокус и дисциплина';
-  } else if (q.includes('клуб') || q.includes('вечерин') || q.includes('тусовк') || q.includes('пати') || q.includes('бар')) {
+  } else if (q.includes('клуб') || q.includes('вечерин') || q.includes('тусовк') || q.includes('пати') || /(?:^|\s)бар(?:\s|$|[.,!])/i.test(q) || q.includes('коктейль')) {
     formalIndex = 1;
     socialX = 0.55;
     thermoY = -0.4;
@@ -101,7 +101,7 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
       impact: 'Свободный непринужденный крой, шлейфовый комплиментарный аромат',
     });
     summary = 'Вечерняя непринужденность и динамика';
-  } else if (q.includes('театр') || q.includes('опер') || q.includes('филармон') || q.includes('выставк') || q.includes('галере')) {
+  } else if (q.includes('театр') || q.includes('опер') || q.includes('филармон') || q.includes('выставк') || (q.includes('галере') && !q.includes('торгов') && !q.includes('шопинг'))) {
     formalIndex = 3;
     socialX = -0.3;
     thermoY = -0.35;
@@ -121,21 +121,62 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
       impact: 'Smart Casual: блейзер, рубашка оксфорд, чинос',
     });
     summary = 'Универсальный офисный Smart Casual';
-  } else if (q.includes('пляж') || q.includes('прогулк') || q.includes('набережн') || q.includes('парк') || q.includes('бранч') || q.includes('выходн')) {
+  } else if (
+    q.includes('природ') ||
+    q.includes('пикник') ||
+    q.includes('шашлык') ||
+    q.includes('барбекю') ||
+    q.includes('гриль') ||
+    q.includes('дач') ||
+    q.includes('поход') ||
+    q.includes('кемпинг') ||
+    q.includes('палатк') ||
+    q.includes('лес') ||
+    q.includes('озер') ||
+    q.includes('речк') ||
+    q.includes('рыбалк') ||
+    q.includes('хайкинг') ||
+    q.includes('треккинг') ||
+    q.includes('костер') ||
+    (q.includes('за город') && !q.includes('свадьб') && !q.includes('переговор') && !q.includes('отел') && !q.includes('ресторан'))
+  ) {
+    formalIndex = 1;
+    socialX = 0.70;
+    thermoY = 0.60;
+    if (!tempMatch) temperatureC = 22;
+
+    detectedFactors.push({
+      category: 'Повод',
+      label: 'Природа / Загородный отдых / Пикник',
+      impact: 'Свободный крой Casual (кеды, футболка, деним/чинос или куртка-рубашка), свежий природный шлейф',
+    });
+    summary = 'Расслабленный отдых на природе (Casual, комфорт и свобода)';
+  } else if (q.includes('пляж') || q.includes('прогулк') || q.includes('набережн') || q.includes('парк') || q.includes('бранч') || q.includes('выходн') || q.includes('кино') || q.includes('шопинг') || q.includes('кафе') || q.includes('кофейн')) {
     formalIndex = 1;
     socialX = 0.65;
     thermoY = 0.8;
     if (!tempMatch) temperatureC = 26;
     detectedFactors.push({
       category: 'Повод',
-      label: 'Отдых / Прогулка / Бранч',
+      label: 'Отдых / Прогулка / Casual',
       impact: 'Максимальный комфорт, льняные ткани, светлая палитра, свежесть',
     });
-    summary = 'Дневная легкость и непринужденность';
+    summary = 'Дневная легкость и непринужденность (Casual)';
   }
 
   // 3. Анализ отношений (социальная дистанция)
-  if (q.includes('друг') || q.includes('подруг') || q.includes('брат') || q.includes('семь') || q.includes('свои')) {
+  if (
+    q.includes('друг') ||
+    q.includes('друз') ||
+    q.includes('подруг') ||
+    q.includes('подруж') ||
+    q.includes('брат') ||
+    q.includes('брать') ||
+    q.includes('семь') ||
+    q.includes('свои') ||
+    q.includes('пацан') ||
+    q.includes('ребят')
+  ) {
     socialX = Math.min(1.0, socialX + 0.25);
     detectedFactors.push({
       category: 'Отношения',
@@ -152,18 +193,23 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
   }
 
   // 4. Локация и среда
-  if (q.includes('за город') || q.includes('на природ') || q.includes('шатер') || q.includes('веранд') || q.includes('воздух')) {
+  if (q.includes('за город') || q.includes('на природ') || q.includes('шатер') || q.includes('веранд') || q.includes('воздух') || q.includes('террас')) {
     socialX = Math.min(1.0, socialX + 0.15);
-    thermoY = Math.min(1.0, thermoY + 0.2);
+    thermoY = Math.min(1.0, thermoY + 0.15);
     // Для загородных условий формальность не должна быть строже 2
     if (formalIndex === 3 && !q.includes('совет')) {
       formalIndex = 2;
     }
-    detectedFactors.push({
-      category: 'Локация',
-      label: 'За городом / Открытый воздух',
-      impact: 'Замшевая обувь вместо жестких оксфордов, дышащие фактуры',
-    });
+    const hasNatureOccasion = detectedFactors.some(f => f.category === 'Повод' && f.label.includes('Природа'));
+    if (!hasNatureOccasion) {
+      detectedFactors.push({
+        category: 'Локация',
+        label: 'За городом / Открытый воздух',
+        impact: formalIndex === 1
+          ? 'Практичные дышащие материалы, комфортная обувь (кеды), защита от ветра'
+          : 'Замшевая обувь вместо жестких оксфордов, дышащие фактуры',
+      });
+    }
   } else if (q.includes('отел') || q.includes('лобби') || q.includes('лаунж')) {
     detectedFactors.push({
       category: 'Локация',
@@ -241,6 +287,7 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
  * Быстрые готовые запросы для демонстрации и подсказок
  */
 export const CONCIERGE_SUGGESTIONS = [
+  'На природу с друзьями, пикник, +22°C',
   'Свадьба лучшего друга за городом',
   'Стратегические переговоры с инвестором в лобби отеля',
   'Романтическое свидание вечером в ресторане на Патриарших',

@@ -6,7 +6,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646cff?logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Version](https://img.shields.io/badge/Version-v2.4.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
+[![Version](https://img.shields.io/badge/Version-v2.5.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
+[![ADK Quality](https://img.shields.io/badge/ADK_Flywheel-100%25_PASS-emerald.svg)](tests/eval)
 [![License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 
 ---
@@ -146,7 +147,17 @@
    ```
    Откройте [http://localhost:5173](http://localhost:5173) в браузере.
 
-4. **Сборка для продакшена:**
+4. **Проверка типов (TypeScript):**
+   ```bash
+   npm run typecheck
+   ```
+
+5. **Регрессионные тесты Google ADK Quality Flywheel:**
+   ```bash
+   npm run eval:adk
+   ```
+
+6. **Сборка для продакшена (оптимизированный бандл):**
    ```bash
    npm run build
    ```

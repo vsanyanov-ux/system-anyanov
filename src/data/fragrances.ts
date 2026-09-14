@@ -7,6 +7,39 @@ export interface ShelfPreset {
   perfumeIds: string[];
 }
 
+export const BOTTLE_IMAGES: Record<string, string> = {
+  'bleu-de-chanel-edp': '/bottles/bleu-de-chanel-edp.jpg',
+  'bleu-de-chanel': '/bottles/bleu-de-chanel-edp.jpg',
+  '4711-eau-de-cologne': '/bottles/4711-eau-de-cologne.jpg',
+  'tom-ford-tuscan-leather': '/bottles/tom-ford-tuscan-leather.jpg',
+  'chanel-platinum-egoiste': '/bottles/chanel-platinum-egoiste.jpg',
+  'jpg-ultra-male': '/bottles/jpg-ultra-male.jpg',
+  'versace-man-eau-fraiche': '/bottles/versace-man-eau-fraiche.jpg',
+  'acqua-di-gio': '/bottles/acqua-di-gio.jpg',
+  'dior-sauvage': '/bottles/dior-sauvage.jpg',
+  'dior-homme-cologne': '/bottles/dior-homme-cologne.jpg',
+  'dior-eau-sauvage': '/bottles/dior-eau-sauvage.jpg',
+  'prada-lhomme': '/bottles/prada-lhomme.jpg',
+  'paco-rabanne-pour-homme': '/bottles/paco-rabanne-pour-homme.jpg',
+  'ysl-lhomme': '/bottles/ysl-lhomme.jpg',
+  'terre-dhermes': '/bottles/terre-dhermes.jpg',
+  'guy-laroche-drakkar-noir': '/bottles/guy-laroche-drakkar-noir.jpg',
+  'dior-homme-intense': '/bottles/dior-homme-intense.jpg',
+  'versace-oud-noir': '/bottles/versace-oud-noir.jpg',
+  'creed-aventus': '/bottles/creed-aventus.jpg',
+  'versace-eros': '/bottles/versace-eros.jpg',
+  'jpg-le-male': '/bottles/jpg-le-male.jpg',
+  'lattafa-khamrah': '/bottles/lattafa-khamrah.jpg',
+};
+
+export const getPerfumeBottleImage = (perfumeOrId?: PerfumeItem | string | null): string | null => {
+  if (!perfumeOrId) return null;
+  if (typeof perfumeOrId === 'string') {
+    return BOTTLE_IMAGES[perfumeOrId] || null;
+  }
+  return perfumeOrId.imageUrl || BOTTLE_IMAGES[perfumeOrId.id] || null;
+};
+
 export const PERFUME_DATABASE: PerfumeItem[] = [
   // =========================================================================
   // КВАДРАНТ I: СЕВЕРО-ЗАПАД (ХОЛОД / ДЕНЬ + ВЛАСТЬ / ФОКУС / СТАТУС / ДИСТАНЦИЯ)

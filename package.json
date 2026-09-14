@@ -1,6 +1,6 @@
 {
   "name": "system-anyanov",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Система Аньянова — прикладная социальная инженерия стиля",
   "private": false,
   "license": "MIT",
@@ -13,7 +13,8 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "eval:adk": "tsx tests/eval/run_evals.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -28,6 +29,7 @@
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.7.0",
     "tailwindcss": "^4.1.14",
+    "tsx": "^4.23.13",
     "typescript": "~5.8.2",
     "vite": "^6.2.3"
   }

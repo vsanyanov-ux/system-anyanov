@@ -6,6 +6,16 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 5175,
-    host: true
-  }
+    host: true,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-icons': ['lucide-react'],
+        },
+      },
+    },
+  },
 });

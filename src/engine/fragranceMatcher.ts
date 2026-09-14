@@ -66,12 +66,22 @@ export function matchAnyanovPerfume(
     };
   };
 
+  const scoreCache = new Map<string, ReturnType<typeof scoreCandidate>>();
+  const getScore = (item: PerfumeItem) => {
+    let res = scoreCache.get(item.id);
+    if (!res) {
+      res = scoreCandidate(item);
+      scoreCache.set(item.id, res);
+    }
+    return res;
+  };
+
   // 1. Находим абсолютный идеал из всей библиотеки
   let idealCatalogMatch = catalogPool[0];
   let bestIdealScore = -Infinity;
 
   for (const item of catalogPool) {
-    const scored = scoreCandidate(item);
+    const scored = getScore(item);
     if (scored.score > bestIdealScore) {
       bestIdealScore = scored.score;
       idealCatalogMatch = item;
@@ -88,12 +98,13 @@ export function matchAnyanovPerfume(
 
   // 3. Находим лучший флакон из доступного пула с использованием нотного двигателя
   let bestPerfume = targetPool[0];
-  let bestPerfumeScore = -Infinity;
-  let bestPerfumeDistance = Infinity;
-  let bestNotesEngine: NoteEngineAnalysis = scoreCandidate(targetPool[0]).notesAnalysis;
+  const initialScored = getScore(targetPool[0]);
+  let bestPerfumeScore = initialScored.score;
+  let bestPerfumeDistance = initialScored.distance;
+  let bestNotesEngine: NoteEngineAnalysis = initialScored.notesAnalysis;
 
   for (const item of targetPool) {
-    const scored = scoreCandidate(item);
+    const scored = getScore(item);
     if (scored.score > bestPerfumeScore) {
       bestPerfumeScore = scored.score;
       bestPerfumeDistance = scored.distance;

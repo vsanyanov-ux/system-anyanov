@@ -60,6 +60,7 @@ export interface PerfumeItem {
   bestOccasion: string;
   whyFitsOutfit: string;
   colorTheme: string;
+  imageUrl?: string;
   aestheticValues?: Partial<AestheticValues>;
 }
 
@@ -164,4 +165,28 @@ export interface NoteEngineAnalysis {
   baseAnchorVerdict: string;
   heartSocialVerdict: string;
   topAuraVerdict: string;
+}
+
+export interface HumanVibeArchetype {
+  id: string;
+  title: string;
+  shortTag: string;
+  subtitle: string;
+  metaphors: string[];
+  iconKey: 'shirt' | 'car' | 'coffee' | 'forest' | 'sea' | 'flame' | 'book' | 'drink' | 'future';
+  colorTheme: string;
+  badgeColor: string;
+  targetPerfumeId: string;
+  recommendedCoords: AnyanovCoordinates;
+  humanExplanation: string;
+  fabricSynergy: string;
+}
+
+export interface HumanReferenceScent {
+  id: string;
+  popularName: string;
+  popularBrand: string;
+  userVibeSummary: string;
+  targetPerfumeId: string;
+  explanation: string;
 }

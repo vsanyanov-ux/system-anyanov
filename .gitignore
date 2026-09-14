@@ -19,8 +19,10 @@ dist-ssr
 # TypeScript
 *.tsbuildinfo
 
-# Temporary
+# Temporary and Cache
 fix.cjs
+__pycache__/
+*.py[cod]
 
 # Environment variables
 .env

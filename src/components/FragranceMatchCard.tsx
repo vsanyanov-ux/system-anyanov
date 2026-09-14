@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PerfumeItem, SolfeggioAnalysis, NoteEngineAnalysis } from '../types';
 import { 
   Sparkles, 
@@ -9,9 +9,12 @@ import {
   ArrowRight, 
   ShieldCheck, 
   Compass,
-  Atom
+  Atom,
+  HeartHandshake
 } from 'lucide-react';
 import { AXIS_LABELS } from '../engine/styleSolfeggio';
+import { HUMAN_VIBE_ARCHETYPES } from '../data/humanScents';
+import { getPerfumeBottleImage } from '../data/fragrances';
 
 interface FragranceMatchCardProps {
   perfume: PerfumeItem;
@@ -27,6 +30,7 @@ interface FragranceMatchCardProps {
   onSelectPerfume?: (perfume: PerfumeItem) => void;
   notesEngine?: NoteEngineAnalysis;
   onOpenPeriodicTable?: () => void;
+  onOpenHumanFinder?: () => void;
 }
 
 export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
@@ -43,7 +47,19 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
   onSelectPerfume,
   notesEngine,
   onOpenPeriodicTable,
+  onOpenHumanFinder,
 }) => {
+  const [imgError, setImgError] = useState(false);
+  const [viewModeBottle, setViewModeBottle] = useState<'photo' | 'schema'>('photo');
+
+  useEffect(() => {
+    setImgError(false);
+  }, [perfume.id]);
+
+  const bottleImage = getPerfumeBottleImage(perfume);
+  const showPhoto = Boolean(bottleImage && !imgError && viewModeBottle === 'photo');
+  const humanArchetype = HUMAN_VIBE_ARCHETYPES.find((a) => a.targetPerfumeId === perfume.id);
+
   return (
     <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-xl relative overflow-hidden">
       {/* Top Header */}
@@ -107,10 +123,10 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
 
       {/* Main Perfume Presentation */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center z-10">
-        {/* Left: Bottle Vector Illustration (4 cols) */}
-        <div className="sm:col-span-4 flex flex-col items-center justify-center bg-slate-950/70 rounded-xl border border-slate-800/80 p-4 min-h-[220px] relative">
+        {/* Left: Bottle Real Photo or Vector Illustration (4 cols) */}
+        <div className="sm:col-span-4 flex flex-col items-center justify-center bg-slate-950/70 rounded-xl border border-slate-800/80 p-4 min-h-[220px] relative overflow-hidden group">
           {/* Badge: Shelf vs Catalog */}
-          <div className="absolute top-2.5 left-2.5">
+          <div className="absolute top-2.5 left-2.5 z-10">
             {isFromShelf ? (
               <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 shadow-sm">
                 <ShieldCheck className="w-3 h-3 text-emerald-400" />
@@ -124,47 +140,79 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
             )}
           </div>
 
-          <svg
-            viewBox="0 0 100 160"
-            className="w-24 h-36 drop-shadow-[0_8px_16px_rgba(245,158,11,0.2)] mt-2"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Cap */}
-            <rect x="36" y="12" width="28" height="22" rx="2" fill="#1e293b" stroke="#94a3b8" strokeWidth="1.5" />
-            {/* Spray nozzle */}
-            <rect x="44" y="34" width="12" height="8" fill="#cbd5e1" />
-            {/* Bottle body */}
-            <rect
-              x="18"
-              y="42"
-              width="64"
-              height="106"
-              rx="8"
-              fill="#090d16"
-              stroke="#64748b"
-              strokeWidth="2"
-            />
-            {/* Liquid level */}
-            <rect
-              x="22"
-              y="62"
-              width="56"
-              height="80"
-              rx="4"
-              fill="#d97706"
-              opacity={0.75}
-            />
-            {/* Label plate */}
-            <rect x="26" y="78" width="48" height="40" rx="2" fill="#020617" stroke="#f59e0b" strokeWidth="1" />
-            <text x="50" y="93" fill="#ffffff" fontSize="5.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-              {perfume.brand.toUpperCase()}
-            </text>
-            <text x="50" y="105" fill="#f59e0b" fontSize="6.5" fontWeight="900" textAnchor="middle" fontFamily="serif">
-              {perfume.name.length > 14 ? perfume.name.slice(0, 13) + '..' : perfume.name}
-            </text>
-          </svg>
-          <div className="flex items-center gap-2 mt-2 font-mono text-[10px] text-slate-400">
+          {/* Toggle button: Photo vs Schema (if real bottle is available) */}
+          {bottleImage && !imgError && (
+            <button
+              onClick={() => setViewModeBottle(v => v === 'photo' ? 'schema' : 'photo')}
+              className="absolute top-2.5 right-2.5 z-10 text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-900/90 hover:bg-slate-800 text-slate-400 hover:text-amber-300 border border-slate-800 transition-colors cursor-pointer"
+              title="Переключить вид: Реальный флакон / Схема"
+            >
+              {viewModeBottle === 'photo' ? 'Схема' : 'Флакон'}
+            </button>
+          )}
+
+          {showPhoto ? (
+            <div className="relative flex flex-col items-center justify-center my-1 w-full">
+              {/* Luxury Ambient Glow */}
+              <div className="absolute inset-0 bg-gradient-to-t from-amber-500/15 via-sky-500/5 to-transparent rounded-2xl blur-xl pointer-events-none" />
+
+              <img
+                src={bottleImage!}
+                alt={`${perfume.brand} ${perfume.name}`}
+                onError={() => setImgError(true)}
+                className="h-36 max-h-[145px] w-auto max-w-[130px] object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter transition-all duration-300 group-hover:scale-105 select-none z-10"
+                loading="lazy"
+              />
+
+              <div className="mt-2 px-2 py-0.5 rounded-full bg-slate-900/90 border border-amber-500/30 text-[9px] font-mono text-amber-300 flex items-center gap-1 shadow-md z-10">
+                <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                <span>Реальный флакон</span>
+              </div>
+            </div>
+          ) : (
+            <svg
+              viewBox="0 0 100 160"
+              className="w-24 h-36 drop-shadow-[0_8px_16px_rgba(245,158,11,0.2)] mt-2"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Cap */}
+              <rect x="36" y="12" width="28" height="22" rx="2" fill="#1e293b" stroke="#94a3b8" strokeWidth="1.5" />
+              {/* Spray nozzle */}
+              <rect x="44" y="34" width="12" height="8" fill="#cbd5e1" />
+              {/* Bottle body */}
+              <rect
+                x="18"
+                y="42"
+                width="64"
+                height="106"
+                rx="8"
+                fill="#090d16"
+                stroke="#64748b"
+                strokeWidth="2"
+              />
+              {/* Liquid level */}
+              <rect
+                x="22"
+                y="62"
+                width="56"
+                height="80"
+                rx="4"
+                fill="#d97706"
+                opacity={0.75}
+              />
+              {/* Label plate */}
+              <rect x="26" y="78" width="48" height="40" rx="2" fill="#020617" stroke="#f59e0b" strokeWidth="1" />
+              <text x="50" y="93" fill="#ffffff" fontSize="5.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+                {perfume.brand.toUpperCase()}
+              </text>
+              <text x="50" y="105" fill="#f59e0b" fontSize="6.5" fontWeight="900" textAnchor="middle" fontFamily="serif">
+                {perfume.name.length > 14 ? perfume.name.slice(0, 13) + '..' : perfume.name}
+              </text>
+            </svg>
+          )}
+
+          <div className="flex items-center gap-2 mt-2 font-mono text-[10px] text-slate-400 z-10">
             <span>Диффузия: <strong className="text-slate-200">{perfume.diffusion}</strong></span>
             <span>•</span>
             <span>Коорд: <strong className="text-amber-400">{perfume.xCoord > 0 ? `+${perfume.xCoord}` : perfume.xCoord}, {perfume.yCoord > 0 ? `+${perfume.yCoord}` : perfume.yCoord}</strong></span>
@@ -184,6 +232,52 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
               «{perfume.dominantVibe}»
             </p>
           </div>
+
+          {/* Человеческий вайб аромата */}
+          {humanArchetype ? (
+            <div className="bg-gradient-to-r from-cyan-950/40 via-slate-900/80 to-blue-950/40 border border-cyan-500/30 rounded-xl p-2.5 flex items-center justify-between gap-2.5">
+              <div className="flex items-start gap-2">
+                <HeartHandshake className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                <div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] font-mono font-bold text-cyan-300 uppercase tracking-wider">
+                      Вайб без заумных нот:
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-200 border border-cyan-500/40 font-medium">
+                      {humanArchetype.shortTag}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-200 font-medium mt-0.5">
+                    {humanArchetype.title}
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
+                    {humanArchetype.metaphors.join(' • ')}
+                  </p>
+                </div>
+              </div>
+
+              {onOpenHumanFinder && (
+                <button
+                  onClick={onOpenHumanFinder}
+                  className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded-lg bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-500/40 transition-colors shrink-0 cursor-pointer"
+                  title="Открыть все человеческие ассоциации"
+                >
+                  Все вайбы →
+                </button>
+              )}
+            </div>
+          ) : onOpenHumanFinder && (
+            <div className="bg-slate-950/40 border border-slate-800 rounded-xl p-2 flex items-center justify-between text-xs text-slate-400">
+              <span className="text-[11px]">Не знаете, как пахнут эти ноты?</span>
+              <button
+                onClick={onOpenHumanFinder}
+                className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
+              >
+                <HeartHandshake className="w-3 h-3" />
+                Человеческий подбор
+              </button>
+            </div>
+          )}
 
           {/* Pyramid Notes */}
           <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800 text-[11px] space-y-1.5">

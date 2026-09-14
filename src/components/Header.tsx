@@ -1,5 +1,4 @@
-import React from 'react';
-import { Sparkles, BookOpen, ShieldCheck, Layers, Zap, SlidersHorizontal, Crown, Atom } from 'lucide-react';
+import { Sparkles, BookOpen, ShieldCheck, Layers, Zap, SlidersHorizontal, Crown, Atom, HeartHandshake } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: 'simple' | 'pro' | 'benchmarks';
@@ -7,6 +6,7 @@ interface HeaderProps {
   onOpenManifesto: () => void;
   onOpenShelf?: () => void;
   onOpenPeriodicTable?: () => void;
+  onOpenHumanFinder?: () => void;
   shelfCount?: number;
   is21Mode?: boolean;
   onToggle21Mode?: () => void;
@@ -18,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenManifesto,
   onOpenShelf,
   onOpenPeriodicTable,
+  onOpenHumanFinder,
   shelfCount = 0,
   is21Mode = false,
   onToggle21Mode,
@@ -112,6 +113,18 @@ export const Header: React.FC<HeaderProps> = ({
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>0 ошибок</span>
           </div>
+
+          {onOpenHumanFinder && (
+            <button
+              onClick={onOpenHumanFinder}
+              className="flex items-center gap-1.5 text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-indigo-500/20 hover:from-cyan-500/30 hover:to-indigo-500/30 text-cyan-300 border border-cyan-500/40 transition-all hover:border-cyan-400 shadow-sm cursor-pointer group"
+              title="Человеческий подбор ароматов (без заумных химических нот)"
+            >
+              <HeartHandshake className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline">Как пахнет?</span>
+              <span className="sm:hidden">Вайб</span>
+            </button>
+          )}
 
           {onOpenPeriodicTable && (
             <button

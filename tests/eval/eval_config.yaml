@@ -1,0 +1,30 @@
+version: "1.0.0"
+framework: "google-adk"
+project: "sistema-anyanova-8d"
+
+evaluation:
+  target_pass_rate_percent: 95.0
+  max_acceptable_distance_error: 0.20
+  formal_index_strict: true
+  temperature_tolerance_c: 2.0
+
+guardrails:
+  enforce_before_tool_callback: true
+  enforce_approval_gate_on_extreme_temp: true
+  extreme_temp_min: -5.0
+  extreme_temp_max: 35.0
+  extreme_periphery_norm: 0.90
+
+metrics:
+  - name: "tool_execution_success"
+    weight: 0.25
+    description: "Процент успешных вызовов стандартизированных инструментов ADK"
+  - name: "coordinate_calibration_accuracy"
+    weight: 0.35
+    description: "Погрешность 8D-координат (SocialX, ThermoY) относительно эталона"
+  - name: "formal_index_match"
+    weight: 0.20
+    description: "Точность определения индекса формальности (1, 2, 3)"
+  - name: "guardrail_approval_gate_precision"
+    weight: 0.20
+    description: "Корректность срабатывания Approval Gate на экстремальных сценариях"

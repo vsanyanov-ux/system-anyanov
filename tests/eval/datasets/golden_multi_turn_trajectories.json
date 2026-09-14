@@ -1,0 +1,242 @@
+[
+  {
+    "id": "tc_01",
+    "query": "Переговоры с инвестором, +21°C",
+    "expected": {
+      "social_x_range": [-0.85, -0.65],
+      "thermo_y_range": [0.45, 0.65],
+      "formal_index": 3,
+      "temperature_c": 21,
+      "requires_approval": false
+    },
+    "description": "Деловые переговоры с жесткой субординацией и статусом"
+  },
+  {
+    "id": "tc_02",
+    "query": "Совет директоров в банке",
+    "expected": {
+      "social_x_range": [-1.0, -0.65],
+      "thermo_y_range": [0.45, 0.65],
+      "formal_index": 3,
+      "temperature_c": 21,
+      "requires_approval": false
+    },
+    "description": "Высший уровень субординации и корпоративной власти"
+  },
+  {
+    "id": "tc_03",
+    "query": "Свадьба лучшего друга за городом",
+    "expected": {
+      "social_x_range": [0.65, 0.85],
+      "thermo_y_range": [0.50, 0.70],
+      "formal_index": 2,
+      "temperature_c": 23,
+      "requires_approval": false
+    },
+    "description": "Торжественное праздничное мероприятие с близкими за городом"
+  },
+  {
+    "id": "tc_04",
+    "query": "Романтическое свидание в ресторане",
+    "expected": {
+      "social_x_range": [0.55, 0.75],
+      "thermo_y_range": [-0.65, -0.45],
+      "formal_index": 2,
+      "temperature_c": 19,
+      "requires_approval": false
+    },
+    "description": "Мягкая сила, магнетизм и теплый интимный вечер"
+  },
+  {
+    "id": "tc_05",
+    "query": "Ужин вдвоем при свечах",
+    "expected": {
+      "social_x_range": [0.55, 0.75],
+      "thermo_y_range": [-0.65, -0.45],
+      "formal_index": 2,
+      "temperature_c": 19,
+      "requires_approval": false
+    },
+    "description": "Приватный романтический вечер"
+  },
+  {
+    "id": "tc_06",
+    "query": "Собеседование на руководящую должность в госструктуру",
+    "expected": {
+      "social_x_range": [-0.85, -0.30],
+      "thermo_y_range": [0.35, 0.55],
+      "formal_index": 3,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Собеседование с элементами формальности и авторитета"
+  },
+  {
+    "id": "tc_07",
+    "query": "Вечеринка с друзьями в клубе",
+    "expected": {
+      "social_x_range": [0.70, 0.90],
+      "thermo_y_range": [-0.85, -0.65],
+      "formal_index": 1,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Ночная вечеринка в клубе в кругу друзей"
+  },
+  {
+    "id": "tc_08",
+    "query": "Премьера спектакля в театре оперы",
+    "expected": {
+      "social_x_range": [-0.40, -0.20],
+      "thermo_y_range": [-0.45, -0.25],
+      "formal_index": 3,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Культурный торжественный вечер"
+  },
+  {
+    "id": "tc_09",
+    "query": "Рабочий день в офисе, Smart Casual",
+    "expected": {
+      "social_x_range": [-0.40, -0.20],
+      "thermo_y_range": [0.50, 0.70],
+      "formal_index": 2,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Стандартный сбалансированный офисный день"
+  },
+  {
+    "id": "tc_10",
+    "query": "Пикник с друзьями на природе, +22°C",
+    "expected": {
+      "social_x_range": [0.75, 1.0],
+      "thermo_y_range": [0.55, 0.85],
+      "formal_index": 1,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Отдых на открытом воздухе с близкими"
+  },
+  {
+    "id": "tc_11",
+    "query": "Барбекю и шашлыки на даче",
+    "expected": {
+      "social_x_range": [0.60, 0.95],
+      "thermo_y_range": [0.50, 0.80],
+      "formal_index": 1,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Загородный отдых у мангала"
+  },
+  {
+    "id": "tc_12",
+    "query": "Прогулка в парке в выходной, +24°C",
+    "expected": {
+      "social_x_range": [0.55, 0.75],
+      "thermo_y_range": [0.70, 0.90],
+      "formal_index": 1,
+      "temperature_c": 24,
+      "requires_approval": false
+    },
+    "description": "Дневной Casual в теплую погоду"
+  },
+  {
+    "id": "tc_13",
+    "query": "Встреча с клиентом в лобби премиального отеля",
+    "expected": {
+      "social_x_range": [-0.45, -0.25],
+      "thermo_y_range": [0.10, 0.30],
+      "formal_index": 2,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Деловая встреча в статусной лаунж-локации"
+  },
+  {
+    "id": "tc_14",
+    "query": "Зимняя прогулка в мороз -10°C",
+    "expected": {
+      "social_x_range": [0.50, 0.80],
+      "thermo_y_range": [0.20, 0.45],
+      "formal_index": 1,
+      "temperature_c": -10,
+      "requires_approval": true
+    },
+    "description": "Низкая температура активирует Approval Gate для проверки термо-слоев"
+  },
+  {
+    "id": "tc_15",
+    "query": "Жаркий летний день на пляже, +36°C",
+    "expected": {
+      "social_x_range": [0.55, 0.85],
+      "thermo_y_range": [0.70, 0.95],
+      "formal_index": 1,
+      "temperature_c": 36,
+      "requires_approval": true
+    },
+    "description": "Экстремальная жара активирует Approval Gate для проверки ультралегких тканей"
+  },
+  {
+    "id": "tc_16",
+    "query": "Летний бранч на веранде ресторана с подругой",
+    "expected": {
+      "social_x_range": [0.85, 1.0],
+      "thermo_y_range": [-0.15, 0.10],
+      "formal_index": 2,
+      "temperature_c": 27,
+      "requires_approval": false
+    },
+    "description": "Дневной легкий стиль на открытом воздухе"
+  },
+  {
+    "id": "tc_17",
+    "query": "Встреча с боссом на нейтральной территории",
+    "expected": {
+      "social_x_range": [-0.75, -0.30],
+      "thermo_y_range": [0.10, 0.35],
+      "formal_index": 2,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Субординация с легким смягчением обстановки"
+  },
+  {
+    "id": "tc_18",
+    "query": "Поход и треккинг в лесу у озера",
+    "expected": {
+      "social_x_range": [0.60, 0.90],
+      "thermo_y_range": [0.50, 0.80],
+      "formal_index": 1,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Спортивно-природный аутдор"
+  },
+  {
+    "id": "tc_19",
+    "query": "Шопинг в торговой галерее в субботу",
+    "expected": {
+      "social_x_range": [0.55, 0.75],
+      "thermo_y_range": [0.70, 0.90],
+      "formal_index": 1,
+      "temperature_c": 26,
+      "requires_approval": false
+    },
+    "description": "Комфортный городской Casual"
+  },
+  {
+    "id": "tc_20",
+    "query": "Открытие художественной выставки в галерее",
+    "expected": {
+      "social_x_range": [-0.40, -0.20],
+      "thermo_y_range": [-0.45, -0.25],
+      "formal_index": 3,
+      "temperature_c": 22,
+      "requires_approval": false
+    },
+    "description": "Арт-ивент с интеллектуальной эстетикой"
+  }
+]
