@@ -86,7 +86,7 @@ export function App() {
       // Игнорируем ошибки чтения LocalStorage
     }
     // По умолчанию: Базовый джентльменский набор из 5 флаконов
-    return SHELF_PRESETS[0].perfumeIds;
+    return SHELF_PRESETS[1].perfumeIds;
   });
 
   // Режим подбора: false = из личной полки, true = идеальный эталон из всего каталога
@@ -187,8 +187,15 @@ export function App() {
             onChangeCoords={setCoords}
             outfit={stack}
             perfume={matchResult.perfume}
+            idealPerfume={matchResult.idealCatalogMatch}
             solfeggio={solfeggio}
             notesEngine={matchResult.notesEngine}
+            isCatalogMode={isCatalogMode}
+            onToggleCatalogMode={handleToggleCatalogMode}
+            hasWardrobeGap={matchResult.hasWardrobeGap}
+            gapAdvice={matchResult.gapAdvice}
+            totalShelfCount={userShelfIds.length}
+            onOpenShelf={() => setIsShelfModalOpen(true)}
             onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
             onSwitchToPro={() => handleTabChange('pro')}
           />

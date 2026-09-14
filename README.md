@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646cff?logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Version](https://img.shields.io/badge/Version-v2.3.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
+[![Version](https://img.shields.io/badge/Version-v2.3.1-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
 [![License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 
 ---
@@ -90,6 +90,11 @@
 ### 6. 👔 Wardrobe OS Mannequin
 * Визуализатор 4-слойной архитектуры гардероба ($L4$ Верхняя одежда, $L3$ Торс, $L2$ Брюки, $L1$ Обувь).
 * Автоматический подбор фактур под уличную температуру (от -15°C до +35°C) и индекс формальности ($FI 1–3$).
+
+### 7. 🎯 Экспресс-режим «Суть системы» (Core Principle View)
+* **Принцип «0 ошибок»**: выбор одного из 4 фундаментальных жизненных архетипов (*Монументальный Статус*, *Собранность и Контроль*, *Магнетизм и Соблазн*, *Дневная Легкость*).
+* **Готовый выверенный дуэт**: мгновенная компиляция гардероба и парфюмерного зеркала под выбранную цель с проверкой погоды.
+* **Интерактивный переключатель «Полка / Эталон»**: мгновенный просмотр канонического эталона либо лучшего совпадения из личной полки с индикацией *Wardrobe Gap* при ольфакторных пробелах.
 
 ---
 

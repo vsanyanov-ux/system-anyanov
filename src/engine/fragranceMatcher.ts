@@ -42,16 +42,21 @@ export function matchAnyanovPerfume(
     const notesAnalysis = analyzePeriodicNotesSynergy(item.pyramid, dummyStack);
 
     // Базовый балл по пространственной цели (X, Y)
-    const targetScore = Math.max(0, 100 - distance * 32);
+    const targetScore = Math.max(0, 100 - distance * 36);
 
     // Вклад нотного двигателя (резонанс нот с тканями L1-L4 и штрафы за диссонансы)
     const resonanceBonus = (notesAnalysis.resonanceScore - 75) * 0.35;
     const positivePairsBonus = Math.min(8, notesAnalysis.resonantPairs.length * 2);
     const clashPenalty = notesAnalysis.clashes.length * 15;
 
+    // Штраф за диаметрально противоположный квадрант (ольфакторный диссонанс ситуации)
+    // Например, ледяной стерильный офисный ирис на романтическом свидании
+    const isOppositeQuadrant = (item.xCoord * socialX < -0.05) && (item.yCoord * thermoY < -0.05);
+    const quadrantPenalty = isOppositeQuadrant ? 30 : (distance > 1.2 ? 15 : 0);
+
     const totalScore = Math.max(
-      50,
-      Math.min(99, Math.round(targetScore * 0.70 + notesAnalysis.resonanceScore * 0.30 + positivePairsBonus - clashPenalty))
+      20,
+      Math.min(99, Math.round(targetScore * 0.70 + notesAnalysis.resonanceScore * 0.30 + positivePairsBonus - clashPenalty - quadrantPenalty))
     );
 
     return {
@@ -73,9 +78,9 @@ export function matchAnyanovPerfume(
     }
   }
 
-  // 2. Формируем доступную полку пользователя
+  // 2. Формируем доступную полку пользователя (реальные флаконы из всей базы)
   const ownedItems = (userShelfIds && userShelfIds.length > 0)
-    ? catalogPool.filter((p) => userShelfIds.includes(p.id))
+    ? PERFUME_DATABASE.filter((p) => userShelfIds.includes(p.id))
     : [];
 
   const useShelf = !forceCatalogMode && ownedItems.length > 0;

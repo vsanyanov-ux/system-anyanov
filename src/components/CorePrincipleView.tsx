@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
   Sparkles, 
   ShieldCheck, 
@@ -14,19 +14,29 @@ import {
   Layers,
   Flame,
   Droplets,
-  Atom
+  Atom,
+  AlertTriangle
 } from 'lucide-react';
 import { AnyanovCoordinates, OutfitStack, PerfumeItem, SolfeggioAnalysis, NoteEngineAnalysis } from '../types';
+import { PERFUME_DATABASE } from '../data/fragrances';
+import { analyzePeriodicNotesSynergy } from '../engine/periodicNotesEngine';
 
 interface CorePrincipleViewProps {
   coords: AnyanovCoordinates;
   onChangeCoords: (coords: AnyanovCoordinates) => void;
   outfit: OutfitStack;
   perfume: PerfumeItem;
+  idealPerfume?: PerfumeItem;
   solfeggio: SolfeggioAnalysis;
   onSwitchToPro: () => void;
   notesEngine?: NoteEngineAnalysis;
   onOpenPeriodicTable?: () => void;
+  isCatalogMode?: boolean;
+  onToggleCatalogMode?: () => void;
+  hasWardrobeGap?: boolean;
+  gapAdvice?: string;
+  totalShelfCount?: number;
+  onOpenShelf?: () => void;
 }
 
 interface CoreArchetype {
@@ -43,6 +53,7 @@ interface CoreArchetype {
     thermoY: number;
     formalIndex: 1 | 2 | 3;
   };
+  idealPerfumeId: string;
   whyItWorks: string;
 }
 
@@ -61,6 +72,7 @@ const ARCHETYPES: CoreArchetype[] = [
       thermoY: -0.75,
       formalIndex: 3,
     },
+    idealPerfumeId: 'tom-ford-tuscan-leather',
     whyItWorks: 'Плотные монументальные ткани формируют жесткий силуэт авторитета, а глубокий кожано-дымный шлейф удерживает дистанцию.'
   },
   {
@@ -77,6 +89,7 @@ const ARCHETYPES: CoreArchetype[] = [
       thermoY: 0.45,
       formalIndex: 2,
     },
+    idealPerfumeId: 'prada-lhomme',
     whyItWorks: 'Элегантный блейзер и сорочка дают собранность без скованности, а холодный ирисово-ветиверовый шлейф повышает концентрацию.'
   },
   {
@@ -93,6 +106,7 @@ const ARCHETYPES: CoreArchetype[] = [
       thermoY: -0.60,
       formalIndex: 2,
     },
+    idealPerfumeId: 'tom-ford-tobacco-vanille',
     whyItWorks: 'Тактильный кашемир и замша располагают к прикосновениям, а согревающий табачно-ванильный шлейф работает на дистанции объятий.'
   },
   {
@@ -109,6 +123,7 @@ const ARCHETYPES: CoreArchetype[] = [
       thermoY: 0.80,
       formalIndex: 1,
     },
+    idealPerfumeId: 'acqua-di-gio',
     whyItWorks: 'Натуральный дышащий лен и светлая палитра транслируют свободу, а цитрусово-акватический бриз дарит ощущение свежести.'
   }
 ];
@@ -118,10 +133,17 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
   onChangeCoords,
   outfit,
   perfume,
+  idealPerfume,
   solfeggio,
   onSwitchToPro,
   notesEngine,
-  onOpenPeriodicTable
+  onOpenPeriodicTable,
+  isCatalogMode = false,
+  onToggleCatalogMode,
+  hasWardrobeGap = false,
+  gapAdvice,
+  totalShelfCount = 0,
+  onOpenShelf
 }) => {
   // Определяем, какой архетип сейчас ближе всего
   const currentArchetype = ARCHETYPES.reduce((prev, curr) => {
@@ -129,6 +151,22 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
     const currDist = Math.hypot(coords.socialX - curr.coords.socialX, coords.thermoY - curr.coords.thermoY);
     return currDist < prevDist ? curr : prev;
   });
+
+  // Канонический эталон для выбранного архетипа
+  const canonicalPerfume = useMemo(() => {
+    return PERFUME_DATABASE.find(p => p.id === currentArchetype.idealPerfumeId) || idealPerfume || perfume;
+  }, [currentArchetype.idealPerfumeId, idealPerfume, perfume]);
+
+  // Выбранный для показа парфюм (в режиме каталога показываем гарантированный эталон ситуации)
+  const displayPerfume = isCatalogMode ? canonicalPerfume : perfume;
+
+  // Динамический пересчет синергии нот для отображаемого парфюма
+  const effectiveNotesEngine = useMemo(() => {
+    if (displayPerfume.id === perfume.id && notesEngine) {
+      return notesEngine;
+    }
+    return analyzePeriodicNotesSynergy(displayPerfume.pyramid, outfit);
+  }, [displayPerfume, perfume, notesEngine, outfit]);
 
   const handleSelectArchetype = (arch: CoreArchetype) => {
     onChangeCoords({
@@ -396,7 +434,7 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
           {/* КАРТОЧКА 2: ГОТОВЫЙ АРОМАТ-ЗЕРКАЛО */}
           <div className="rounded-3xl p-6 bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between gap-5 relative overflow-hidden">
             <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold">
                     <Droplets className="w-4 h-4" />
@@ -404,25 +442,95 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
                   <div>
                     <h4 className="font-bold text-white text-base">Парфюмерное зеркало</h4>
                     <span className="text-[11px] text-slate-400 font-mono">
-                      Диффузия: {perfume.diffusion}
+                      Диффузия: {displayPerfume.diffusion}
                     </span>
                   </div>
                 </div>
-                <span className="text-xs font-mono text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-lg">
-                  {perfume.dominantVibe}
-                </span>
+
+                {/* Switcher: Shelf vs Canonical Benchmark */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  {onToggleCatalogMode && (
+                    <div className="flex items-center bg-slate-950 p-0.5 rounded-xl border border-slate-800 text-[11px] font-mono">
+                      <button
+                        onClick={() => {
+                          if (isCatalogMode) onToggleCatalogMode();
+                        }}
+                        className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
+                          !isCatalogMode
+                            ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30'
+                            : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                        title="Использовать лучший парфюм из моей личной полки"
+                      >
+                        <Layers className="w-3 h-3" />
+                        <span>Полка ({totalShelfCount})</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (!isCatalogMode) onToggleCatalogMode();
+                        }}
+                        className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer ${
+                          isCatalogMode
+                            ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30'
+                            : 'text-slate-400 hover:text-slate-200'
+                        }`}
+                        title="Показать эталонный канонический аромат ситуации"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        <span>Эталон</span>
+                      </button>
+                    </div>
+                  )}
+
+                  <span className="text-xs font-mono text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-lg">
+                    {displayPerfume.dominantVibe}
+                  </span>
+                </div>
               </div>
+
+              {/* Ольфакторный пробел (Wardrobe Gap) если на полке нет подходящего аромата */}
+              {!isCatalogMode && hasWardrobeGap && (
+                <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs flex items-start gap-2.5 animate-in fade-in">
+                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                      <span>Ольфакторный компромисс полки</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 border border-amber-500/30 text-amber-300">
+                        Wardrobe Gap
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-200/90 mt-1 leading-snug">
+                      {gapAdvice || `Текущий образ требует аромата другого направления. В эталоне рекомендован ${canonicalPerfume.name} (${canonicalPerfume.brand}).`}
+                    </div>
+                    {onToggleCatalogMode && (
+                      <button
+                        onClick={onToggleCatalogMode}
+                        className="mt-2 text-[11px] font-bold text-amber-300 hover:text-amber-200 underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Показать эталонный аромат ({canonicalPerfume.name})</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Главный флакон */}
               <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900 border border-slate-800 space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <div className="text-xs font-mono text-amber-400 uppercase tracking-wider">{perfume.brand}</div>
-                    <div className="text-lg font-black text-white tracking-tight">{perfume.name}</div>
+                    <div className="text-xs font-mono text-amber-400 uppercase tracking-wider">{displayPerfume.brand}</div>
+                    <div className="text-lg font-black text-white tracking-tight">{displayPerfume.name}</div>
                   </div>
+                  {isCatalogMode && (
+                    <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-full flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Эталон ситуации
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed italic">
-                  «{perfume.whyFitsOutfit}»
+                  «{displayPerfume.whyFitsOutfit}»
                 </p>
               </div>
 
@@ -430,17 +538,17 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
               <div className="space-y-2">
                 <div className="text-[11px] font-mono text-slate-400 uppercase">Ключевой ольфакторный аккорд:</div>
                 <div className="flex flex-wrap gap-1.5">
-                  {perfume.pyramid.top.map((note, i) => (
+                  {displayPerfume.pyramid.top.map((note, i) => (
                     <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 font-medium">
                       {note}
                     </span>
                   ))}
-                  {perfume.pyramid.heart.map((note, i) => (
+                  {displayPerfume.pyramid.heart.map((note, i) => (
                     <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-amber-300/90 font-medium">
                       {note}
                     </span>
                   ))}
-                  {perfume.pyramid.base.map((note, i) => (
+                  {displayPerfume.pyramid.base.map((note, i) => (
                     <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-indigo-300/90 font-medium">
                       {note}
                     </span>
@@ -454,8 +562,8 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
               <div className="flex items-center gap-2">
                 <Atom className="w-4 h-4 text-indigo-400 shrink-0" />
                 <span className="font-medium">
-                  {notesEngine && notesEngine.resonantPairs.length > 0
-                    ? `Двигатель нот: ${notesEngine.resonantPairs[0].note.name} (${notesEngine.resonantPairs[0].note.symbol}) резонирует со слоем ${notesEngine.resonantPairs[0].layer} (${notesEngine.resonantPairs[0].fabric}).`
+                  {effectiveNotesEngine && effectiveNotesEngine.resonantPairs.length > 0
+                    ? `Двигатель нот: ${effectiveNotesEngine.resonantPairs[0].note.name} (${effectiveNotesEngine.resonantPairs[0].note.symbol}) резонирует со слоем ${effectiveNotesEngine.resonantPairs[0].layer} (${effectiveNotesEngine.resonantPairs[0].fabric}).`
                     : 'Шлейф и фактура тканей настроены в единую тональность без диссонансов.'}
                 </span>
               </div>
