@@ -118,3 +118,46 @@ export interface CompiledLook {
   solfeggio: SolfeggioAnalysis;
   rulesApplied: string[];
 }
+
+export interface PeriodicNoteElement {
+  id: string;
+  name: string;
+  symbol: string; // Хим-символ (Ir, Vt, Ud, Vn, Amb, Ozo и т.д.)
+  period: 'I' | 'II' | 'III' | 'IV';
+  subSector?: string; // e.g. "I-A", "II-C"
+  tier: 'top' | 'heart' | 'base';
+  layerAffinity: 'L1' | 'L2' | 'L3' | 'L4' | 'AURA';
+  category: string;
+  thermoY: number; // -1.0 .. +1.0 (Лето/Холод <-> Зима/Тепло)
+  distanceX: number; // -1.0 .. +1.0 (Барьер <-> Сближение)
+  massWeight: number; // 0.1 .. 1.0 (Плотность)
+  resonantFabrics: string[];
+  clashFabrics?: string[];
+  vibeDescription: string;
+}
+
+export interface NoteFabricResonancePair {
+  note: PeriodicNoteElement;
+  layer: LayerType | 'AURA';
+  itemCategory: string;
+  fabric: string;
+  synergyLevel: 'EXCELLENT' | 'GOOD' | 'NEUTRAL';
+  reason: string;
+}
+
+export interface NoteClashWarning {
+  noteName: string;
+  layer: LayerType;
+  fabric: string;
+  warning: string;
+}
+
+export interface NoteEngineAnalysis {
+  resonantPairs: NoteFabricResonancePair[];
+  clashes: NoteClashWarning[];
+  resonanceScore: number; // 0..100
+  derivedCoords: { x: number; y: number };
+  baseAnchorVerdict: string;
+  heartSocialVerdict: string;
+  topAuraVerdict: string;
+}

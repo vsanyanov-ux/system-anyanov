@@ -1,6 +1,16 @@
 import React from 'react';
-import { PerfumeItem, SolfeggioAnalysis } from '../types';
-import { Sparkles, Sliders, AlertTriangle, CheckCircle2, Layers, ArrowRight, ShieldCheck, Compass } from 'lucide-react';
+import { PerfumeItem, SolfeggioAnalysis, NoteEngineAnalysis } from '../types';
+import { 
+  Sparkles, 
+  Sliders, 
+  AlertTriangle, 
+  CheckCircle2, 
+  Layers, 
+  ArrowRight, 
+  ShieldCheck, 
+  Compass,
+  Atom
+} from 'lucide-react';
 import { AXIS_LABELS } from '../engine/styleSolfeggio';
 
 interface FragranceMatchCardProps {
@@ -15,6 +25,8 @@ interface FragranceMatchCardProps {
   onToggleCatalogMode: () => void;
   onOpenShelfModal: () => void;
   onSelectPerfume?: (perfume: PerfumeItem) => void;
+  notesEngine?: NoteEngineAnalysis;
+  onOpenPeriodicTable?: () => void;
 }
 
 export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
@@ -29,6 +41,8 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
   onToggleCatalogMode,
   onOpenShelfModal,
   onSelectPerfume,
+  notesEngine,
+  onOpenPeriodicTable,
 }) => {
   return (
     <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-xl relative overflow-hidden">
@@ -49,7 +63,7 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
               onClick={() => {
                 if (isCatalogMode) onToggleCatalogMode();
               }}
-              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
                 !isCatalogMode
                   ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30'
                   : 'text-slate-400 hover:text-slate-200'
@@ -63,7 +77,7 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
               onClick={() => {
                 if (!isCatalogMode) onToggleCatalogMode();
               }}
-              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
                 isCatalogMode
                   ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30'
                   : 'text-slate-400 hover:text-slate-200'
@@ -78,7 +92,7 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
           {/* Edit Shelf Button */}
           <button
             onClick={onOpenShelfModal}
-            className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-mono transition-colors flex items-center gap-1"
+            className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-mono transition-colors flex items-center gap-1 cursor-pointer"
             title="Настроить состав флаконов на полке"
           >
             <span>Настроить</span>
@@ -214,7 +228,7 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
               {onSelectPerfume && (
                 <button
                   onClick={() => onSelectPerfume(idealCatalogMatch)}
-                  className="self-start mt-0.5 text-[10px] font-mono text-amber-300 hover:text-amber-200 underline flex items-center gap-1"
+                  className="self-start mt-0.5 text-[10px] font-mono text-amber-300 hover:text-amber-200 underline flex items-center gap-1 cursor-pointer"
                 >
                   Посмотреть эталон: {idealCatalogMatch.brand} {idealCatalogMatch.name}
                   <ArrowRight className="w-3 h-3" />
@@ -224,6 +238,101 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
           )}
         </div>
       </div>
+
+      {/* НОВЫЙ БЛОК: Двигатель нот (Периодическая система нот) */}
+      {notesEngine && (
+        <div className="border-t border-slate-800/80 pt-3 flex flex-col gap-2.5 z-10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Atom className="w-4 h-4 text-indigo-400" />
+              <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                Двигатель нот (Периодическая система)
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                Резонанс: {notesEngine.resonanceScore}%
+              </span>
+            </div>
+
+            {onOpenPeriodicTable && (
+              <button
+                onClick={onOpenPeriodicTable}
+                className="text-[11px] font-mono text-indigo-400 hover:text-indigo-300 underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>Таблица элементов</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Layer-to-Note Breakdown */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/90 space-y-1">
+              <span className="text-[10px] font-mono font-bold text-indigo-400 block uppercase">
+                Базовый якорь (L4/L1)
+              </span>
+              <p className="text-[11px] text-slate-300 leading-snug">
+                {notesEngine.baseAnchorVerdict}
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/90 space-y-1">
+              <span className="text-[10px] font-mono font-bold text-amber-400 block uppercase">
+                Социальное сердце (L3)
+              </span>
+              <p className="text-[11px] text-slate-300 leading-snug">
+                {notesEngine.heartSocialVerdict}
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/90 space-y-1">
+              <span className="text-[10px] font-mono font-bold text-sky-400 block uppercase">
+                Атмосферная аура
+              </span>
+              <p className="text-[11px] text-slate-300 leading-snug">
+                {notesEngine.topAuraVerdict}
+              </p>
+            </div>
+          </div>
+
+          {/* Resonant Pairs Badges */}
+          {notesEngine.resonantPairs.length > 0 ? (
+            <div className="p-2 rounded-xl bg-emerald-950/20 border border-emerald-500/30 flex flex-wrap items-center gap-1.5 text-[10px] font-mono">
+              <span className="text-emerald-400 font-bold flex items-center gap-1 mr-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                Связки нота ⟷ ткань:
+              </span>
+              {notesEngine.resonantPairs.map((pair, idx) => (
+                <span
+                  key={idx}
+                  className="px-2 py-0.5 rounded-md bg-emerald-950/70 text-emerald-200 border border-emerald-700/60"
+                  title={pair.reason}
+                >
+                  {pair.note.name} ({pair.note.symbol}) ⟷ {pair.layer} {pair.fabric}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div className="p-2 rounded-xl bg-slate-950 border border-slate-800 text-[10px] text-slate-400 font-mono">
+              Нейтральный баланс: ноты аромата не создают конфликта с фактурами слоев.
+            </div>
+          )}
+
+          {/* Clashes Warning (if any) */}
+          {notesEngine.clashes.length > 0 && (
+            <div className="p-2 rounded-xl bg-rose-950/30 border border-rose-500/40 text-[11px] text-rose-200 space-y-1">
+              <strong className="text-rose-400 text-[10px] font-mono uppercase block flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
+                Предупреждение нотного двигателя:
+              </strong>
+              {notesEngine.clashes.map((c, i) => (
+                <div key={i} className="text-[10px] text-rose-100">
+                  • {c.warning}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 6D Solfeggio Radar Breakdown & Clashes */}
       <div className="border-t border-slate-800/80 pt-3 flex flex-col gap-2">

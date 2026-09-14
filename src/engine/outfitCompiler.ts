@@ -1,16 +1,21 @@
 import { AnyanovCoordinates, OutfitStack, WardrobeItem } from '../types';
 import { WARDROBE_ITEMS } from '../data/wardrobeItems';
+import { GOLDEN_WARDROBE_21 } from '../data/golden21';
 
-export function compileAnyanovOutfit(coords: AnyanovCoordinates): {
+export function compileAnyanovOutfit(
+  coords: AnyanovCoordinates,
+  is21Mode: boolean = false
+): {
   stack: OutfitStack;
   rulesApplied: string[];
 } {
   const { socialX, thermoY, formalIndex, temperatureC } = coords;
   const rulesApplied: string[] = [];
+  const basePool = is21Mode ? GOLDEN_WARDROBE_21 : WARDROBE_ITEMS;
 
   // Фильтруем предметы по температуре и индексу формальности
   const suitableItems = (layer: 'L4' | 'L3' | 'L2' | 'L1') => {
-    return WARDROBE_ITEMS.filter((item) => {
+    return basePool.filter((item) => {
       if (item.layer !== layer) return false;
       // Допуск по температуре
       const tempFit = temperatureC >= item.minTemp - 3 && temperatureC <= item.maxTemp + 3;
@@ -56,7 +61,7 @@ export function compileAnyanovOutfit(coords: AnyanovCoordinates): {
 
   const pickBest = (layer: 'L4' | 'L3' | 'L2' | 'L1'): WardrobeItem => {
     const list = suitableItems(layer);
-    const pool = list.length > 0 ? list : WARDROBE_ITEMS.filter(i => i.layer === layer);
+    const pool = list.length > 0 ? list : basePool.filter(i => i.layer === layer);
     const sorted = [...pool].sort((a, b) => scoreItem(b) - scoreItem(a));
     return sorted[0];
   };
@@ -77,6 +82,9 @@ export function compileAnyanovOutfit(coords: AnyanovCoordinates): {
   }
 
   // Аудит правил гармонии Аньянова:
+  if (is21Mode) {
+    rulesApplied.push('Канон 21: образ скомпилирован строго из 21 эталонного предмета капсулы.');
+  }
   if (formalIndex === 3) {
     rulesApplied.push('Правило строгого этикета: синхронизация линии плеча пиджака и жесткого воротника.');
   }

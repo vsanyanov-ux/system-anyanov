@@ -16,8 +16,8 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     id: 'prada-lhomme',
     name: "L'Homme",
     brand: 'Prada',
-    xCoord: -0.65,
-    yCoord: 0.85,
+    xCoord: -0.35,
+    yCoord: 0.75,
     diffusion: 'Умеренная',
     dominantVibe: 'Выглаженная сорочка, стерильная чистота, ледяная дистанция',
     bestOccasion: 'Офис, переговоры, деловые встречи, дипломатия',
@@ -47,11 +47,62 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     }
   },
   {
+    id: 'dior-eau-sauvage',
+    name: 'Eau Sauvage (1966)',
+    brand: 'Dior',
+    xCoord: -0.70,
+    yCoord: 0.75,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Исторический гедион, розмарин, ледяной лимон, аристократичный шипр',
+    bestOccasion: 'Летний протокол, деловой бранч, академическая среда, открытые веранды',
+    whyFitsOutfit: 'Шедевр Эдмона Рудницка: прозрачный цитрусово-гедионовый холод великолепно звучит с блейзером Hopsack и белой сорочкой.',
+    colorTheme: 'from-lime-500 to-emerald-700',
+    pyramid: {
+      top: ['Лимон', 'Бергамот', 'Базилик', 'Розмарин', 'Тмин'],
+      heart: ['Жасмин', 'Кориандр', 'Пачули', 'Гвоздика', 'Корень ириса'],
+      base: ['Дубовый мох', 'Ветивер', 'Мускус', 'Амбра']
+    }
+  },
+  {
+    id: 'paco-rabanne-pour-homme',
+    name: 'Pour Homme (1973)',
+    brand: 'Paco Rabanne',
+    xCoord: -0.70,
+    yCoord: 0.35,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Зеленый мыльный барбершоп 70-х, шалфей, лаванда, строгий мох',
+    bestOccasion: 'Офис, переговоры, классический деловой дресс-код, ретро-стиль',
+    whyFitsOutfit: 'Архетип винтажного фужера: задает бескомпромиссную субординацию под оксфордскую рубашку и фактурные фланелевые брюки.',
+    colorTheme: 'from-emerald-700 to-green-900',
+    pyramid: {
+      top: ['Розмарин', 'Мускатный шалфей', 'Розовое дерево'],
+      heart: ['Лаванда', 'Герань', 'Бобы тонка'],
+      base: ['Дубовый мох', 'Мед', 'Мускус', 'Амбра']
+    }
+  },
+  {
+    id: 'ysl-lhomme',
+    name: "L'Homme (2006)",
+    brand: 'Yves Saint Laurent',
+    xCoord: -0.35,
+    yCoord: 0.35,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Свежий имбирь, белый перец, озоновый кедр, деликатная дипломатия',
+    bestOccasion: 'Офис, переговоры тет-а-тет, собеседование, весенний день',
+    whyFitsOutfit: 'Эталон безопасного политкорректного стиля: имбирь и кедр гармонируют с голубой рубашкой Oxford и бежевыми чинос.',
+    colorTheme: 'from-amber-400 to-stone-600',
+    pyramid: {
+      top: ['Имбирь', 'Бергамот', 'Лимон'],
+      heart: ['Специи', 'Белый перец', 'Лист фиалки', 'Базилик'],
+      base: ['Бобы тонка', 'Кедр', 'Таитянский ветивер']
+    }
+  },
+  {
     id: 'terre-dhermes',
     name: "Terre d'Hermès (EDT)",
     brand: 'Hermès',
     xCoord: -0.70,
-    yCoord: 0.25,
+    yCoord: -0.35,
     diffusion: 'Шлейфовая',
     dominantVibe: 'Горький апельсин, кремень, строгий ветивер, зрелый авторитет',
     bestOccasion: 'Совет директоров, ключевые переговоры, деловая среда',
@@ -67,8 +118,8 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     id: 'chanel-platinum-egoiste',
     name: 'Platinum Égoïste',
     brand: 'Chanel',
-    xCoord: -0.85,
-    yCoord: 0.65,
+    xCoord: -0.95,
+    yCoord: 0.00,
     diffusion: 'Шлейфовая',
     dominantVibe: 'Холодный металл, розмарин, прохладная лаванда, протокольный замок',
     bestOccasion: 'Протокольные мероприятия, руководство, субординация',
@@ -101,8 +152,8 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     id: 'guy-laroche-drakkar-noir',
     name: 'Drakkar Noir',
     brand: 'Guy Laroche',
-    xCoord: -0.80,
-    yCoord: 0.55,
+    xCoord: -0.35,
+    yCoord: -0.35,
     diffusion: 'Ударная',
     dominantVibe: 'Горький мох, еловая смола, кожа, олдскульная дисциплина',
     bestOccasion: 'Традиционный бизнес, строгие правила, ретро-стиль',
@@ -205,20 +256,105 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
   // X: [0.00 ... +1.00], Y: [0.00 ... +1.00]
   // =========================================================================
   {
+    id: '4711-eau-de-cologne',
+    name: 'Original Eau de Cologne (1792)',
+    brand: '4711',
+    xCoord: 0.00,
+    yCoord: 0.90,
+    diffusion: 'Интимная',
+    dominantVibe: 'Абсолютный зенит летучести: искрящийся бергамот, нероли, петитгрейн, утренняя чистота',
+    bestOccasion: 'Летний полдень, после душа, курорт, максимальная жара +30°C',
+    whyFitsOutfit: 'Исторический родоначальник одеколонов. Воздушный лен и расстегнутый ворот рубашки пропускают летящие цитрусовые молекулы.',
+    colorTheme: 'from-emerald-400 to-teal-600',
+    pyramid: {
+      top: ['Лимон', 'Бергамот', 'Апельсин'],
+      heart: ['Лаванда', 'Розмарин'],
+      base: ['Нероли', 'Петитгрейн']
+    }
+  },
+  {
     id: 'bleu-de-chanel-edp',
-    name: 'Bleu de Chanel Eau de Parfum',
+    name: 'Bleu de Chanel',
     brand: 'Chanel',
-    xCoord: 0.15,
-    yCoord: 0.20,
+    xCoord: 0.00,
+    yCoord: 0.00,
     diffusion: 'Шлейфовая',
-    dominantVibe: 'Абсолютная точка равновесия, безупречный стиль, универсальность',
+    dominantVibe: 'Абсолютная точка равновесия, нулевая координата баланса (0,0)',
     bestOccasion: 'Офис, переговоры, свидание, город — универсал 24/7',
-    whyFitsOutfit: 'Абсолютный хамелеон под темно-синий блейзер с белой футболкой или оксфордской рубашкой.',
+    whyFitsOutfit: 'Абсолютный камертон системы под темно-синий блейзер Hopsack, бежевые чинос и оксфордскую рубашку.',
     colorTheme: 'from-blue-700 to-indigo-950',
     pyramid: {
       top: ['Грейпфрут', 'Лимон', 'Мята', 'Розовый перец'],
       heart: ['Имбирь', 'Мускатный орех', 'Жасмин', 'Iso E Super'],
       base: ['Ладан', 'Ветивер', 'Кедр', 'Сандал', 'Пачули']
+    }
+  },
+  {
+    id: 'versace-man-eau-fraiche',
+    name: 'Man Eau Fraîche (2006)',
+    brand: 'Versace',
+    xCoord: 0.35,
+    yCoord: 0.75,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Искристая карамбола, белый лимон, лазурная вода, беззаботный курорт',
+    bestOccasion: 'Жара +25°C..+35°C, открытая веранда, пляж, выходной день',
+    whyFitsOutfit: 'Ультралегкая свежесть, идеально гармонирующая с темно-синим поло пике и светлыми чинос.',
+    colorTheme: 'from-cyan-300 to-blue-400',
+    pyramid: {
+      top: ['Карамбола', 'Белый лимон', 'Бергамот', 'Кардамон'],
+      heart: ['Кедр', 'Эстрагон', 'Шалфей', 'Черный перец'],
+      base: ['Белый мускус', 'Серая амбра', 'Древесные ноты', 'Шафран']
+    }
+  },
+  {
+    id: 'acqua-di-gio',
+    name: 'Acqua di Giò (1996)',
+    brand: 'Giorgio Armani',
+    xCoord: 0.70,
+    yCoord: 0.75,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Эталон морской акватики, калон, жасмин, морской бриз, открытость миру',
+    bestOccasion: 'Летний отдых, морская набережная, летнее кафе, легкий офис',
+    whyFitsOutfit: 'Бессмертная акватика Альберто Морильяса: безупречна с белоснежной льняной рубашкой и лоферами.',
+    colorTheme: 'from-sky-400 to-cyan-600',
+    pyramid: {
+      top: ['Лайм', 'Лимон', 'Бергамот', 'Жасмин', 'Апельсин', 'Мандарин'],
+      heart: ['Морские ноты', 'Жасмин', 'Калон', 'Персик', 'Фрезия', 'Розмарин'],
+      base: ['Белый мускус', 'Кедр', 'Дубовый мох', 'Пачули', 'Амбра']
+    }
+  },
+  {
+    id: 'dior-sauvage',
+    name: 'Sauvage (2015)',
+    brand: 'Dior',
+    xCoord: 0.35,
+    yCoord: 0.35,
+    diffusion: 'Ударная',
+    dominantVibe: 'Взрывной амброксан, калабрийский бергамот, сычуаньский перец, мега-проекция',
+    bestOccasion: 'Повседневный город, свидание, вечерняя встреча, клуб',
+    whyFitsOutfit: 'Амброксановая революция: подчеркивает фактуру плотной белой футболки и темного японского селвиджа.',
+    colorTheme: 'from-blue-600 to-indigo-900',
+    pyramid: {
+      top: ['Калабрийский бергамот', 'Перец'],
+      heart: ['Сычуаньский перец', 'Лаванда', 'Розовый перец', 'Ветивер', 'Пачули'],
+      base: ['Амброксан', 'Кедр', 'Лабданум']
+    }
+  },
+  {
+    id: 'dior-homme-cologne',
+    name: 'Dior Homme Cologne (2013)',
+    brand: 'Dior',
+    xCoord: 0.70,
+    yCoord: 0.35,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Ледяной бергамотовый сорбет, цветы грейпфрута, безупречный белый хлопок',
+    bestOccasion: 'Летний день, зной, офис, спорт, поездка на уикенд',
+    whyFitsOutfit: 'Запах чистейшей белой футболки из плотного хлопка, сохнущей под полуденным солнцем.',
+    colorTheme: 'from-sky-200 to-blue-300',
+    pyramid: {
+      top: ['Калабрийский бергамот'],
+      heart: ['Цветок грейпфрута'],
+      base: ['Белый мускус']
     }
   },
   {
@@ -239,66 +375,15 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     }
   },
   {
-    id: 'versace-man-eau-fraiche',
-    name: 'Man Eau Fraîche',
-    brand: 'Versace',
-    xCoord: 0.65,
-    yCoord: 0.85,
-    diffusion: 'Умеренная',
-    dominantVibe: 'Искристая карамбола, белый лимон, лазурная вода, беззаботный курорт',
-    bestOccasion: 'Жара +28°C..+35°C, пляж, яхта, открытые террасы',
-    whyFitsOutfit: 'Ультралегкая свежесть, идеально гармонирующая с белым льном и шортами.',
-    colorTheme: 'from-cyan-300 to-blue-400',
-    pyramid: {
-      top: ['Карамбола', 'Белый лимон', 'Бергамот', 'Кардамон'],
-      heart: ['Кедр', 'Эстрагон', 'Шалфей', 'Черный перец'],
-      base: ['Белый мускус', 'Серая амбра', 'Древесные ноты', 'Шафран']
-    }
-  },
-  {
-    id: 'versace-pour-homme',
-    name: 'Pour Homme',
-    brand: 'Versace',
-    xCoord: 0.25,
-    yCoord: 0.70,
-    diffusion: 'Умеренная',
-    dominantVibe: 'Средиземноморский нероли, лимон, чистый воздух, непринужденный шик',
-    bestOccasion: 'Городской день, бранч, легкий офис, прогулка',
-    whyFitsOutfit: 'Итальянская классика: чистота и мягкость под голубую рубашку и бежевые брюки.',
-    colorTheme: 'from-sky-300 to-indigo-500',
-    pyramid: {
-      top: ['Лимон', 'Нероли', 'Бергамот', 'Майская роза'],
-      heart: ['Гиацинт', 'Мускатный шалфей', 'Кедр', 'Герань'],
-      base: ['Бобы тонка', 'Мускус', 'Амбра']
-    }
-  },
-  {
-    id: 'dior-sauvage',
-    name: 'Sauvage (EDT)',
-    brand: 'Dior',
-    xCoord: 0.70,
-    yCoord: 0.40,
-    diffusion: 'Ударная',
-    dominantVibe: 'Взрывной амброксан, калабрийский бергамот, сычуаньский перец, сверхмагнетизм',
-    bestOccasion: 'Повседневный город, свидание, вечерняя встреча, клуб',
-    whyFitsOutfit: 'Сверхдиффузный шлейф. Превосходен под кожаную куртку, темные чиносы и сникеры.',
-    colorTheme: 'from-blue-600 to-indigo-900',
-    pyramid: {
-      top: ['Калабрийский бергамот', 'Перец'],
-      heart: ['Сычуаньский перец', 'Лаванда', 'Розовый перец', 'Ветивер', 'Пачули'],
-      base: ['Амброксан', 'Кедр', 'Лабданум']
-    }
-  },
-  {
     id: 'creed-aventus',
-    name: 'Aventus',
+    name: 'Aventus (2010)',
     brand: 'Creed',
     xCoord: 0.35,
-    yCoord: 0.45,
+    yCoord: -0.35,
     diffusion: 'Шлейфовая',
-    dominantVibe: 'Копченый ананас, береза, черная смородина, харизма триумфатора',
+    dominantVibe: 'Копченый ананас, березовый деготь, черная смородина, харизма триумфатора',
     bestOccasion: 'Статусный день, важные встречи, вечерний выход',
-    whyFitsOutfit: 'Король ниши. Придает уверенность блейзеру, хлопковому поло или костюму без галстука.',
+    whyFitsOutfit: 'Король нео-шипров. Придает уверенность блейзеру Hopsack с сорочкой и темно-синим денимом.',
     colorTheme: 'from-neutral-700 to-amber-700',
     pyramid: {
       top: ['Ананас', 'Бергамот', 'Черная смородина', 'Яблоко'],
@@ -306,6 +391,7 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
       base: ['Мускус', 'Дубовый мох', 'Серая амбра', 'Ваниль']
     }
   },
+
   {
     id: 'chanel-allure-homme-sport',
     name: 'Allure Homme Sport',
@@ -415,14 +501,14 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
   // =========================================================================
   {
     id: 'tom-ford-tuscan-leather',
-    name: 'Tuscan Leather',
+    name: 'Tuscan Leather (2007)',
     brand: 'Tom Ford',
-    xCoord: -0.85,
-    yCoord: -0.65,
+    xCoord: 0.00,
+    yCoord: -0.85,
     diffusion: 'Ударная',
-    dominantVibe: 'Дорогая черная кожа, малина, тяжелый дымный уд, несокрушимый статус',
-    bestOccasion: 'Вечерние приемы, закрытые клубы, зимний светский раут',
-    whyFitsOutfit: 'Органично срастается с тяжелым шерстяным пальто, кашемиром и гладкими кожаными дерби.',
+    dominantVibe: 'Абсолютный надир плотности: тяжелая дубленая кожа, дикая малина, дымный олибанум',
+    bestOccasion: 'Зимняя ночь, закрытый сигарный клуб, монументальный вечерний выход',
+    whyFitsOutfit: 'Молекулярный якорь максимальной массы. Требует предельного веса шерстяного пальто 550 г/м² и кашемировой водолазки.',
     colorTheme: 'from-neutral-800 to-amber-950',
     pyramid: {
       top: ['Малина', 'Шафран', 'Тимьян'],
@@ -466,19 +552,36 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
   },
   {
     id: 'dior-homme-intense',
-    name: 'Dior Homme Intense',
+    name: 'Dior Homme Intense (2007)',
     brand: 'Dior',
-    xCoord: -0.45,
-    yCoord: -0.70,
+    xCoord: -0.70,
+    yCoord: -0.75,
     diffusion: 'Шлейфовая',
-    dominantVibe: 'Пудровый тосканский ирис, амбретта, какао, благородный смокинг',
-    bestOccasion: 'Театр, премьеры, вечерние торжества, приватная ложа',
-    whyFitsOutfit: 'Словно сшит под бархатный смокинг или темно-синий вечерний костюм из тонкой шерсти.',
+    dominantVibe: 'Пудровый тосканский ирис, семена амбретты, ликерное какао, закрытый смокинг',
+    bestOccasion: 'Театр, вечерний прием, опера, приватный зимний ужин',
+    whyFitsOutfit: 'Кинематографичный бархатный ирис: идеален под пальто цвета кэмел с черной кашемировой водолазкой.',
     colorTheme: 'from-amber-800 to-slate-950',
     pyramid: {
       top: ['Лаванда'],
       heart: ['Ирис', 'Амбретта', 'Груша'],
       base: ['Вирджинский кедр', 'Ветивер']
+    }
+  },
+  {
+    id: 'versace-oud-noir',
+    name: 'Versace Pour Homme Oud Noir (2013)',
+    brand: 'Versace',
+    xCoord: -0.35,
+    yCoord: -0.75,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Горький апельсин, черный перец, смолистый уд, кожаная мантия',
+    bestOccasion: 'Вечерние деловые переговоры, осенний статус, приватный клуб',
+    whyFitsOutfit: 'Пряно-древесный нуар: подчеркивает геометрию графитового пальто и шерстяных костюмных брюк.',
+    colorTheme: 'from-stone-800 to-neutral-950',
+    pyramid: {
+      top: ['Горький апельсин', 'Нероли', 'Черный перец'],
+      heart: ['Кардамон', 'Шафран', 'Олибанум'],
+      base: ['Уд', 'Пачули', 'Leatherwood']
     }
   },
   {
@@ -607,14 +710,14 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
   },
   {
     id: 'versace-eros',
-    name: 'Eros (EDT/EDP)',
+    name: 'Eros (2012)',
     brand: 'Versace',
-    xCoord: 0.85,
-    yCoord: -0.20,
+    xCoord: 0.70,
+    yCoord: -0.35,
     diffusion: 'Ударная',
     dominantVibe: 'Зеленое яблоко, мята, бобы тонка, амброксан, клубный магнетизм',
-    bestOccasion: 'Ночной клуб, вечеринка, бар, свидание',
-    whyFitsOutfit: 'Смелый, соблазняющий и яркий. Подходит под приталенную рубашку с расстегнутым воротом.',
+    bestOccasion: 'Ночной клуб, вечеринка, свидание, вечерний выход в город',
+    whyFitsOutfit: 'Яркий, соблазняющий и экспрессивный: играет на контрасте с шоколадной замшевой курткой и светлыми чинос.',
     colorTheme: 'from-teal-600 to-cyan-800',
     pyramid: {
       top: ['Мята', 'Зеленое яблоко', 'Лимон'],
@@ -623,15 +726,32 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     }
   },
   {
+    id: 'jpg-le-male',
+    name: 'Le Male (1995)',
+    brand: 'Jean Paul Gaultier',
+    xCoord: 0.35,
+    yCoord: -0.75,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Культовая чувственность Франсиса Кюркджана: лаванда, мята, корица, пудровая теплая ваниль',
+    bestOccasion: 'Осенне-зимний вечер, свидание тет-а-тет, камерная встреча, бар',
+    whyFitsOutfit: 'Тактильное тепло и эмпатия: шелковистая ваниль и лаванда вибрируют в унисон с тонким серым мериносом и фланелью.',
+    colorTheme: 'from-teal-500 to-indigo-700',
+    pyramid: {
+      top: ['Лаванда', 'Мята', 'Кардамон', 'Бергамот', 'Артемизия'],
+      heart: ['Корица', 'Цветок апельсина', 'Тмин'],
+      base: ['Ваниль', 'Бобы тонка', 'Амбра', 'Сандал', 'Кедр']
+    }
+  },
+  {
     id: 'lattafa-khamrah',
-    name: 'Khamrah',
+    name: 'Khamrah (2022)',
     brand: 'Lattafa',
-    xCoord: 0.85,
-    yCoord: -0.85,
+    xCoord: 0.70,
+    yCoord: -0.75,
     diffusion: 'Ударная',
     dominantVibe: 'Финики, пралине, корица, ваниль, абсолютный десертный соблазн',
     bestOccasion: 'Зимний вечер, свидание у камина, ресторан, декабрьские праздники',
-    whyFitsOutfit: 'Гурманская теплая буря. Прекрасно сочетается с фактурным вязаным трикотажем и шарфом.',
+    whyFitsOutfit: 'Гурманская теплая буря. Прекрасно сочетается с пальто цвета кэмел, кашемиром и согревающими оттенками.',
     colorTheme: 'from-amber-600 to-yellow-900',
     pyramid: {
       top: ['Корица', 'Мускатный орех', 'Бергамот'],
@@ -675,14 +795,14 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
   },
   {
     id: 'jpg-ultra-male',
-    name: 'Ultra Male',
+    name: 'Ultra Male (2015)',
     brand: 'Jean Paul Gaultier',
-    xCoord: 0.90,
-    yCoord: -0.35,
+    xCoord: 0.95,
+    yCoord: 0.00,
     diffusion: 'Ударная',
-    dominantVibe: 'Черная ваниль, сочная груша, корица, мята, взрывной клубный шлейф',
-    bestOccasion: 'Клубная ночь, масштабная вечеринка, свидание',
-    whyFitsOutfit: 'Сокращает дистанцию до касания. Под облегающий стильный трикотаж и бомбер.',
+    dominantVibe: 'Восточный полюс максимального контакта: черная ваниль, сочная груша, корица, афродизиак',
+    bestOccasion: 'Клубная ночь, вечеринка, свидание, флирт',
+    whyFitsOutfit: 'Сокращает дистанцию до физического касания. Идеально под шоколадную замшевую куртку и белую футболку.',
     colorTheme: 'from-blue-700 to-indigo-900',
     pyramid: {
       top: ['Груша', 'Лаванда', 'Мята', 'Бергамот', 'Лимон'],
@@ -762,6 +882,40 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
 
 // Готовые капсульные пресеты для быстрого старта пользователя
 export const SHELF_PRESETS: ShelfPreset[] = [
+  {
+    id: 'golden-21',
+    name: 'Золотой Канон 21 (Периодическая таблица)',
+    description: 'Полная периодическая матрица Аньянова: 1 камертон в центре (0,0) + 4 осевых полюса + 16 квадрантных эталонов.',
+    perfumeIds: [
+      // Центр (0, 0)
+      'bleu-de-chanel-edp',
+      // Осевые полюса (Север, Юг, Запад, Восток)
+      '4711-eau-de-cologne',
+      'tom-ford-tuscan-leather',
+      'chanel-platinum-egoiste',
+      'jpg-ultra-male',
+      // Квадрант I: Открытая свежесть (+X, +Y)
+      'versace-man-eau-fraiche',
+      'acqua-di-gio',
+      'dior-sauvage',
+      'dior-homme-cologne',
+      // Квадрант II: Холодный контроль (-X, +Y)
+      'dior-eau-sauvage',
+      'prada-lhomme',
+      'paco-rabanne-pour-homme',
+      'ysl-lhomme',
+      // Квадрант III: Темный статус (-X, -Y)
+      'terre-dhermes',
+      'guy-laroche-drakkar-noir',
+      'dior-homme-intense',
+      'versace-oud-noir',
+      // Квадрант IV: Тактильное тепло (+X, -Y)
+      'creed-aventus',
+      'versace-eros',
+      'jpg-le-male',
+      'lattafa-khamrah',
+    ],
+  },
   {
     id: 'gentleman-top-5',
     name: 'Базовый джентльмен (Топ-5)',
