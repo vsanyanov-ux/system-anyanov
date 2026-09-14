@@ -1,40 +1,118 @@
 import React from 'react';
-import { PerfumeItem } from '../types';
-import { Sparkles } from 'lucide-react';
+import { PerfumeItem, SolfeggioAnalysis } from '../types';
+import { Sparkles, Sliders, AlertTriangle, CheckCircle2, Layers, ArrowRight, ShieldCheck, Compass } from 'lucide-react';
+import { AXIS_LABELS } from '../engine/styleSolfeggio';
 
 interface FragranceMatchCardProps {
   perfume: PerfumeItem;
-  synergyVerdict: string;
-  compatibilityScore: number;
+  solfeggio: SolfeggioAnalysis;
+  isFromShelf: boolean;
+  totalShelfCount: number;
+  hasWardrobeGap: boolean;
+  gapAdvice?: string;
+  idealCatalogMatch?: PerfumeItem;
+  isCatalogMode: boolean;
+  onToggleCatalogMode: () => void;
+  onOpenShelfModal: () => void;
+  onSelectPerfume?: (perfume: PerfumeItem) => void;
 }
 
 export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
   perfume,
-  synergyVerdict,
-  compatibilityScore,
+  solfeggio,
+  isFromShelf,
+  totalShelfCount,
+  hasWardrobeGap,
+  gapAdvice,
+  idealCatalogMatch,
+  isCatalogMode,
+  onToggleCatalogMode,
+  onOpenShelfModal,
+  onSelectPerfume,
 }) => {
   return (
     <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-xl relative overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 z-10">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-800 pb-3 z-10">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <h2 className="text-sm font-bold text-white uppercase tracking-wider">
             Ольфакторный дуэт (Fragrance Mirror)
           </h2>
         </div>
-        <span className="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30 flex items-center gap-1 font-bold">
-          Синергия: {compatibilityScore}%
-        </span>
+
+        {/* Shelf Action Buttons */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Mode Switcher: Shelf vs Global Catalog */}
+          <div className="flex items-center bg-slate-950 p-0.5 rounded-xl border border-slate-800 text-[11px] font-mono">
+            <button
+              onClick={() => {
+                if (isCatalogMode) onToggleCatalogMode();
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                !isCatalogMode
+                  ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Искать лучший парфюм из моей личной коллекции"
+            >
+              <Layers className="w-3 h-3" />
+              <span>Моя полка ({totalShelfCount})</span>
+            </button>
+            <button
+              onClick={() => {
+                if (!isCatalogMode) onToggleCatalogMode();
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1.5 ${
+                isCatalogMode
+                  ? 'bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Показать идеальный эталон из всей мировой базы"
+            >
+              <Compass className="w-3 h-3" />
+              <span>Каталог</span>
+            </button>
+          </div>
+
+          {/* Edit Shelf Button */}
+          <button
+            onClick={onOpenShelfModal}
+            className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-mono transition-colors flex items-center gap-1"
+            title="Настроить состав флаконов на полке"
+          >
+            <span>Настроить</span>
+          </button>
+
+          {/* Solfeggio state badges */}
+          <span className={`text-[11px] font-mono px-2 py-1 rounded-lg border flex items-center gap-1 font-bold ${solfeggio.badgeColor}`}>
+            {solfeggio.stateLabel}
+          </span>
+        </div>
       </div>
 
       {/* Main Perfume Presentation */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center z-10">
         {/* Left: Bottle Vector Illustration (4 cols) */}
-        <div className="sm:col-span-4 flex flex-col items-center justify-center bg-slate-950/70 rounded-xl border border-slate-800/80 p-4 min-h-[220px]">
+        <div className="sm:col-span-4 flex flex-col items-center justify-center bg-slate-950/70 rounded-xl border border-slate-800/80 p-4 min-h-[220px] relative">
+          {/* Badge: Shelf vs Catalog */}
+          <div className="absolute top-2.5 left-2.5">
+            {isFromShelf ? (
+              <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 shadow-sm">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                С вашей полки
+              </span>
+            ) : (
+              <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1">
+                <Compass className="w-3 h-3 text-sky-400" />
+                Эталон каталога
+              </span>
+            )}
+          </div>
+
           <svg
             viewBox="0 0 100 160"
-            className="w-24 h-36 drop-shadow-[0_8px_16px_rgba(245,158,11,0.2)]"
+            className="w-24 h-36 drop-shadow-[0_8px_16px_rgba(245,158,11,0.2)] mt-2"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -64,17 +142,19 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
               opacity={0.75}
             />
             {/* Label plate */}
-            <rect x="28" y="78" width="44" height="40" rx="2" fill="#020617" stroke="#f59e0b" strokeWidth="1" />
-            <text x="50" y="94" fill="#ffffff" fontSize="6" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
+            <rect x="26" y="78" width="48" height="40" rx="2" fill="#020617" stroke="#f59e0b" strokeWidth="1" />
+            <text x="50" y="93" fill="#ffffff" fontSize="5.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
               {perfume.brand.toUpperCase()}
             </text>
-            <text x="50" y="105" fill="#f59e0b" fontSize="7" fontWeight="900" textAnchor="middle" fontFamily="serif">
-              {perfume.name.length > 12 ? perfume.name.slice(0, 11) + '..' : perfume.name}
+            <text x="50" y="105" fill="#f59e0b" fontSize="6.5" fontWeight="900" textAnchor="middle" fontFamily="serif">
+              {perfume.name.length > 14 ? perfume.name.slice(0, 13) + '..' : perfume.name}
             </text>
           </svg>
-          <span className="text-[10px] font-mono text-slate-400 mt-2">
-            Диффузия: {perfume.diffusion}
-          </span>
+          <div className="flex items-center gap-2 mt-2 font-mono text-[10px] text-slate-400">
+            <span>Диффузия: <strong className="text-slate-200">{perfume.diffusion}</strong></span>
+            <span>•</span>
+            <span>Коорд: <strong className="text-amber-400">{perfume.xCoord > 0 ? `+${perfume.xCoord}` : perfume.xCoord}, {perfume.yCoord > 0 ? `+${perfume.yCoord}` : perfume.yCoord}</strong></span>
+          </div>
         </div>
 
         {/* Right: Perfume Details & Why fits (8 cols) */}
@@ -109,12 +189,95 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
 
           {/* Synergy with Outfit */}
           <div className="p-2.5 rounded-xl bg-amber-950/20 border border-amber-500/30 text-xs text-amber-200/90 leading-relaxed">
-            <strong className="text-amber-300 block mb-0.5 text-[11px] uppercase tracking-wider font-mono">
-              Почему идеально подходит к образу:
+            <strong className="text-amber-300 block mb-0.5 text-[11px] uppercase tracking-wider font-mono flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+              Вердикт Мультимодального Сольфеджио:
             </strong>
-            {synergyVerdict}
+            {solfeggio.verdict}
           </div>
+
+          {/* Wardrobe Gap Alert (if perfume from shelf is far from ideal) */}
+          {hasWardrobeGap && gapAdvice && idealCatalogMatch && (
+            <div className="p-2.5 rounded-xl bg-rose-950/30 border border-rose-500/40 text-xs text-rose-200/90 flex flex-col gap-1.5 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-rose-300 text-[11px] uppercase font-mono flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                  Ольфакторный пробел в гардеробе
+                </span>
+                <span className="text-[10px] font-mono text-rose-400 bg-rose-950/80 px-1.5 py-0.5 rounded border border-rose-800">
+                  Совет стилиста
+                </span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-rose-100/90">
+                {gapAdvice}
+              </p>
+              {onSelectPerfume && (
+                <button
+                  onClick={() => onSelectPerfume(idealCatalogMatch)}
+                  className="self-start mt-0.5 text-[10px] font-mono text-amber-300 hover:text-amber-200 underline flex items-center gap-1"
+                >
+                  Посмотреть эталон: {idealCatalogMatch.brand} {idealCatalogMatch.name}
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* 6D Solfeggio Radar Breakdown & Clashes */}
+      <div className="border-t border-slate-800/80 pt-3 flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <Sliders className="w-3.5 h-3.5 text-indigo-400" />
+            Инвариантные оси сольфеджио (Гардероб vs Аромат)
+          </span>
+          <span className="text-[10px] font-mono text-slate-400">
+            cos(θ) = {solfeggio.cosineSimilarity}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
+          {(Object.keys(AXIS_LABELS) as (keyof typeof AXIS_LABELS)[]).map((axis) => {
+            const meta = AXIS_LABELS[axis];
+            const oVal = solfeggio.outfitVector[axis];
+            const pVal = solfeggio.perfumeVector[axis];
+            const diff = Math.abs(oVal - pVal);
+
+            return (
+              <div
+                key={axis}
+                className="bg-slate-950/60 p-2 rounded-lg border border-slate-800/80 flex flex-col gap-1"
+              >
+                <div className="flex justify-between items-center text-slate-300 font-medium">
+                  <span>{meta.name}</span>
+                  <span className={`font-mono font-bold ${
+                    diff >= 1.0 ? 'text-rose-400' : diff >= 0.65 ? 'text-amber-400' : 'text-emerald-400'
+                  }`}>
+                    Δ {diff.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[9px] text-slate-500 font-mono">
+                  <span className="text-indigo-300">Лук: {oVal > 0 ? '+' : ''}{oVal.toFixed(2)}</span>
+                  <span className="text-amber-300">Парфюм: {pVal > 0 ? '+' : ''}{pVal.toFixed(2)}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {solfeggio.clashes.length > 0 && (
+          <div className="mt-1 flex flex-col gap-1 bg-slate-950/80 p-2 rounded-lg border border-slate-800 text-[11px]">
+            {solfeggio.clashes.slice(0, 2).map((clash, idx) => (
+              <div key={idx} className="flex items-center gap-1.5 text-amber-300/90 text-[10px]">
+                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>
+                  <strong>[{AXIS_LABELS[clash.axis].name}]:</strong> {clash.diagnosis}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

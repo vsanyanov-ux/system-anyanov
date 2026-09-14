@@ -6,6 +6,15 @@ export type LayerType = 'L4' | 'L3' | 'L2' | 'L1';
 // L2: Ноги (брюки со стрелками, чинос, джинсы, шорты)
 // L1: Обувь (оксфорды, лоферы, дерби, кеды, кроссовки)
 
+export interface AestheticValues {
+  mass_density: number;       // -1 (невесомый, лен/озон) <-> +1 (монументальный, драп/уд/смолы)
+  architectonics: number;     // -1 (текучий, оверсайз/мускус) <-> +1 (жесткий тейлоринг/шипр)
+  thermal_balance: number;    // -1 (арктический лед, цитрон/серебро) <-> +1 (согревающий, кашемир/амбра/корица)
+  surface_moisture: number;   // -1 (сухой, мел/пудра/твид) <-> +1 (влажный, глянец/акватика)
+  tempo_volatility: number;   // -1 (статичный, бальзамический шлейф) <-> +1 (взрывной, цитрусы/спорт)
+  biomorphism: number;        // -1 (техногенный винил/амброксан) <-> +1 (органический лен/лаванда/петрикор)
+}
+
 export interface WardrobeItem {
   id: string;
   layer: LayerType;
@@ -19,6 +28,7 @@ export interface WardrobeItem {
   fabric: string;
   description: string;
   silhouette: 'structured' | 'relaxed' | 'draped';
+  aestheticValues?: Partial<AestheticValues>;
 }
 
 export interface OutfitStack {
@@ -46,6 +56,7 @@ export interface PerfumeItem {
   bestOccasion: string;
   whyFitsOutfit: string;
   colorTheme: string;
+  aestheticValues?: Partial<AestheticValues>;
 }
 
 export interface AnyanovCoordinates {
@@ -73,12 +84,37 @@ export interface QuadrantInfo {
   borderColor: string;
 }
 
+export type HarmonyState =
+  | 'UNISON'           // Унисон (Тотальный Консонанс)
+  | 'CONTRAPUNCT'      // Благородный Контрапункт (Полифония)
+  | 'DIVERGENCE'       // Умеренная Дивергенция
+  | 'DISSONANCE'       // Семантический Диссонанс
+  | 'CACOPHONY';       // Какофония
+
+export interface AxisClash {
+  axis: keyof AestheticValues;
+  diff: number;
+  diagnosis: string;
+}
+
+export interface SolfeggioAnalysis {
+  distance: number;
+  cosineSimilarity: number;
+  harmonyState: HarmonyState;
+  stateLabel: string;
+  badgeColor: string;
+  verdict: string;
+  clashes: AxisClash[];
+  outfitVector: AestheticValues;
+  perfumeVector: AestheticValues;
+  outfitCoords: { x: number; y: number };
+}
+
 export interface CompiledLook {
   coordinates: AnyanovCoordinates;
   quadrant: QuadrantInfo;
   outfit: OutfitStack;
   perfume: PerfumeItem;
-  synergyVerdict: string;
-  compatibilityScore: number; // 90 - 100%
+  solfeggio: SolfeggioAnalysis;
   rulesApplied: string[];
 }

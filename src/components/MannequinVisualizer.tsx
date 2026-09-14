@@ -1,15 +1,17 @@
 import React from 'react';
-import { OutfitStack, WardrobeItem } from '../types';
-import { Layers, CheckCircle2 } from 'lucide-react';
+import { OutfitStack, SolfeggioAnalysis, WardrobeItem } from '../types';
+import { Layers, CheckCircle2, Compass } from 'lucide-react';
 
 interface MannequinVisualizerProps {
   outfit: OutfitStack;
   rulesApplied: string[];
+  solfeggio?: SolfeggioAnalysis;
 }
 
 export const MannequinVisualizer: React.FC<MannequinVisualizerProps> = ({
   outfit,
   rulesApplied,
+  solfeggio,
 }) => {
   const l4 = outfit.l4;
   const l3 = outfit.l3;
@@ -31,10 +33,18 @@ export const MannequinVisualizer: React.FC<MannequinVisualizerProps> = ({
             Гардеробная проекция (Wardrobe OS)
           </h2>
         </div>
-        <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-          <CheckCircle2 className="w-3 h-3" />
-          100% совместимость
-        </span>
+        <div className="flex items-center gap-2">
+          {solfeggio && (
+            <span className="text-[11px] font-mono text-indigo-300 bg-indigo-950/70 px-2 py-0.5 rounded border border-indigo-500/30 flex items-center gap-1 font-bold">
+              <Compass className="w-3 h-3 text-indigo-400" />
+              Координата лука: ({solfeggio.outfitCoords.x > 0 ? '+' : ''}{solfeggio.outfitCoords.x}, {solfeggio.outfitCoords.y > 0 ? '+' : ''}{solfeggio.outfitCoords.y})
+            </span>
+          )}
+          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" />
+            L1–L4 синхрон
+          </span>
+        </div>
       </div>
 
       {/* Center Layout: Mannequin SVG + Layer Stack breakdown */}
