@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646cff?logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Version](https://img.shields.io/badge/Version-v2.2.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
+[![Version](https://img.shields.io/badge/Version-v2.3.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
 [![License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 
 ---
@@ -59,16 +59,18 @@
 * **Детектор гардеробных брешей (Wardrobe Gap):** если образ требует строгой дистанции, а на полке только сладкие клубные ароматы — система подберёт наименее диссонирующий вариант и вежливо подскажет, какого флакона не хватает в арсенале.
 * **Сохранение в браузере:** полка автоматически сохраняется в `localStorage`.
 
-### 2. 🎼 Мультимодальное Сольфеджио Стиля (Style Solfeggio 6D)
-Математический алгоритм сопоставления тактильных свойств гардероба ($L1–L4$) и ольфакторной физики аромата по 6 инвариантным осям:
-1. **Плотность массы** (Невесомый шелк/озон $\longleftrightarrow$ Монументальный драп/уд/смолы).
-2. **Архитектоника** (Текучий оверсайз/мускус $\longleftrightarrow$ Жесткий тейлоринг/шипр).
-3. **Термо-баланс** (Лед/цитрон/серебро $\longleftrightarrow$ Тепло/кашемир/амбра/корица).
-4. **Фактура** (Матовая сухая фланель $\longleftrightarrow$ Глянец/акватика).
-5. **Темп раскрытия** (Статичный шлейф $\longleftrightarrow$ Взрывной импульс).
-6. **Биоморфизм** (Техно/молекулярный $\longleftrightarrow$ Природный/органика).
+### 2. 🎼 Каноническое 8D-Сольфеджио Стиля (Anyanov 8D Harmonic Engine)
+Математический алгоритм сопоставления тактильных свойств гардероба ($L1–L4$) и ольфакторной физики аромата по **8 каноническим измерениям первоисточника**:
+1. **Дистанция** (Обособленность / Субординация $\longleftrightarrow$ Интим / Сближение).
+2. **Формальность** (Business Formal $\longleftrightarrow$ Casual).
+3. **Власть** (Статус / Твёрдая власть $\longleftrightarrow$ Соблазн / Мягкая сила).
+4. **Настроение** (Собранность / Фокус $\longleftrightarrow$ Лёгкость / Свобода).
+5. **Диффузия** (Стойкая база / Шлейф $\longleftrightarrow$ Быстрая вспышка / Топ).
+6. **Температура** (Тепло / Согревающий $\longleftrightarrow$ Холод / Освежающий).
+7. **Время суток** (Вечер / Глубина $\longleftrightarrow$ День / Свет).
+8. **Сезон** (Зима / Плотность $\longleftrightarrow$ Лето / Воздух).
 
-Вычисляет косинусное сходство $\cos(\theta)$, евклидово расстояние $D$ и диагностирует диссонансы (Clashes).
+Вычисляет взвешенное евклидово расстояние $D$, косинусное сходство $\cos(\theta)$ и диагностирует диссонансы (Clashes) с авторскими формулировками по каждой оси.
 
 ### 3. ⚛️ Периодическая система ольфакторных нот (Periodic Table of Notes)
 * **Архитектурный предохранитель гармонии:** устраняет субъективное «я так чувствую», математически связывая молекулы аромата с тканями одежды.

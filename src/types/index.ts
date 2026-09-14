@@ -6,14 +6,18 @@ export type LayerType = 'L4' | 'L3' | 'L2' | 'L1';
 // L2: Ноги (брюки со стрелками, чинос, джинсы, шорты)
 // L1: Обувь (оксфорды, лоферы, дерби, кеды, кроссовки)
 
-export interface AestheticValues {
-  mass_density: number;       // -1 (невесомый, лен/озон) <-> +1 (монументальный, драп/уд/смолы)
-  architectonics: number;     // -1 (текучий, оверсайз/мускус) <-> +1 (жесткий тейлоринг/шипр)
-  thermal_balance: number;    // -1 (арктический лед, цитрон/серебро) <-> +1 (согревающий, кашемир/амбра/корица)
-  surface_moisture: number;   // -1 (сухой, мел/пудра/твид) <-> +1 (влажный, глянец/акватика)
-  tempo_volatility: number;   // -1 (статичный, бальзамический шлейф) <-> +1 (взрывной, цитрусы/спорт)
-  biomorphism: number;        // -1 (техногенный винил/амброксан) <-> +1 (органический лен/лаванда/петрикор)
+export interface Anyanov8DVector {
+  distance: number;     // -1.0 (Обособленность / Субординация) <-> +1.0 (Интим / Сближение)
+  formality: number;    // -1.0 (Business Formal) <-> +1.0 (Casual)
+  power: number;        // -1.0 (Статус / Твердая власть) <-> +1.0 (Соблазн / Мягкая сила)
+  mood: number;         // -1.0 (Собранность / Фокус) <-> +1.0 (Легкость / Свобода)
+  diffusion: number;    // -1.0 (Долгое действие / Шлейф) <-> +1.0 (Быстрое действие / Вспышка)
+  temperature: number;  // -1.0 (Тепло / Согревающий) <-> +1.0 (Холод / Освежающий)
+  time_of_day: number;  // -1.0 (Вечер / Глубина) <-> +1.0 (День / Свет)
+  season: number;       // -1.0 (Зима / Плотность) <-> +1.0 (Лето / Воздух)
 }
+
+export type AestheticValues = Anyanov8DVector;
 
 export interface WardrobeItem {
   id: string;

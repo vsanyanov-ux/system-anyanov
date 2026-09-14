@@ -334,19 +334,19 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
         </div>
       )}
 
-      {/* 6D Solfeggio Radar Breakdown & Clashes */}
+      {/* 8D Solfeggio Radar Breakdown & Clashes */}
       <div className="border-t border-slate-800/80 pt-3 flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <Sliders className="w-3.5 h-3.5 text-indigo-400" />
-            Инвариантные оси сольфеджио (Гардероб vs Аромат)
+            Канонический 8D-радар Аньянова (Гардероб vs Аромат)
           </span>
           <span className="text-[10px] font-mono text-slate-400">
             cos(θ) = {solfeggio.cosineSimilarity}
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
           {(Object.keys(AXIS_LABELS) as (keyof typeof AXIS_LABELS)[]).map((axis) => {
             const meta = AXIS_LABELS[axis];
             const oVal = solfeggio.outfitVector[axis];

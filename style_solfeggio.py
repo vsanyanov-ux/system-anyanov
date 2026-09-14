@@ -1,28 +1,39 @@
-﻿"""
-Style Solfeggio: Mathematical Harmony Engine between Fashion & Fragrance.
-Implements the 6 invariant axes, distance metrics, and concordance/dissonance rules.
+"""
+Style Solfeggio 8D: Mathematical Harmony Engine between Fashion & Fragrance.
+Implements the 8 canonical invariant axes of Sistema Anyanova.
 """
 
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
 import math
+import sys
+
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 AXES = [
-    "mass_density",       # -1 (невесомый, шифон/озон) <-> +1 (монументальный, драп/уд/смолы)
-    "architectonics",     # -1 (текучий, крой по косой/мускус) <-> +1 (жесткий тейлоринг/шипр)
-    "thermal_balance",    # -1 (арктический лед, ментол/серебро) <-> +1 (согревающий, кашемир/амбра/корица)
-    "surface_moisture",   # -1 (сухой, мел/пудра/твид) <-> +1 (влажный, глянец/роса/акватика)
-    "tempo_volatility",   # -1 (статичный, бальзамический шлейф) <-> +1 (взрывной, цитрусы/спорт)
-    "biomorphism",        # -1 (синтетический, винил/амброксан) <-> +1 (органический, лен/петрикор)
+    "distance",       # -1 (Обособленность / Субординация) <-> +1 (Интим / Сближение)
+    "formality",      # -1 (Business Formal) <-> +1 (Casual)
+    "power",          # -1 (Статус / Твердая власть) <-> +1 (Соблазн / Шарм)
+    "mood",           # -1 (Собранность / Фокус) <-> +1 (Легкость / Свобода)
+    "diffusion",      # -1 (Долгое действие / Шлейф) <-> +1 (Быстрое действие / Вспышка)
+    "temperature",    # -1 (Тепло / Согревающий) <-> +1 (Холод / Освежающий)
+    "time_of_day",    # -1 (Вечер / Глубина) <-> +1 (День / Свет)
+    "season",         # -1 (Зима / Плотность) <-> +1 (Лето / Воздух)
 ]
 
 DEFAULT_WEIGHTS = {
-    "mass_density": 1.3,      # Вес и плотность
-    "architectonics": 1.2,    # Строгость кроя vs расслабленность
-    "thermal_balance": 1.0,   # Температурный баланс
-    "surface_moisture": 0.9,  # Пудра vs влажность/глянец
-    "tempo_volatility": 0.8,  # Динамика раскрытия
-    "biomorphism": 0.8,       # Натуральное vs техногенное
+    "distance": 1.2,
+    "formality": 1.2,
+    "power": 1.1,
+    "mood": 1.0,
+    "diffusion": 0.9,
+    "temperature": 1.0,
+    "time_of_day": 0.8,
+    "season": 0.8,
 }
 
 @dataclass
@@ -127,12 +138,14 @@ OUTFITS = {
         name="Твидовый костюм-тройка Savile Row",
         category="outfit",
         values={
-            "mass_density": 0.85,
-            "architectonics": 0.90,
-            "thermal_balance": 0.60,
-            "surface_moisture": -0.80,
-            "tempo_volatility": -0.70,
-            "biomorphism": 0.70,
+            "distance": -0.85,
+            "formality": -0.90,
+            "power": -0.85,
+            "mood": -0.80,
+            "diffusion": -0.75,
+            "temperature": -0.60,
+            "time_of_day": -0.50,
+            "season": -0.80,
         },
         description="Плотная шерсть, строгая плечевая линия, сухая текстура."
     ),
@@ -140,12 +153,14 @@ OUTFITS = {
         name="Гавайская рубашка и льняные шорты",
         category="outfit",
         values={
-            "mass_density": -0.85,
-            "architectonics": -0.85,
-            "thermal_balance": 0.75,
-            "surface_moisture": 0.50,
-            "tempo_volatility": 0.60,
-            "biomorphism": 0.50,
+            "distance": 0.85,
+            "formality": 0.90,
+            "power": 0.60,
+            "mood": 0.85,
+            "diffusion": 0.70,
+            "temperature": 0.80,
+            "time_of_day": 0.75,
+            "season": 0.90,
         },
         description="Невесомая вискоза, расстегнутый ворот, полная деконструкция формы."
     ),
@@ -153,12 +168,14 @@ OUTFITS = {
         name="Черное шелковое платье-комбинация 90-х",
         category="outfit",
         values={
-            "mass_density": -0.70,
-            "architectonics": -0.50,
-            "thermal_balance": -0.30,
-            "surface_moisture": 0.60,
-            "tempo_volatility": 0.20,
-            "biomorphism": -0.20,
+            "distance": 0.75,
+            "formality": 0.20,
+            "power": 0.80,
+            "mood": 0.20,
+            "diffusion": 0.30,
+            "temperature": 0.20,
+            "time_of_day": -0.70,
+            "season": 0.30,
         },
         description="Лаконичный шелк, тонкие бретели, струящаяся геометрия."
     ),
@@ -166,12 +183,14 @@ OUTFITS = {
         name="Techwear (Gore-Tex мембрана, карго, кроссовки)",
         category="outfit",
         values={
-            "mass_density": 0.40,
-            "architectonics": 0.70,
-            "thermal_balance": -0.70,
-            "surface_moisture": -0.40,
-            "tempo_volatility": 0.80,
-            "biomorphism": -0.90,
+            "distance": -0.60,
+            "formality": 0.30,
+            "power": -0.40,
+            "mood": -0.70,
+            "diffusion": 0.50,
+            "temperature": 0.70,
+            "time_of_day": -0.60,
+            "season": -0.30,
         },
         description="Функциональный технологичный минимализм мегаполиса."
     )
@@ -182,12 +201,14 @@ FRAGRANCES = {
         name="Винтажный дубовый шипр (Мох, пачули, ветивер)",
         category="fragrance",
         values={
-            "mass_density": 0.80,
-            "architectonics": 0.85,
-            "thermal_balance": 0.20,
-            "surface_moisture": -0.75,
-            "tempo_volatility": -0.70,
-            "biomorphism": 0.80,
+            "distance": -0.80,
+            "formality": -0.85,
+            "power": -0.80,
+            "mood": -0.75,
+            "diffusion": -0.60,
+            "temperature": -0.20,
+            "time_of_day": -0.60,
+            "season": -0.60,
         },
         description="Строгий аристократичный шипр старой школы."
     ),
@@ -195,12 +216,14 @@ FRAGRANCES = {
         name="Тропический колонь (Лайм, кокос, акватика)",
         category="fragrance",
         values={
-            "mass_density": -0.80,
-            "architectonics": -0.70,
-            "thermal_balance": 0.80,
-            "surface_moisture": 0.80,
-            "tempo_volatility": 0.85,
-            "biomorphism": 0.60,
+            "distance": 0.85,
+            "formality": 0.80,
+            "power": 0.50,
+            "mood": 0.85,
+            "diffusion": 0.80,
+            "temperature": 0.85,
+            "time_of_day": 0.80,
+            "season": 0.90,
         },
         description="Яркий коктейльный цитрусово-акватический шлейф."
     ),
@@ -208,12 +231,14 @@ FRAGRANCES = {
         name="Молекулярный розовый перец и ирис (Iso E Super)",
         category="fragrance",
         values={
-            "mass_density": -0.50,
-            "architectonics": 0.30,
-            "thermal_balance": -0.60,
-            "surface_moisture": -0.40,
-            "tempo_volatility": 0.30,
-            "biomorphism": -0.60,
+            "distance": -0.30,
+            "formality": -0.20,
+            "power": -0.20,
+            "mood": -0.50,
+            "diffusion": 0.40,
+            "temperature": 0.50,
+            "time_of_day": 0.20,
+            "season": 0.30,
         },
         description="Холодная интеллектуальная урбанистическая вуаль."
     )
@@ -231,7 +256,7 @@ def run_benchmark():
     ]
 
     print("=" * 75)
-    print("  МУЛЬТИМОДАЛЬНОЕ СОЛЬФЕДЖИО СТИЛЯ: РАСЧЕТ ДИСТАНЦИЙ И РЕЗОНАНСА")
+    print("  МУЛЬТИМОДАЛЬНОЕ СОЛЬФЕДЖИО СТИЛЯ (8D): РАСЧЕТ ДИСТАНЦИЙ И РЕЗОНАНСА")
     print("=" * 75)
 
     for o_key, f_key in pairs:
@@ -251,3 +276,4 @@ def run_benchmark():
 
 if __name__ == "__main__":
     run_benchmark()
+

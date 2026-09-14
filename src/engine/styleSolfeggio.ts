@@ -1,49 +1,68 @@
-import { AestheticValues, AxisClash, HarmonyState, OutfitStack, PerfumeItem, SolfeggioAnalysis, WardrobeItem } from '../types';
+import { Anyanov8DVector, AxisClash, HarmonyState, OutfitStack, PerfumeItem, SolfeggioAnalysis, WardrobeItem } from '../types';
 
-export const AXES: (keyof AestheticValues)[] = [
-  'mass_density',       // -1 (невесомый, лен/озон) <-> +1 (монументальный, драп/уд/смолы)
-  'architectonics',     // -1 (текучий, оверсайз/мускус) <-> +1 (жесткий тейлоринг/шипр)
-  'thermal_balance',    // -1 (арктический лед, цитрон/серебро) <-> +1 (согревающий, кашемир/амбра/корица)
-  'surface_moisture',   // -1 (сухой, мел/пудра/твид) <-> +1 (влажный, глянец/акватика)
-  'tempo_volatility',   // -1 (статичный, бальзамический шлейф) <-> +1 (взрывной, цитрусы/спорт)
-  'biomorphism',        // -1 (техногенный винил/амброксан) <-> +1 (органический лен/лаванда/петрикор)
+/**
+ * 8 Канонических Измерений Системы Аньянова:
+ * 1. distance: -1.0 (Обособленность) <-> +1.0 (Интим / Сближение)
+ * 2. formality: -1.0 (Business Formal) <-> +1.0 (Casual)
+ * 3. power: -1.0 (Статус / Твердая власть) <-> +1.0 (Соблазн / Шарм)
+ * 4. mood: -1.0 (Собранность / Фокус) <-> +1.0 (Легкость / Свобода)
+ * 5. diffusion: -1.0 (Долгое действие / Шлейф) <-> +1.0 (Быстрое действие / Вспышка)
+ * 6. temperature: -1.0 (Тепло / Согревающий) <-> +1.0 (Холод / Освежающий)
+ * 7. time_of_day: -1.0 (Вечер / Глубина) <-> +1.0 (День / Свет)
+ * 8. season: -1.0 (Зима / Плотность) <-> +1.0 (Лето / Воздух)
+ */
+export const AXES: (keyof Anyanov8DVector)[] = [
+  'distance',
+  'formality',
+  'power',
+  'mood',
+  'diffusion',
+  'temperature',
+  'time_of_day',
+  'season',
 ];
 
-export const AXIS_LABELS: Record<keyof AestheticValues, { name: string; left: string; right: string }> = {
-  mass_density: { name: 'Плотность массы', left: 'Невесомый / Шелк', right: 'Монументальный / Драп' },
-  architectonics: { name: 'Архитектоника', left: 'Текучий / Драп', right: 'Жесткий крой / Четкость' },
-  thermal_balance: { name: 'Термо-баланс', left: 'Лед / Прохлада', right: 'Тепло / Кашемир' },
-  surface_moisture: { name: 'Фактура', left: 'Сухая / Матовая', right: 'Глянец / Влажность' },
-  tempo_volatility: { name: 'Темп раскрытия', left: 'Статичный шлейф', right: 'Взрывной импульс' },
-  biomorphism: { name: 'Биоморфизм', left: 'Техно / Молекулярный', right: 'Природный / Органика' },
+export const AXIS_LABELS: Record<keyof Anyanov8DVector, { name: string; left: string; right: string }> = {
+  distance: { name: 'Дистанция', left: 'Обособленность', right: 'Интим / Сближение' },
+  formality: { name: 'Формальность', left: 'Business Formal', right: 'Casual' },
+  power: { name: 'Власть', left: 'Статус / Твердость', right: 'Соблазн / Шарм' },
+  mood: { name: 'Настроение', left: 'Фокус / Дисциплина', right: 'Легкость / Свобода' },
+  diffusion: { name: 'Диффузия', left: 'Стойкая база / Шлейф', right: 'Летучая вспышка / Топ' },
+  temperature: { name: 'Температура', left: 'Тепло / Кашемир', right: 'Холод / Освежающий' },
+  time_of_day: { name: 'Время суток', left: 'Вечер / Глубина', right: 'День / Прозрачность' },
+  season: { name: 'Сезон', left: 'Зима / Плотность', right: 'Лето / Воздух' },
 };
 
-export const DEFAULT_WEIGHTS: Record<keyof AestheticValues, number> = {
-  mass_density: 1.3,
-  architectonics: 1.2,
-  thermal_balance: 1.0,
-  surface_moisture: 0.9,
-  tempo_volatility: 0.8,
-  biomorphism: 0.8,
+export const DEFAULT_WEIGHTS: Record<keyof Anyanov8DVector, number> = {
+  distance: 1.2,
+  formality: 1.2,
+  power: 1.1,
+  mood: 1.0,
+  diffusion: 0.9,
+  temperature: 1.0,
+  time_of_day: 0.8,
+  season: 0.8,
 };
 
 /**
- * Вычисляет средневзвешенный 6D вектор всего гардеробного лука из слоев L1..L4
+ * Вычисляет средневзвешенный 8D-вектор всего гардеробного лука из слоев L1..L4
  */
-export function calculateOutfitAestheticVector(stack: OutfitStack): AestheticValues {
+export function calculateOutfitAestheticVector(stack: OutfitStack): Anyanov8DVector {
   const items: { item: WardrobeItem; weight: number }[] = [];
   if (stack.l4) items.push({ item: stack.l4, weight: 0.40 });
   if (stack.l3) items.push({ item: stack.l3, weight: stack.l4 ? 0.30 : 0.50 });
   if (stack.l2) items.push({ item: stack.l2, weight: 0.20 });
   if (stack.l1) items.push({ item: stack.l1, weight: 0.10 });
 
-  const result: AestheticValues = {
-    mass_density: 0,
-    architectonics: 0,
-    thermal_balance: 0,
-    surface_moisture: 0,
-    tempo_volatility: 0,
-    biomorphism: 0,
+  const result: Anyanov8DVector = {
+    distance: 0,
+    formality: 0,
+    power: 0,
+    mood: 0,
+    diffusion: 0,
+    temperature: 0,
+    time_of_day: 0,
+    season: 0,
   };
 
   let totalW = 0;
@@ -65,91 +84,119 @@ export function calculateOutfitAestheticVector(stack: OutfitStack): AestheticVal
 }
 
 /**
- * Эвристика определения 6D вектора для отдельного предмета одежды
+ * Определение 8D вектора Системы Аньянова для отдельного предмета одежды
  */
-export function getItemAestheticVector(item: WardrobeItem): AestheticValues {
+export function getItemAestheticVector(item: WardrobeItem): Anyanov8DVector {
   if (item.aestheticValues) {
     return {
-      mass_density: item.aestheticValues.mass_density ?? 0,
-      architectonics: item.aestheticValues.architectonics ?? 0,
-      thermal_balance: item.aestheticValues.thermal_balance ?? 0,
-      surface_moisture: item.aestheticValues.surface_moisture ?? 0,
-      tempo_volatility: item.aestheticValues.tempo_volatility ?? 0,
-      biomorphism: item.aestheticValues.biomorphism ?? 0,
+      distance: item.aestheticValues.distance ?? 0,
+      formality: item.aestheticValues.formality ?? 0,
+      power: item.aestheticValues.power ?? 0,
+      mood: item.aestheticValues.mood ?? 0,
+      diffusion: item.aestheticValues.diffusion ?? 0,
+      temperature: item.aestheticValues.temperature ?? 0,
+      time_of_day: item.aestheticValues.time_of_day ?? 0,
+      season: item.aestheticValues.season ?? 0,
     };
   }
 
   const name = (item.name + ' ' + item.fabric + ' ' + item.description).toLowerCase();
 
-  // 1. mass_density
-  let mass = 0.0;
-  if (name.includes('пальто') || name.includes('550 г') || name.includes('тяжел')) mass = 0.85;
-  else if (name.includes('шерсть') || name.includes('костюм') || name.includes('деним')) mass = 0.50;
-  else if (name.includes('кашемир') || name.includes('твил') || name.includes('чинос')) mass = 0.20;
-  else if (name.includes('лен') || name.includes('шелк') || name.includes('тонкий')) mass = -0.75;
-  else if (name.includes('футболка') || name.includes('поло')) mass = -0.30;
+  // 1. distance: -1 (Обособленность) .. +1 (Интим / Сближение)
+  let dist = 0.0;
+  if (item.silhouette === 'structured' || name.includes('оксфорд') || name.includes('пальто') || name.includes('галстук')) {
+    dist = -0.75;
+  } else if (item.silhouette === 'relaxed' || name.includes('оверсайз') || name.includes('трикотаж') || name.includes('кашемир')) {
+    dist = 0.65;
+  } else {
+    dist = 0.10;
+  }
 
-  // 2. architectonics
-  let arch = item.silhouette === 'structured' ? 0.8 : item.silhouette === 'relaxed' ? -0.6 : -0.2;
-  if (name.includes('галстук') || name.includes('стрелк') || name.includes('оксфорд')) arch = Math.min(1.0, arch + 0.25);
-  if (name.includes('кулиск') || name.includes('выстиран')) arch = Math.max(-1.0, arch - 0.3);
+  // 2. formality: -1 (Business Formal) .. +1 (Casual)
+  let form = 0.0;
+  if (item.formalIndex === 3) form = -0.90;
+  else if (item.formalIndex === 2) form = 0.0;
+  else form = 0.85;
 
-  // 3. thermal_balance
-  let therm = 0.0;
-  if (item.maxTemp <= 10) therm = 0.85; // зимняя, согревающая
-  else if (item.maxTemp <= 20) therm = 0.40;
-  else if (item.minTemp >= 20) therm = -0.80; // летняя прохлада
-  else therm = -0.10;
+  // 3. power: -1 (Статус / Власть) .. +1 (Соблазн / Шарм)
+  let pwr = 0.0;
+  if (name.includes('пальто') || name.includes('костюм') || name.includes('дерби') || name.includes('пиджак')) {
+    pwr = -0.80;
+  } else if (name.includes('кашемир') || name.includes('шелк') || name.includes('замш') || name.includes('поло')) {
+    pwr = 0.70;
+  } else if (name.includes('кеды') || name.includes('худи') || name.includes('футболка')) {
+    pwr = 0.40;
+  } else {
+    pwr = -0.20;
+  }
 
-  // 4. surface_moisture (матовый/сухой vs шелковистый/глянцевый)
-  let moist = -0.2;
-  if (name.includes('глянец') || name.includes('шелк') || name.includes('лоферы')) moist = 0.60;
-  if (name.includes('твид') || name.includes('фланель') || name.includes('сух')) moist = -0.80;
-  if (name.includes('замш')) moist = -0.60;
+  // 4. mood: -1 (Собранность / Фокус) .. +1 (Легкость / Свобода)
+  let md = 0.0;
+  if (item.formalIndex === 3 || name.includes('стрелк') || name.includes('воротник')) {
+    md = -0.80;
+  } else if (name.includes('лен') || name.includes('шорты') || name.includes('белый') || name.includes('кеды')) {
+    md = 0.75;
+  } else {
+    md = 0.10;
+  }
 
-  // 5. tempo_volatility
-  let tempo = -0.3;
-  if (item.formalIndex === 1) tempo = 0.5; // кэжуал более динамичен
-  if (item.formalIndex === 3) tempo = -0.7; // формал статичен
+  // 5. diffusion: -1 (Долгое действие / Шлейф / Плотная ткань) .. +1 (Быстрое действие / Легкость)
+  let diff = 0.0;
+  if (name.includes('тяжел') || name.includes('драп') || name.includes('шерсть') || name.includes('деним')) {
+    diff = -0.75;
+  } else if (name.includes('лен') || name.includes('шелк') || name.includes('поплин')) {
+    diff = 0.70;
+  } else {
+    diff = -0.10;
+  }
 
-  // 6. biomorphism
-  let bio = 0.5;
-  if (name.includes('лен') || name.includes('шерсть') || name.includes('кожа') || name.includes('хлопок')) bio = 0.75;
-  if (name.includes('эластан') || name.includes('полиэстер') || name.includes('нейлон')) bio = -0.40;
+  // 6. temperature: -1 (Тепло / Согревающий) .. +1 (Холод / Освежающий)
+  let temp = 0.0;
+  if (item.maxTemp <= 10) temp = -0.85; // зимняя, согревающая
+  else if (item.maxTemp <= 20) temp = -0.35;
+  else if (item.minTemp >= 20) temp = 0.80; // летняя, освежающая
+  else temp = 0.10;
+
+  // 7. time_of_day: -1 (Вечер / Темный / Глубокий) .. +1 (День / Светлый / Яркий)
+  let tod = 0.0;
+  const col = (item.colorName + ' ' + item.color).toLowerCase();
+  if (col.includes('черн') || col.includes('темн') || col.includes('графит') || col.includes('navy')) {
+    tod = -0.75;
+  } else if (col.includes('бел') || col.includes('светл') || col.includes('беж') || col.includes('голуб')) {
+    tod = 0.75;
+  } else {
+    tod = 0.10;
+  }
+
+  // 8. season: -1 (Зима) .. +1 (Лето)
+  let ssn = 0.0;
+  if (item.maxTemp <= 10) ssn = -0.90;
+  else if (item.minTemp >= 18) ssn = 0.85;
+  else ssn = 0.0;
 
   return {
-    mass_density: mass,
-    architectonics: arch,
-    thermal_balance: therm,
-    surface_moisture: moist,
-    tempo_volatility: tempo,
-    biomorphism: bio,
+    distance: Math.max(-1, Math.min(1, dist)),
+    formality: Math.max(-1, Math.min(1, form)),
+    power: Math.max(-1, Math.min(1, pwr)),
+    mood: Math.max(-1, Math.min(1, md)),
+    diffusion: Math.max(-1, Math.min(1, diff)),
+    temperature: Math.max(-1, Math.min(1, temp)),
+    time_of_day: Math.max(-1, Math.min(1, tod)),
+    season: Math.max(-1, Math.min(1, ssn)),
   };
 }
 
 /**
- * Проекция 6D вектора гардероба на 2D плоскость Аньянова:
- * X (Власть vs Соблазн): расчет из архитектоники, формальности и плотности.
- * Y (Холод/Диффузия vs Тепло/Стойкость): расчет из термобаланса и массы.
+ * Проекция 8D-вектора гардероба на 2D-плоскость Аньянова:
+ * X (Социальный контур): Власть / Статус / Formal (-X) <---> Соблазн / Интим / Casual (+X)
+ * Y (Физико-временной контур): Зима / Вечер / Тепло / Долго (-Y) <---> Лето / День / Холод / Быстро (+Y)
  */
-export function projectOutfitTo2D(stack: OutfitStack, vector: AestheticValues): { x: number; y: number } {
-  // Архитектоника (+1 строгий -> X < 0; -1 мягкий -> X > 0)
-  // Формальный индекс усиливает сдвиг влево (к власти)
-  const avgFormal = (
-    (stack.l4?.formalIndex ?? stack.l3.formalIndex) +
-    stack.l3.formalIndex +
-    stack.l2.formalIndex +
-    stack.l1.formalIndex
-  ) / (stack.l4 ? 4 : 3);
+export function projectOutfitTo2D(stack: OutfitStack, vector: Anyanov8DVector): { x: number; y: number } {
+  // Социальная ось X: среднее от (distance, formality, power)
+  const rawX = (vector.distance + vector.formality + vector.power) / 3;
 
-  // Формальность 3 -> сдвиг к -0.7; формальность 1 -> сдвиг к +0.5
-  const formalShift = (2 - avgFormal) * 0.45;
-  const archShift = -vector.architectonics * 0.45;
-  const rawX = formalShift + archShift;
-
-  // Y: thermal_balance (+1 тепло/зима -> Y < 0; -1 холод/лето -> Y > 0)
-  // Плотность массы (mass_density > 0 -> вниз, к весу/власти)
-  const rawY = -vector.thermal_balance * 0.65 - vector.mass_density * 0.25;
+  // Физико-временная ось Y: среднее от (season, time_of_day, temperature, diffusion, mood)
+  const rawY = (vector.season + vector.time_of_day + vector.temperature + vector.diffusion + vector.mood) / 5;
 
   return {
     x: Number(Math.max(-0.95, Math.min(0.95, rawX)).toFixed(2)),
@@ -158,51 +205,73 @@ export function projectOutfitTo2D(stack: OutfitStack, vector: AestheticValues): 
 }
 
 /**
- * Извлечение 6D вектора аромата
+ * Извлечение канонического 8D-вектора аромата
  */
-export function getPerfumeAestheticVector(perfume: PerfumeItem): AestheticValues {
+export function getPerfumeAestheticVector(perfume: PerfumeItem): Anyanov8DVector {
   if (perfume.aestheticValues) {
     return {
-      mass_density: perfume.aestheticValues.mass_density ?? 0,
-      architectonics: perfume.aestheticValues.architectonics ?? 0,
-      thermal_balance: perfume.aestheticValues.thermal_balance ?? 0,
-      surface_moisture: perfume.aestheticValues.surface_moisture ?? 0,
-      tempo_volatility: perfume.aestheticValues.tempo_volatility ?? 0,
-      biomorphism: perfume.aestheticValues.biomorphism ?? 0,
+      distance: perfume.aestheticValues.distance ?? 0,
+      formality: perfume.aestheticValues.formality ?? 0,
+      power: perfume.aestheticValues.power ?? 0,
+      mood: perfume.aestheticValues.mood ?? 0,
+      diffusion: perfume.aestheticValues.diffusion ?? 0,
+      temperature: perfume.aestheticValues.temperature ?? 0,
+      time_of_day: perfume.aestheticValues.time_of_day ?? 0,
+      season: perfume.aestheticValues.season ?? 0,
     };
   }
 
-  // Декодируем вектор аромата из его ольфакторных координат (xCoord, yCoord) и нот
-  const x = perfume.xCoord; // -1 (Власть) .. +1 (Соблазн)
-  const y = perfume.yCoord; // -1 (Зима/Тепло) .. +1 (Лето/Холод)
-
+  // Декодируем вектор аромата из координат (xCoord, yCoord), нот и диффузии
+  const x = perfume.xCoord; // -1 (Власть / Статус) .. +1 (Соблазн / Интим)
+  const y = perfume.yCoord; // -1 (Зима / Вечер / Тепло) .. +1 (Лето / День / Холод)
   const text = (perfume.name + ' ' + perfume.dominantVibe + ' ' + perfume.pyramid.base.join(' ')).toLowerCase();
 
-  const mass = Number((-y * 0.65 + (x < 0 ? 0.3 : 0.1)).toFixed(2));
-  const arch = Number((-x * 0.75).toFixed(2));
-  const therm = Number((-y * 0.85).toFixed(2));
-  let moist = 0.0;
-  if (text.includes('цитрон') || text.includes('морск') || text.includes('акватик')) moist = 0.75;
-  if (text.includes('мох') || text.includes('ирис') || text.includes('пудр') || text.includes('кожа')) moist = -0.70;
+  // 1. distance: x (-1 Обособленность .. +1 Интим)
+  const dist = Number((x * 0.85).toFixed(2));
 
-  const tempo = Number((y * 0.6).toFixed(2));
-  let bio = 0.5;
-  if (text.includes('молекуляр') || text.includes('амброксан') || text.includes('iso e')) bio = -0.7;
+  // 2. formality: -x (строгий статус vs расслабленный флирт)
+  const form = Number((-x * 0.75).toFixed(2));
+
+  // 3. power: x (-1 Статус / Твердость .. +1 Соблазн / Шарм)
+  const pwr = Number((x * 0.90).toFixed(2));
+
+  // 4. mood: y (-1 Собранность / Фокус .. +1 Легкость / Релакс)
+  const md = Number((y * 0.80).toFixed(2));
+
+  // 5. diffusion: по типу шлейфа и нотам
+  let diff = 0.0;
+  if (perfume.diffusion === 'Ударная') diff = 0.90;
+  else if (perfume.diffusion === 'Шлейфовая') diff = 0.45;
+  else if (perfume.diffusion === 'Умеренная') diff = -0.15;
+  else diff = -0.75; // Интимная
+
+  // 6. temperature: y (-1 Тепло .. +1 Холод)
+  let temp = Number((y * 0.85).toFixed(2));
+  if (text.includes('амбра') || text.includes('ваниль') || text.includes('кардамон')) temp = Math.min(temp, -0.4);
+  if (text.includes('цитрон') || text.includes('мята') || text.includes('морск')) temp = Math.max(temp, 0.4);
+
+  // 7. time_of_day: y (-1 Вечер .. +1 День)
+  const tod = Number((y * 0.80).toFixed(2));
+
+  // 8. season: y (-1 Зима .. +1 Лето)
+  const ssn = Number((y * 0.90).toFixed(2));
 
   return {
-    mass_density: Math.max(-1, Math.min(1, mass)),
-    architectonics: Math.max(-1, Math.min(1, arch)),
-    thermal_balance: Math.max(-1, Math.min(1, therm)),
-    surface_moisture: Math.max(-1, Math.min(1, moist)),
-    tempo_volatility: Math.max(-1, Math.min(1, tempo)),
-    biomorphism: Math.max(-1, Math.min(1, bio)),
+    distance: Math.max(-1, Math.min(1, dist)),
+    formality: Math.max(-1, Math.min(1, form)),
+    power: Math.max(-1, Math.min(1, pwr)),
+    mood: Math.max(-1, Math.min(1, md)),
+    diffusion: Math.max(-1, Math.min(1, diff)),
+    temperature: Math.max(-1, Math.min(1, temp)),
+    time_of_day: Math.max(-1, Math.min(1, tod)),
+    season: Math.max(-1, Math.min(1, ssn)),
   };
 }
 
 /**
- * Расчет взвешенного евклидова расстояния
+ * Расчет взвешенного евклидова расстояния в 8D-пространстве
  */
-export function calculateWeightedDistance(v1: AestheticValues, v2: AestheticValues): number {
+export function calculateWeightedDistance(v1: Anyanov8DVector, v2: Anyanov8DVector): number {
   let totalSq = 0;
   let totalW = 0;
 
@@ -217,9 +286,9 @@ export function calculateWeightedDistance(v1: AestheticValues, v2: AestheticValu
 }
 
 /**
- * Расчет косинусного сходства
+ * Расчет косинусного сходства в 8D-пространстве
  */
-export function calculateCosineSimilarity(v1: AestheticValues, v2: AestheticValues): number {
+export function calculateCosineSimilarity(v1: Anyanov8DVector, v2: Anyanov8DVector): number {
   let dot = 0;
   let norm1 = 0;
   let norm2 = 0;
@@ -237,9 +306,9 @@ export function calculateCosineSimilarity(v1: AestheticValues, v2: AestheticValu
 }
 
 /**
- * Анализ расхождений по осям
+ * Анализ расхождений по 8 каноническим осям Системы Аньянова
  */
-export function diagnoseClashes(outfitVec: AestheticValues, perfumeVec: AestheticValues): AxisClash[] {
+export function diagnoseClashes(outfitVec: Anyanov8DVector, perfumeVec: Anyanov8DVector): AxisClash[] {
   const clashes: AxisClash[] = [];
 
   for (const axis of AXES) {
@@ -248,16 +317,35 @@ export function diagnoseClashes(outfitVec: AestheticValues, perfumeVec: Aestheti
     const diff = Math.abs(valO - valP);
 
     if (diff >= 1.0) {
+      let diagnosis = `Критический разрыв: лук (${valO > 0 ? '+' : ''}${valO.toFixed(2)}) vs аромат (${valP > 0 ? '+' : ''}${valP.toFixed(2)})`;
+      if (axis === 'distance') {
+        diagnosis = `Конфликт дистанции: лук держит субординацию (${valO.toFixed(2)}), а аромат зовет к интиму (${valP.toFixed(2)})`;
+      } else if (axis === 'formality') {
+        diagnosis = `Конфликт дресс-кода: строгий силуэт (${valO.toFixed(2)}) vs неформальный парфюм (${valP.toFixed(2)})`;
+      } else if (axis === 'power') {
+        diagnosis = `Диссонанс власти: статусное доминирование (${valO.toFixed(2)}) спорит с кодом соблазна (${valP.toFixed(2)})`;
+      } else if (axis === 'mood') {
+        diagnosis = `Конфликт фокуса: рабочий фокус лука (${valO.toFixed(2)}) гасится расслабленным тоном аромата (${valP.toFixed(2)})`;
+      } else if (axis === 'temperature') {
+        diagnosis = `Термо-диссонанс: согревающий регистр (${valO.toFixed(2)}) против ледяного бриза (${valP.toFixed(2)})`;
+      } else if (axis === 'diffusion') {
+        diagnosis = `Диссонанс динамики: стойкая глубина (${valO.toFixed(2)}) vs летучий импульс (${valP.toFixed(2)})`;
+      } else if (axis === 'time_of_day') {
+        diagnosis = `Сбой времени: вечерний образ (${valO.toFixed(2)}) диссонирует с ярким дневным шлейфом (${valP.toFixed(2)})`;
+      } else if (axis === 'season') {
+        diagnosis = `Сезонный конфликт: зимняя плотность (${valO.toFixed(2)}) против летнего регистра (${valP.toFixed(2)})`;
+      }
+
       clashes.push({
         axis,
         diff: Number(diff.toFixed(2)),
-        diagnosis: `Критический разрыв: лук ${valO > 0 ? '+' : ''}${valO.toFixed(2)} vs аромат ${valP > 0 ? '+' : ''}${valP.toFixed(2)}`,
+        diagnosis,
       });
     } else if (diff >= 0.65) {
       clashes.push({
         axis,
         diff: Number(diff.toFixed(2)),
-        diagnosis: `Стильный контрапункт: лук ${valO > 0 ? '+' : ''}${valO.toFixed(2)} vs аромат ${valP > 0 ? '+' : ''}${valP.toFixed(2)}`,
+        diagnosis: `Стильный контрапункт [${AXIS_LABELS[axis].name}]: лук ${valO > 0 ? '+' : ''}${valO.toFixed(2)} vs аромат ${valP > 0 ? '+' : ''}${valP.toFixed(2)}`,
       });
     }
   }
@@ -266,7 +354,7 @@ export function diagnoseClashes(outfitVec: AestheticValues, perfumeVec: Aestheti
 }
 
 /**
- * Главный метод Мультимодального Сольфеджио Стиля
+ * Главный метод Мультимодального Сольфеджио Стиля (8D)
  */
 export function analyzeStyleSolfeggio(
   stack: OutfitStack,
@@ -289,19 +377,19 @@ export function analyzeStyleSolfeggio(
     harmonyState = 'UNISON';
     stateLabel = 'Унисон (Тотальный Консонанс)';
     badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
-    verdict = 'Идеальное созвучие: аромат и одежда резонируют в едином семантическом регистре.';
+    verdict = 'Идеальное созвучие: аромат и одежда резонируют в едином 8-мерном семантическом регистре.';
   } else if (distance <= 0.95) {
     const majorClashes = clashes.filter((c) => c.diff >= 1.0);
     if (majorClashes.length <= 1) {
       harmonyState = 'CONTRAPUNCT';
       stateLabel = 'Благородный Контрапункт (Полифония)';
       badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
-      verdict = 'Высокий стиль: выверенное эстетическое напряжение и контролируемый акцент по ключевой оси.';
+      verdict = 'Высокий стиль: выверенное эстетическое напряжение по ключевой оси Системы Аньянова.';
     } else {
       harmonyState = 'DIVERGENCE';
       stateLabel = 'Умеренная Дивергенция';
       badgeColor = 'bg-sky-500/20 text-sky-300 border-sky-500/40';
-      verdict = 'Звучание эклектичное, слегка размытое по нескольким параметрам ткани и шлейфа.';
+      verdict = 'Звучание эклектичное, слегка расфокусированное по нескольким измерениям контекста.';
     }
   } else if (distance <= 1.40) {
     harmonyState = 'DISSONANCE';
