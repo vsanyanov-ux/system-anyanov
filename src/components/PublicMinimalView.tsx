@@ -41,6 +41,8 @@ interface PublicMinimalViewProps {
   onToggleCatalogMode: () => void;
   onOpenShelfModal: () => void;
   onSwitchToPro: () => void;
+  initialViewMode?: 'concierge' | 'category';
+  onViewModeChange?: (mode: 'concierge' | 'category') => void;
 }
 
 interface QuickOccasion {
@@ -104,12 +106,21 @@ export const PublicMinimalView: React.FC<PublicMinimalViewProps> = ({
   onToggleCatalogMode,
   onOpenShelfModal,
   onSwitchToPro,
+  initialViewMode = 'concierge',
+  onViewModeChange,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'concierge' | 'category'>('concierge');
+  const [viewMode, setViewMode] = useState<'concierge' | 'category'>(initialViewMode);
   const [selectedPerfumeId, setSelectedPerfumeId] = useState<string | null>(null);
   const [showAlternative, setShowAlternative] = useState(false);
   const [imgError, setImgError] = useState(false);
+
+  // Синхронизация режима при внешнем переключении через сайдбар
+  React.useEffect(() => {
+    if (initialViewMode && initialViewMode !== viewMode) {
+      setViewMode(initialViewMode);
+    }
+  }, [initialViewMode]);
 
   // Фильтры витрины категории (для искушенного покупателя)
   const [categorySearch, setCategorySearch] = useState('');

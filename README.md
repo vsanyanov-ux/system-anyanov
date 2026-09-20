@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646cff?logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Version](https://img.shields.io/badge/Version-v2.8.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
+[![Version](https://img.shields.io/badge/Version-v2.9.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
 [![ADK Quality](https://img.shields.io/badge/ADK_Flywheel-100%25_PASS-emerald.svg)](tests/eval)
 [![License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 
@@ -56,7 +56,16 @@
 
 ## 🚀 Ключевые модули
 
-### 1. 🏛️ Двухуровневый ритейл-интерфейс («Для жизни» vs «Витрина категории»)
+### 1. 🧭 Матрица Брендов 1–2–5–9 & Кросс-Радар Аналогов (Глава 5.2)
+* **Математическая формула 1–2–5–9**: разложение любого мирового парфюмерного дома по ступеням зрелости гардероба:
+  - **1 (Камертон Баланса $0,0$):** единственный внесезонный флакон на 80% гардеробных задач (*Versace Dylan Blue*, *Tom Ford Grey Vetiver*, *Lattafa Fakhar Black*).
+  - **2 (Бинарный фундамент: День / Вечер):** социальная демаркационная линия между работой и личной жизнью.
+  - **5 (Квинтет Стихий):** полное закрытие всех 4 квадрантов матрицы Аньянова (Центр, NE Лето, NW Офис, SW Власть, SE Соблазн).
+  - **9 (Палитра Полутонов):** перекрытие всех климатических переходов (весенний озон, летний зной, бархатная осень, морозная зима).
+* **Кросс-брендовый спарринг (Люкс vs Ниша vs Smart Dupe)**: прямое сопоставление *Versace*, *Tom Ford* и *Lattafa* слот-в-слот с расчетом дистанции соответствия $\Delta$.
+* **Интерактивный 2D-радар**: визуализация точек ароматов на фазовой плоскости с мгновенной примеркой лука в 1 клик.
+
+### 2. 🏛️ Двухуровневый ритейл-интерфейс («Для жизни» vs «Витрина категории»)
 * **Режим консьержа (Топ-2, по умолчанию):**
   - Полное устранение парадокса выбора: система выдаёт ровно **1 Чемпиона** + **1 Контрастного дублёра** под ситуацию.
   - Разбор 3 ключевых факторов победы аромата (социальная цель, тканевый резонанс со слоями $L1–L4$, физика диффузии).

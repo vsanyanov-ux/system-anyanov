@@ -9,7 +9,18 @@ import { compileAnyanovOutfit } from '../engine/outfitCompiler';
 import { matchAnyanovPerfume } from '../engine/fragranceMatcher';
 import { analyzeStyleSolfeggio } from '../engine/styleSolfeggio';
 
-export type AnyanovTab = 'public' | 'simple' | 'pro' | 'benchmarks';
+export type AnyanovTab =
+  | 'concierge'
+  | 'category'
+  | 'gap-audit'
+  | 'discovery-set'
+  | 'gifting'
+  | 'in-store'
+  | 'brand-matrix'
+  | 'simple'
+  | 'pro'
+  | 'benchmarks'
+  | 'public';
 
 export function useAnyanovState() {
   // 0. Сезон (Лето / Зима по зарисовкам Аньянова)
@@ -43,11 +54,24 @@ export function useAnyanovState() {
   }, []);
   // 1. Активная вкладка
   const [activeTab, setActiveTabState] = useState<AnyanovTab>(() => {
-    const saved = safeGetItem(STORAGE_KEYS.TAB, 'public');
-    if (saved === 'public' || saved === 'pro' || saved === 'simple' || saved === 'benchmarks') {
-      return saved as AnyanovTab;
+    const saved = safeGetItem(STORAGE_KEYS.TAB, 'concierge');
+    const validTabs: AnyanovTab[] = [
+      'concierge',
+      'category',
+      'gap-audit',
+      'discovery-set',
+      'gifting',
+      'in-store',
+      'brand-matrix',
+      'simple',
+      'pro',
+      'benchmarks',
+      'public',
+    ];
+    if (validTabs.includes(saved as AnyanovTab)) {
+      return saved === 'public' ? 'concierge' : (saved as AnyanovTab);
     }
-    return 'public';
+    return 'concierge';
   });
 
   const setActiveTab = useCallback((tab: AnyanovTab) => {
