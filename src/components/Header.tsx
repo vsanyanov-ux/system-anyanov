@@ -2,8 +2,8 @@ import { Sparkles, BookOpen, ShieldCheck, Layers, Zap, SlidersHorizontal, Crown,
 import { AnyanovSeason } from '../types';
 
 interface HeaderProps {
-  activeTab: 'simple' | 'pro' | 'benchmarks';
-  onTabChange: (tab: 'simple' | 'pro' | 'benchmarks') => void;
+  activeTab: 'public' | 'simple' | 'pro' | 'benchmarks';
+  onTabChange: (tab: 'public' | 'simple' | 'pro' | 'benchmarks') => void;
   onOpenManifesto: () => void;
   onOpenShelf?: () => void;
   onOpenPeriodicTable?: () => void;
@@ -55,28 +55,43 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center: Tabs Switcher (Simple Core vs Pro Lab vs Benchmarks 21) */}
+        {/* Center: Tabs Switcher (Public vs Simple Core vs Pro Lab vs Benchmarks 21) */}
         <div className="flex items-center bg-slate-900/90 p-1 rounded-2xl border border-slate-800 shadow-inner">
           <button
-            onClick={() => onTabChange('simple')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'simple'
+            onClick={() => onTabChange('public')}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeTab === 'public'
                 ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-md font-extrabold'
                 : 'text-slate-400 hover:text-white'
             }`}
+            title="Минималистичный режим для каждого дня"
           >
-            <Zap className={`w-3.5 h-3.5 ${activeTab === 'simple' ? 'fill-black' : 'text-amber-400'}`} />
-            <span className="hidden sm:inline">Суть системы</span>
-            <span className="sm:hidden">Суть</span>
+            <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'public' ? 'fill-black text-black' : 'text-amber-400'}`} />
+            <span className="hidden sm:inline">Для жизни</span>
+            <span className="sm:hidden">Лук</span>
+          </button>
+
+          <button
+            onClick={() => onTabChange('simple')}
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              activeTab === 'simple'
+                ? 'bg-slate-800 text-amber-300 shadow border border-amber-500/30 font-extrabold'
+                : 'text-slate-400 hover:text-white'
+            }`}
+            title="Суть 4 архетипов Аньянова"
+          >
+            <Zap className={`w-3.5 h-3.5 ${activeTab === 'simple' ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`} />
+            <span className="hidden sm:inline">Суть</span>
           </button>
           
           <button
             onClick={() => onTabChange('pro')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'pro'
                 ? 'bg-slate-800 text-white shadow border border-slate-700 font-extrabold'
                 : 'text-slate-400 hover:text-white'
             }`}
+            title="Полная инженерная лаборатория и 2D матрица"
           >
             <SlidersHorizontal className="w-3.5 h-3.5 text-sky-400" />
             <span className="hidden sm:inline">Лаборатория Pro</span>
@@ -85,11 +100,12 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={() => onTabChange('benchmarks')}
-            className={`flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'benchmarks'
                 ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-black shadow-md font-extrabold'
                 : 'text-slate-400 hover:text-white'
             }`}
+            title="Эталонный золотой гардероб 21х21"
           >
             <Crown className={`w-3.5 h-3.5 ${activeTab === 'benchmarks' ? 'text-black fill-black' : 'text-amber-400'}`} />
             <span className="hidden sm:inline">Эталоны 21</span>

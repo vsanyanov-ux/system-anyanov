@@ -9,7 +9,7 @@ import { compileAnyanovOutfit } from '../engine/outfitCompiler';
 import { matchAnyanovPerfume } from '../engine/fragranceMatcher';
 import { analyzeStyleSolfeggio } from '../engine/styleSolfeggio';
 
-export type AnyanovTab = 'simple' | 'pro' | 'benchmarks';
+export type AnyanovTab = 'public' | 'simple' | 'pro' | 'benchmarks';
 
 export function useAnyanovState() {
   // 0. Сезон (Лето / Зима по зарисовкам Аньянова)
@@ -43,11 +43,11 @@ export function useAnyanovState() {
   }, []);
   // 1. Активная вкладка
   const [activeTab, setActiveTabState] = useState<AnyanovTab>(() => {
-    const saved = safeGetItem(STORAGE_KEYS.TAB, 'simple');
-    if (saved === 'pro' || saved === 'simple' || saved === 'benchmarks') {
+    const saved = safeGetItem(STORAGE_KEYS.TAB, 'public');
+    if (saved === 'public' || saved === 'pro' || saved === 'simple' || saved === 'benchmarks') {
       return saved as AnyanovTab;
     }
-    return 'simple';
+    return 'public';
   });
 
   const setActiveTab = useCallback((tab: AnyanovTab) => {

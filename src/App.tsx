@@ -7,6 +7,7 @@ import { MannequinVisualizer } from './components/MannequinVisualizer';
 import { FragranceMatchCard } from './components/FragranceMatchCard';
 import { CorePrincipleView } from './components/CorePrincipleView';
 import { SmartConciergeBar } from './components/SmartConciergeBar';
+import { PublicMinimalView } from './components/PublicMinimalView';
 import { useAnyanovState } from './hooks/useAnyanovState';
 
 // Ленивая загрузка тяжелых диалоговых окон и эталонной таблицы 21
@@ -88,54 +89,69 @@ export function App() {
 
       {/* 2. Main Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
-        {/* Умный AI-Консьерж: свободный текстовый ввод на естественном языке */}
-        <SmartConciergeBar
-          currentCoords={coords}
-          onApplyCoords={(newCoords) => {
-            setCoords(newCoords);
-          }}
-        />
-
-        {activeTab === 'benchmarks' ? (
-          /* РЕЖИМ ЭТАЛОНОВ 21: Интерактивная таблица эталонов, зеркало духов и 21 элемент гардероба */
-          <Suspense fallback={<LazyFallback />}>
-            <BenchmarkTableView
-              currentCoords={coords}
-              onApplyCoords={setCoords}
-              onSwitchTab={setActiveTab}
-              onLoadGoldenShelf={loadGoldenShelf}
-              is21Mode={is21Mode}
-              onToggle21Mode={toggle21Mode}
-            />
-          </Suspense>
-        ) : activeTab === 'simple' ? (
-          /* ЭКСПРЕСС-РЕЖИМ: Минимум настроек, 0 перегруза, чистая демонстрация принципа */
-          <CorePrincipleView
+        {activeTab === 'public' ? (
+          /* РЕЖИМ ДЛЯ ЖИЗНИ: Минималистичный публичный интерфейс без перегруза */
+          <PublicMinimalView
             coords={coords}
             onChangeCoords={setCoords}
             outfit={stack}
-            perfume={matchResult.perfume}
-            idealPerfume={matchResult.idealCatalogMatch}
-            solfeggio={solfeggio}
-            notesEngine={matchResult.notesEngine}
+            matchResult={matchResult}
+            userShelfIds={userShelfIds}
             isCatalogMode={isCatalogMode}
             onToggleCatalogMode={toggleCatalogMode}
-            hasWardrobeGap={matchResult.hasWardrobeGap}
-            gapAdvice={matchResult.gapAdvice}
-            totalShelfCount={userShelfIds.length}
-            onOpenShelf={() => setIsShelfModalOpen(true)}
-            onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
-            onOpenHumanFinder={() => setIsHumanFinderOpen(true)}
+            onOpenShelfModal={() => setIsShelfModalOpen(true)}
             onSwitchToPro={() => setActiveTab('pro')}
           />
         ) : (
-          /* РЕЖИМ PRO: Полный пульт управления, 2D Canvas, 4 слайдера, слои L1-L4 */
           <>
-            {/* Presets in 1 click */}
-            <PresetSelector
+            {/* Умный AI-Консьерж: свободный текстовый ввод на естественном языке */}
+            <SmartConciergeBar
               currentCoords={coords}
-              onSelectPreset={(newCoords) => setCoords(newCoords)}
+              onApplyCoords={(newCoords) => {
+                setCoords(newCoords);
+              }}
             />
+
+            {activeTab === 'benchmarks' ? (
+              /* РЕЖИМ ЭТАЛОНОВ 21: Интерактивная таблица эталонов, зеркало духов и 21 элемент гардероба */
+              <Suspense fallback={<LazyFallback />}>
+                <BenchmarkTableView
+                  currentCoords={coords}
+                  onApplyCoords={setCoords}
+                  onSwitchTab={setActiveTab}
+                  onLoadGoldenShelf={loadGoldenShelf}
+                  is21Mode={is21Mode}
+                  onToggle21Mode={toggle21Mode}
+                />
+              </Suspense>
+            ) : activeTab === 'simple' ? (
+              /* ЭКСПРЕСС-РЕЖИМ: 4 ключевых архетипа */
+              <CorePrincipleView
+                coords={coords}
+                onChangeCoords={setCoords}
+                outfit={stack}
+                perfume={matchResult.perfume}
+                idealPerfume={matchResult.idealCatalogMatch}
+                solfeggio={solfeggio}
+                notesEngine={matchResult.notesEngine}
+                isCatalogMode={isCatalogMode}
+                onToggleCatalogMode={toggleCatalogMode}
+                hasWardrobeGap={matchResult.hasWardrobeGap}
+                gapAdvice={matchResult.gapAdvice}
+                totalShelfCount={userShelfIds.length}
+                onOpenShelf={() => setIsShelfModalOpen(true)}
+                onOpenPeriodicTable={() => setIsPeriodicTableOpen(true)}
+                onOpenHumanFinder={() => setIsHumanFinderOpen(true)}
+                onSwitchToPro={() => setActiveTab('pro')}
+              />
+            ) : (
+              /* РЕЖИМ PRO: Полный пульт управления, 2D Canvas, 4 слайдера, слои L1-L4 */
+              <>
+                {/* Presets in 1 click */}
+                <PresetSelector
+                  currentCoords={coords}
+                  onSelectPreset={(newCoords) => setCoords(newCoords)}
+                />
 
             {/* Two-Column Grid: Controls & Outputs */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -176,6 +192,12 @@ export function App() {
                 {/* Fragrance Mirror with Shelf integration & Notes Engine Analysis */}
                 <FragranceMatchCard
                   perfume={matchResult.perfume}
+                  champion={matchResult.champion}
+                  championScore={matchResult.championScore}
+                  championReasons={matchResult.championReasons}
+                  alternative={matchResult.alternative}
+                  alternativeScore={matchResult.alternativeScore}
+                  alternativeDifference={matchResult.alternativeDifference}
                   solfeggio={solfeggio}
                   isFromShelf={matchResult.isFromShelf}
                   totalShelfCount={userShelfIds.length}
@@ -193,7 +215,9 @@ export function App() {
             </div>
           </>
         )}
-      </main>
+      </>
+    )}
+    </main>
 
       {/* 3. Footer */}
       <footer className="w-full border-t border-slate-900 bg-slate-950/60 py-4 text-center text-xs text-slate-500 font-mono">

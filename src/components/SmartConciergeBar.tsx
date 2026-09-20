@@ -3,6 +3,7 @@ import { Sparkles, ArrowRight, CheckCircle2, RotateCcw, Compass, Tag, ShieldAler
 import { AnyanovCoordinates } from '../types';
 import { CONCIERGE_SUGGESTIONS } from '../engine/semanticParser';
 import { ADKAgentRunner, AgentRunResult } from '../engine/adk/runtime';
+import { logUserSituation } from '../services/supabaseService';
 
 interface SmartConciergeBarProps {
   onApplyCoords: (coords: AnyanovCoordinates) => void;
@@ -35,6 +36,7 @@ export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
 
       if (result.success) {
         onApplyCoords(result.state.currentCoords);
+        logUserSituation(text, result.state.currentCoords).catch(() => {});
       }
     } finally {
       setIsLoading(false);

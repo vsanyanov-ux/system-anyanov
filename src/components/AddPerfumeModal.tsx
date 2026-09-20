@@ -32,6 +32,7 @@ import {
   saveStoredGeminiApiKey,
 } from '../engine/geminiService';
 import { findPeriodicNote, registerPeriodicNote } from '../data/periodicNotes';
+import { saveFragranceToCloud } from '../services/supabaseService';
 
 interface AddPerfumeModalProps {
   isOpen: boolean;
@@ -257,6 +258,11 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
       colorTheme: calculatedMeta.colorTheme,
       pyramid: currentPyramid,
     };
+
+    // Фоновая синхронизация с облачной базой Supabase
+    saveFragranceToCloud(finalPerfume).catch((e) =>
+      console.warn('Фоновое сохранение в Supabase пропущено:', e)
+    );
 
     onAddPerfume(finalPerfume);
     onClose();

@@ -17,6 +17,38 @@ export interface KnownFragranceRecord {
  * Позволяет мгновенно распознать пирамиду нот по бренду и названию
  */
 export const KNOWN_FRAGRANCES_CATALOG: KnownFragranceRecord[] = [
+  // --- PARFUMS DE MARLY ---
+  {
+    brand: 'Parfums de Marly',
+    name: 'Carlisle',
+    aliases: ['карлайл', 'carlisle', 'парфюмс де марли карлайл', 'pdm carlisle'],
+    pyramid: {
+      top: ['Зеленое яблоко', 'Мускатный орех', 'Бергамот', 'Мандарин'],
+      heart: ['Бобы тонка', 'Османтус', 'Роза', 'Давана'],
+      base: ['Пачули', 'Бурбонская ваниль', 'Опопонакс', 'Смолы'],
+    },
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Темное хрустящее яблоко, мускатный орех, сливочные бобы тонка, смолистый опопонакс, благородная бурбонская ваниль',
+    bestOccasion: 'Зимний/осенний вечер, статусное мероприятие, свидание тет-а-тет, театр, клубный вечер',
+    colorTheme: 'from-amber-700 via-yellow-900 to-black',
+  },
+
+  // --- MAISON ALHAMBRA & ARABIC CLONES ---
+  {
+    brand: 'Maison Alhambra',
+    name: 'Cassius',
+    aliases: ['кассиус', 'cassius', 'альхамбра кассиус', 'maison alhambra cassius', 'клон карлайл'],
+    pyramid: {
+      top: ['Зеленое яблоко', 'Мускатный орех', 'Шафран'],
+      heart: ['Бобы тонка', 'Роза', 'Османтус'],
+      base: ['Пачули', 'Ваниль', 'Опопонакс'],
+    },
+    diffusion: 'Ударная',
+    dominantVibe: 'Пряный шафран, хрустящее яблоко, сладкие бобы тонка, густые пачули, напористый восточный шлейф',
+    bestOccasion: 'Прохладная осень/зима, открытые террасы, клубная вечеринка, вечерний Casual',
+    colorTheme: 'from-amber-600 via-stone-800 to-black',
+  },
+
   // --- LATTAFA & ARABIC NICHE ---
   {
     brand: 'Lattafa',

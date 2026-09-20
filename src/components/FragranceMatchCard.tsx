@@ -8,17 +8,28 @@ import {
   Layers, 
   ArrowRight, 
   ShieldCheck, 
-  Compass,
-  Atom,
-  HeartHandshake
+  Compass, 
+  Atom, 
+  HeartHandshake,
+  Trophy,
+  Shuffle,
+  Cloud,
+  CloudOff
 } from 'lucide-react';
 import { AXIS_LABELS, INTENT_AXES, ENVIRONMENT_AXES } from '../engine/styleSolfeggio';
 import { HUMAN_VIBE_ARCHETYPES } from '../data/humanScents';
 import { getPerfumeBottleImage } from '../data/fragrances';
 import { computeOlfactoryDynamics } from '../engine/periodicNotesEngine';
+import { isSupabaseConfigured } from '../services/supabaseService';
 
 interface FragranceMatchCardProps {
   perfume: PerfumeItem;
+  champion?: PerfumeItem;
+  championScore?: number;
+  championReasons?: string[];
+  alternative?: PerfumeItem;
+  alternativeScore?: number;
+  alternativeDifference?: string;
   solfeggio: SolfeggioAnalysis;
   isFromShelf: boolean;
   totalShelfCount: number;
@@ -36,6 +47,12 @@ interface FragranceMatchCardProps {
 
 export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
   perfume,
+  champion,
+  championScore,
+  championReasons,
+  alternative,
+  alternativeScore,
+  alternativeDifference,
   solfeggio,
   isFromShelf,
   totalShelfCount,
@@ -52,32 +69,52 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
 }) => {
   const [imgError, setImgError] = useState(false);
   const [viewModeBottle, setViewModeBottle] = useState<'photo' | 'schema'>('photo');
+  const [showAlternative, setShowAlternative] = useState(false);
+
+  // Активный выбранный аромат: Чемпион (по умолчанию) или Альтернатива
+  const activePerfume = (showAlternative && alternative) ? alternative : (champion || perfume);
+  const activeScore = (showAlternative && alternativeScore !== undefined) ? alternativeScore : (championScore ?? 95);
 
   useEffect(() => {
     setImgError(false);
-  }, [perfume.id]);
+  }, [activePerfume.id]);
 
-  const bottleImage = getPerfumeBottleImage(perfume);
+  useEffect(() => {
+    setShowAlternative(false);
+  }, [perfume.id, champion?.id]);
+
+  const bottleImage = getPerfumeBottleImage(activePerfume);
   const showPhoto = Boolean(bottleImage && !imgError && viewModeBottle === 'photo');
-  const humanArchetype = HUMAN_VIBE_ARCHETYPES.find((a) => a.targetPerfumeId === perfume.id);
+  const humanArchetype = HUMAN_VIBE_ARCHETYPES.find((a) => a.targetPerfumeId === activePerfume.id);
 
   const dynamics = useMemo(() => {
-    return notesEngine?.olfactoryDynamics || computeOlfactoryDynamics(perfume?.pyramid);
-  }, [notesEngine?.olfactoryDynamics, perfume?.pyramid]);
+    return notesEngine?.olfactoryDynamics || computeOlfactoryDynamics(activePerfume?.pyramid);
+  }, [notesEngine?.olfactoryDynamics, activePerfume?.pyramid]);
 
-  const topNotes = Array.isArray(perfume?.pyramid?.top) ? perfume.pyramid.top : [];
-  const heartNotes = Array.isArray(perfume?.pyramid?.heart) ? perfume.pyramid.heart : [];
-  const baseNotes = Array.isArray(perfume?.pyramid?.base) ? perfume.pyramid.base : [];
+  const topNotes = Array.isArray(activePerfume?.pyramid?.top) ? activePerfume.pyramid.top : [];
+  const heartNotes = Array.isArray(activePerfume?.pyramid?.heart) ? activePerfume.pyramid.heart : [];
+  const baseNotes = Array.isArray(activePerfume?.pyramid?.base) ? activePerfume.pyramid.base : [];
 
   return (
     <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-xl relative overflow-hidden">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-800 pb-3 z-10">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <h2 className="text-sm font-bold text-white uppercase tracking-wider">
             Ольфакторный дуэт (Fragrance Mirror)
           </h2>
+          {isSupabaseConfigured() ? (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/70 text-emerald-300 border border-emerald-500/30 flex items-center gap-1" title="Синхронизировано с облачной базой Supabase">
+              <Cloud className="w-3 h-3 text-emerald-400" />
+              <span>Cloud</span>
+            </span>
+          ) : (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-950 text-slate-400 border border-slate-800 flex items-center gap-1" title="Локальный режим (LocalStorage)">
+              <CloudOff className="w-3 h-3 text-slate-500" />
+              <span>Offline-first</span>
+            </span>
+          )}
         </div>
 
         {/* Shelf Action Buttons */}
@@ -130,6 +167,40 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
         </div>
       </div>
 
+      {/* Champion / Alternative Switcher (Устранение парадокса выбора: 1 Чемпион + 1 Альтернатива) */}
+      {alternative && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-1.5 bg-slate-950/90 rounded-xl border border-slate-800/80 z-10">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              onClick={() => setShowAlternative(false)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                !showAlternative
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                  : 'text-slate-400 hover:text-white bg-slate-900/50'
+              }`}
+            >
+              <Trophy className="w-3.5 h-3.5" />
+              <span>🏆 Главный чемпион ({championScore ?? 95}%)</span>
+            </button>
+            <button
+              onClick={() => setShowAlternative(true)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                showAlternative
+                  ? 'bg-sky-500 text-slate-950 shadow-md shadow-sky-500/20'
+                  : 'text-slate-400 hover:text-white bg-slate-900/50'
+              }`}
+            >
+              <Shuffle className="w-3.5 h-3.5" />
+              <span>🔄 Альтернативный вайб ({alternativeScore}%)</span>
+            </button>
+          </div>
+
+          <span className="text-[10px] font-mono text-slate-400 pr-2">
+            {!showAlternative ? 'Бескомпромиссный выбор №1' : 'Контрастный дублёр'}
+          </span>
+        </div>
+      )}
+
       {/* Main Perfume Presentation */}
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center z-10">
         {/* Left: Bottle Real Photo or Vector Illustration (4 cols) */}
@@ -167,7 +238,7 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
 
               <img
                 src={bottleImage!}
-                alt={`${perfume.brand} ${perfume.name}`}
+                alt={`${activePerfume.brand} ${activePerfume.name}`}
                 onError={() => setImgError(true)}
                 className="h-36 max-h-[145px] w-auto max-w-[130px] object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter transition-all duration-300 group-hover:scale-105 select-none z-10"
                 loading="lazy"
@@ -213,34 +284,77 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
               {/* Label plate */}
               <rect x="26" y="78" width="48" height="40" rx="2" fill="#020617" stroke="#f59e0b" strokeWidth="1" />
               <text x="50" y="93" fill="#ffffff" fontSize="5.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                {perfume.brand.toUpperCase()}
+                {activePerfume.brand.toUpperCase()}
               </text>
               <text x="50" y="105" fill="#f59e0b" fontSize="6.5" fontWeight="900" textAnchor="middle" fontFamily="serif">
-                {perfume.name.length > 14 ? perfume.name.slice(0, 13) + '..' : perfume.name}
+                {activePerfume.name.length > 14 ? activePerfume.name.slice(0, 13) + '..' : activePerfume.name}
               </text>
             </svg>
           )}
 
           <div className="flex items-center gap-2 mt-2 font-mono text-[10px] text-slate-400 z-10">
-            <span>Диффузия: <strong className="text-slate-200">{perfume.diffusion}</strong></span>
+            <span>Диффузия: <strong className="text-slate-200">{activePerfume.diffusion}</strong></span>
             <span>•</span>
-            <span>Коорд: <strong className="text-amber-400">{perfume.xCoord > 0 ? `+${perfume.xCoord}` : perfume.xCoord}, {perfume.yCoord > 0 ? `+${perfume.yCoord}` : perfume.yCoord}</strong></span>
+            <span>Коорд: <strong className="text-amber-400">{activePerfume.xCoord > 0 ? `+${activePerfume.xCoord}` : activePerfume.xCoord}, {activePerfume.yCoord > 0 ? `+${activePerfume.yCoord}` : activePerfume.yCoord}</strong></span>
           </div>
         </div>
 
         {/* Right: Perfume Details & Why fits (8 cols) */}
         <div className="sm:col-span-8 flex flex-col gap-2.5">
-          <div>
-            <span className="text-xs text-amber-400 font-bold uppercase tracking-wider block">
-              {perfume.brand}
-            </span>
-            <h3 className="text-lg font-black text-white leading-tight">
-              {perfume.name}
-            </h3>
-            <p className="text-xs text-slate-300 italic mt-0.5">
-              «{perfume.dominantVibe}»
-            </p>
+          {/* Header Title with Score Badge */}
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <span className="text-xs text-amber-400 font-bold uppercase tracking-wider block">
+                {activePerfume.brand}
+              </span>
+              <h3 className="text-lg font-black text-white leading-tight">
+                {activePerfume.name}
+              </h3>
+              <p className="text-xs text-slate-300 italic mt-0.5">
+                «{activePerfume.dominantVibe}»
+              </p>
+            </div>
+
+            <div className="flex flex-col items-end">
+              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                {activeScore}% Резонанс
+              </span>
+              <span className="text-[9px] font-mono text-slate-400 mt-0.5">
+                {!showAlternative ? 'Выбор дня' : 'Альтернатива'}
+              </span>
+            </div>
           </div>
+
+          {/* Блок обоснования Чемпиона (3 фактора победы) */}
+          {!showAlternative && championReasons && championReasons.length > 0 && (
+            <div className="bg-gradient-to-r from-amber-950/30 via-slate-950/80 to-slate-900/60 border border-amber-500/30 rounded-xl p-2.5 flex flex-col gap-1.5 shadow-sm">
+              <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-amber-300 uppercase tracking-wider">
+                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Почему победил этот аромат:</span>
+              </div>
+              <ul className="text-xs text-slate-200 space-y-1">
+                {championReasons.map((reason, idx) => (
+                  <li key={idx} className="flex items-start gap-1.5 text-[11px] leading-tight">
+                    <span className="text-amber-400 font-bold">•</span>
+                    <span>{reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Блок характера альтернативы */}
+          {showAlternative && alternativeDifference && (
+            <div className="bg-gradient-to-r from-sky-950/30 via-slate-950/80 to-slate-900/60 border border-sky-500/30 rounded-xl p-2.5 flex flex-col gap-1 shadow-sm">
+              <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-sky-300 uppercase tracking-wider">
+                <Shuffle className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                <span>Альтернативный характер (Второй вайб):</span>
+              </div>
+              <p className="text-xs text-slate-100 font-medium leading-relaxed">
+                {alternativeDifference}
+              </p>
+            </div>
+          )}
 
           {/* Человеческий вайб аромата */}
           {humanArchetype ? (

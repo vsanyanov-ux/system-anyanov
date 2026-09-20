@@ -1,6 +1,6 @@
 {
   "name": "system-anyanov",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "Система Аньянова — прикладная социальная инженерия стиля",
   "private": false,
   "license": "MIT",
@@ -17,6 +17,7 @@
     "eval:adk": "tsx tests/eval/run_evals.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.546.0",
     "react": "^19.0.0",

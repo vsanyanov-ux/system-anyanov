@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646cff?logo=vite)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Version](https://img.shields.io/badge/Version-v2.7.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
+[![Version](https://img.shields.io/badge/Version-v2.8.0-amber.svg)](https://github.com/vsanyanov-ux/system-anyanov/releases)
 [![ADK Quality](https://img.shields.io/badge/ADK_Flywheel-100%25_PASS-emerald.svg)](tests/eval)
 [![License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
 
@@ -56,7 +56,23 @@
 
 ## 🚀 Ключевые модули
 
-### 1. 🧴 Моя парфюмерная полка (Fragrance Wardrobe Shelf)
+### 1. 🏛️ Двухуровневый ритейл-интерфейс («Для жизни» vs «Витрина категории»)
+* **Режим консьержа (Топ-2, по умолчанию):**
+  - Полное устранение парадокса выбора: система выдаёт ровно **1 Чемпиона** + **1 Контрастного дублёра** под ситуацию.
+  - Разбор 3 ключевых факторов победы аромата (социальная цель, тканевый резонанс со слоями $L1–L4$, физика диффузии).
+  - Автоматический детектор ольфакторных брешей гардероба (*Wardrobe Gap*).
+* **Режим витрины категории (Искушенный покупатель / Ритейл):**
+  - Под **ту же самую ситуацию** в 1 клик разворачивается витрина всех квалифицированных ароматов категории.
+  - Фильтры по брендам (*Versace, Tom Ford, Chanel, Dior, Hermès, Creed...*), текстовый поиск по нотам (*«ветивер»*, *«уд»*, *«ирис»*).
+  - Интерактивная кнопка **«Надеть этот аромат»**: флакон примеряется на текущий комплект одежды, пересчитывая резонанс.
+
+### 2. ⚡ Облачный бэкенд Supabase (Cloud Registry, Shelves & Analytics)
+* **Глобальный каталог ароматов (PostgreSQL):** облачный реестр проверенных формул и пользовательских флаконов.
+* **Синхронизация полок:** сохранение и бесшовный доступ к личной полке с любого устройства.
+* **Анонимная аналитика поводов:** сбор запросов пользователей для выявления трендов и обогащения парсера.
+* **Offline-First Resilience:** прозрачная и безотказная работа через `localStorage` в отсутствие сети или ключей.
+
+### 3. 🧴 Моя парфюмерная полка (Fragrance Wardrobe Shelf)
 * **Никакого ручного ввода нот:** пользователю не нужно изучать химию пирамиды.
 * **Выбор флаконов в 1 клик:** библиотека из 35+ культовых, нишевых и люксовых ароматов (Chanel, Dior, Hermès, Creed, Tom Ford, Prada, Armani, Versace, Kilian, Ganymede, Baccarat Rouge 540, Lattafa, Afnan).
 * **Готовые пресеты полок:** *«Базовый джентльмен (Топ-5)»*, *«Современный люкс (8)»*, *«Арабский хит-парад»*, *«Нишевый ценитель»*.

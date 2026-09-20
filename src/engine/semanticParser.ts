@@ -45,7 +45,34 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
   }
 
   // 2. Распознавание поводов и контекста
-  if (q.includes('свадьб') || q.includes('венчан') || q.includes('торжеств')) {
+  if (
+    q.includes('королев') ||
+    q.includes('монарх') ||
+    q.includes('прием у') ||
+    q.includes('светск') ||
+    q.includes('дипломат') ||
+    q.includes('посольств') ||
+    q.includes('аудиенци') ||
+    q.includes('бал') ||
+    q.includes('гала') ||
+    q.includes('раут') ||
+    q.includes('black tie') ||
+    q.includes('white tie') ||
+    q.includes('смокинг') ||
+    q.includes('фрак')
+  ) {
+    formalIndex = 3;
+    socialX = -0.85;
+    thermoY = -0.70;
+    if (!tempMatch) temperatureC = 20;
+
+    detectedFactors.push({
+      category: 'Повод',
+      label: 'Светский прием / Королевский протокол',
+      impact: 'Высшая субординация (Grand Formal / Black Tie), монументальный статус, строгая дистанция',
+    });
+    summary = 'Высший светский раут и королевский протокол (Grand Formal)';
+  } else if (q.includes('свадьб') || q.includes('венчан') || q.includes('торжеств')) {
     formalIndex = 2;
     socialX += 0.35;
     thermoY += 0.25;
@@ -183,7 +210,7 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
       label: 'Близкий круг / Друзья',
       impact: 'Смещение в сторону эмпатии, открытости и тепла (+X)',
     });
-  } else if (q.includes('босс') || q.includes('руковод') || q.includes('клиент') || q.includes('министр') || q.includes('чужи')) {
+  } else if (q.includes('босс') || q.includes('руковод') || q.includes('клиент') || q.includes('министр') || q.includes('королев') || q.includes('монарх') || q.includes('посол') || q.includes('президент') || q.includes('чужи')) {
     socialX = Math.max(-1.0, socialX - 0.35);
     detectedFactors.push({
       category: 'Отношения',
