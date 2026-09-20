@@ -484,15 +484,83 @@ export interface CalculatedPerfumeMetadata {
 }
 
 /**
+ * Семантический классификатор семейств нот (надежный фоллбек на случай отсутствия ноты в периодической таблице)
+ */
+interface SemanticNoteAnchor {
+  keywords: string[];
+  x: number;
+  y: number;
+  mass: number;
+  fabrics: string[];
+}
+
+const SEMANTIC_NOTE_ANCHORS: SemanticNoteAnchor[] = [
+  // Гурманика & Сладость (Юго-Восток SE)
+  { keywords: ['ваниль', 'vanilla', 'тонка', 'tonka', 'пралине', 'praline', 'карамель', 'caramel', 'сахар', 'sugar', 'мед', 'honey', 'шоколад', 'какао', 'cocoa', 'финики', 'dates', 'марципан'], x: 0.85, y: -0.65, mass: 0.75, fabrics: ['Кашемир', 'Шерсть', 'Мягкий трикотаж'] },
+  { keywords: ['кофе', 'coffee', 'капучино', 'эспрессо'], x: 0.35, y: -0.70, mass: 0.70, fabrics: ['Шерсть', 'Твид', 'Фланель'] },
+  { keywords: ['корица', 'cinnamon', 'мускатный', 'гвоздика', 'clove', 'кардамон', 'cardamom'], x: 0.50, y: -0.55, mass: 0.60, fabrics: ['Шерсть', 'Кашемир', 'Фланель'] },
+  { keywords: ['кокос', 'coconut', 'иланг', 'ylang', 'тиаре', 'моной'], x: 0.65, y: 0.15, mass: 0.55, fabrics: ['Шелк', 'Лен'] },
+  { keywords: ['вишня', 'cherry', 'слива', 'plum', 'малина', 'ягоды', 'персик', 'инжир', 'fig'], x: 0.55, y: -0.25, mass: 0.50, fabrics: ['Шелк', 'Бархат', 'Кашемир'] },
+
+  // Дым, Кожа, Уд, Смолы, Статус (Юго-Запад SW)
+  { keywords: ['уд', 'oud', 'агар', 'агаровое', 'гваяк', 'гайяк', 'guaiac'], x: -0.75, y: -0.80, mass: 0.90, fabrics: ['Тяжелая костюмная шерсть', 'Драп'] },
+  { keywords: ['кожа', 'leather', 'замша', 'suede', 'cuir'], x: -0.80, y: -0.65, mass: 0.85, fabrics: ['Кожа', 'Костюмная шерсть'] },
+  { keywords: ['деготь', 'tar', 'дым', 'smoke', 'копоть', 'пепел'], x: -0.85, y: -0.75, mass: 0.90, fabrics: ['Кожа', 'Тяжелая шерсть'] },
+  { keywords: ['ладан', 'incense', 'олибанум', 'смола', 'resin', 'мирра', 'myrrh', 'бензоин', 'benzoin', 'лабданум', 'labdanum', 'элеми', 'elemi'], x: -0.55, y: -0.60, mass: 0.80, fabrics: ['Шерсть', 'Кашемир', 'Драп'] },
+  { keywords: ['шафран', 'saffron', 'акигалавуд', 'akigalawood', 'амбервуд', 'amberwood'], x: -0.50, y: -0.30, mass: 0.70, fabrics: ['Шерсть', 'Твид'] },
+  { keywords: ['табак', 'tobacco'], x: -0.45, y: -0.70, mass: 0.80, fabrics: ['Твид', 'Шерсть', 'Фланель'] },
+
+  // Свежесть, Холод, Цитрусы, Акватика (Северо-Восток & Северо-Запад)
+  { keywords: ['цитрус', 'citrus', 'лимон', 'lemon', 'бергамот', 'bergamot', 'лайм', 'lime', 'мандарин', 'mandarin', 'грейпфрут', 'grapefruit', 'апельсин', 'orange', 'юзу', 'yuzu'], x: 0.10, y: 0.85, mass: 0.30, fabrics: ['Хлопок', 'Лен', 'Поплин'] },
+  { keywords: ['мята', 'mint', 'эвкалипт', 'eucalyptus', 'лед', 'ice', 'озон', 'ozone', 'альдегиды', 'aldehydes'], x: -0.30, y: 0.90, mass: 0.25, fabrics: ['Хлопок', 'Поплин'] },
+  { keywords: ['морские', 'marine', 'акватика', 'aquatic', 'морская соль', 'соль', 'водоросли', 'sea'], x: 0.25, y: 0.80, mass: 0.35, fabrics: ['Лен', 'Хлопок'] },
+  { keywords: ['чай', 'tea', 'зеленый чай', 'матча', 'белый чай'], x: -0.20, y: 0.60, mass: 0.35, fabrics: ['Хлопок', 'Тонкий трикотаж'] },
+  { keywords: ['реверь', 'ревен', 'rhubarb'], x: -0.15, y: 0.70, mass: 0.40, fabrics: ['Хлопок', 'Лен'] },
+
+  // Шипры, Интеллект, Сухость, Мох, Ветивер, Ирис (Северо-Запад NW)
+  { keywords: ['мох', 'moss', 'дубовый мох', 'oakmoss'], x: -0.85, y: 0.45, mass: 0.80, fabrics: ['Твид', 'Шерсть', 'Драп'] },
+  { keywords: ['ветивер', 'vetiver'], x: -0.65, y: 0.40, mass: 0.70, fabrics: ['Твид', 'Шерсть', 'Габардин'] },
+  { keywords: ['ирис', 'iris', 'корень ириса', 'фиалка', 'violet', 'пудра', 'powder'], x: -0.45, y: 0.60, mass: 0.50, fabrics: ['Хлопок', 'Поплин', 'Тонкая шерсть'] },
+  { keywords: ['кедр', 'cedar', 'кипарис', 'cypress', 'можжевельник', 'juniper', 'сосна', 'pine'], x: -0.55, y: 0.30, mass: 0.65, fabrics: ['Шерсть', 'Твид'] },
+  { keywords: ['кремень', 'минерал', 'mineral', 'металл', 'металлические'], x: -0.70, y: 0.45, mass: 0.60, fabrics: ['Твид', 'Плотный хлопок'] },
+  { keywords: ['розмарин', 'rosemary', 'шалфей', 'sage', 'лаванда', 'lavender', 'тимьян', 'thyme', 'герань', 'geranium'], x: -0.50, y: 0.55, mass: 0.45, fabrics: ['Хлопок', 'Шерсть'] },
+];
+
+/**
+ * КОЭФФИЦИЕНТ ОЛЬФАКТОРНОГО ДОМИНИРОВАНИЯ (OVERDOSE FACTOR - Ω)
+ * В биофизике рецепторов (законы Вебера — Фехнера и Стивенса, феномен ольфакторной маскировки)
+ * молекулы с ультранизким порогом обнаружения (уд, деготь, ладан, супер-амбры, табак)
+ * нелинейно подавляют фоновые сахара, фрукты и цветы.
+ */
+export const OVERDOSE_DOMINANT_RULES: Array<{ keywords: string[]; omega: number }> = [
+  { keywords: ['уд', 'oud', 'агаровое дерево', 'агар', 'акигалавуд', 'akigalawood'], omega: 2.8 },
+  { keywords: ['деготь', 'tar', 'березовый деготь', 'кастореум', 'castoreum', 'изобутилхинолин'], omega: 2.8 },
+  { keywords: ['ладан', 'incense', 'олибанум', 'olibanum'], omega: 2.0 },
+  { keywords: ['амброценид', 'ambrocenide', 'amber xtreme'], omega: 2.5 },
+  { keywords: ['табак', 'tobacco', 'лист табака', 'трубочный табак'], omega: 2.2 },
+];
+
+export function getOverdoseFactor(cleanNote: string): number {
+  for (const rule of OVERDOSE_DOMINANT_RULES) {
+    if (rule.keywords.some((kw) => cleanNote.includes(kw))) {
+      return rule.omega;
+    }
+  }
+  return 1.0;
+}
+
+/**
  * ФОРМУЛА РАСЧЕТА КООРДИНАТ ИЗ ПИРАМИДЫ НОТ
- * Взвешивает ноты по слоям:
+ * Взвешивает ноты по слоям с учетом биофизического коэффициента доминирования (Ω):
  *  - Top: 0.8x (быстрая летучая вспышка)
  *  - Heart: 1.2x (ядро звучания)
  *  - Base: 1.6x (фундамент и долгий шлейф)
+ *  - Overdose Factor (Ω): 2.0x .. 2.8x для молекул-хищников
  */
 export function calculatePerfumeCoordinatesFromNotes(
   pyramid: PerfumeNotePyramid,
-  customVibe?: string
+  customVibe?: string,
+  forcedCoords?: { x: number; y: number }
 ): CalculatedPerfumeMetadata {
   let totalWeightX = 0;
   let totalWeightY = 0;
@@ -502,9 +570,17 @@ export function calculatePerfumeCoordinatesFromNotes(
 
   const processTier = (notes: string[], tierFactor: number) => {
     for (const rawNote of notes) {
-      const noteEl = findPeriodicNote(rawNote);
+      if (!rawNote || !rawNote.trim()) continue;
+      const clean = rawNote.trim().toLowerCase();
+      const omega = getOverdoseFactor(clean);
+      const noteEl = findPeriodicNote(clean);
+
+      // Если молекула-хищник (уд, ладан, деготь) указана в Top/Heart (0.8x-1.2x),
+      // восстанавливаем ее реальную термодинамику тяжелой базы (минимум 1.5x)
+      const effectiveTier = (omega > 1.5 && tierFactor < 1.5) ? 1.5 : tierFactor;
+
       if (noteEl) {
-        const weight = (noteEl.massWeight || 0.5) * tierFactor;
+        const weight = (noteEl.massWeight || 0.5) * effectiveTier * omega;
         sumWeightedX += noteEl.distanceX * weight;
         sumWeightedY += noteEl.thermoY * weight;
         totalWeightX += weight;
@@ -513,22 +589,21 @@ export function calculatePerfumeCoordinatesFromNotes(
           noteEl.resonantFabrics.forEach((f) => resonantFabricsSet.add(f));
         }
       } else {
-        // Fallback для неизвестных нот через ключевые слова
-        const clean = rawNote.toLowerCase();
-        let fallbackX = 0;
-        let fallbackY = 0;
-        if (clean.includes('кокос')) { fallbackX = 0.65; fallbackY = 0.20; resonantFabricsSet.add('Лен'); resonantFabricsSet.add('Шелк'); }
-        else if (clean.includes('иланг')) { fallbackX = 0.55; fallbackY = 0.10; resonantFabricsSet.add('Шелк'); }
-        else if (clean.includes('цитрус') || clean.includes('апельсин') || clean.includes('лимон')) { fallbackX = 0.10; fallbackY = 0.85; resonantFabricsSet.add('Хлопок'); }
-        else if (clean.includes('уд')) { fallbackX = -0.75; fallbackY = -0.85; resonantFabricsSet.add('Тяжелая костюмная шерсть'); }
-        else if (clean.includes('кожа')) { fallbackX = -0.80; fallbackY = -0.70; resonantFabricsSet.add('Кожа'); }
-        else if (clean.includes('ваниль')) { fallbackX = 0.85; fallbackY = -0.70; resonantFabricsSet.add('Кашемир'); }
+        // Поиск по расширенным семантическим кластерам
+        const matchedAnchor = SEMANTIC_NOTE_ANCHORS.find((anchor) =>
+          anchor.keywords.some((kw) => clean.includes(kw))
+        );
 
-        const fallbackWeight = 0.5 * tierFactor;
-        sumWeightedX += fallbackX * fallbackWeight;
-        sumWeightedY += fallbackY * fallbackWeight;
-        totalWeightX += fallbackWeight;
-        totalWeightY += fallbackWeight;
+        if (matchedAnchor) {
+          const weight = matchedAnchor.mass * effectiveTier * omega;
+          sumWeightedX += matchedAnchor.x * weight;
+          sumWeightedY += matchedAnchor.y * weight;
+          totalWeightX += weight;
+          totalWeightY += weight;
+          matchedAnchor.fabrics.forEach((f) => resonantFabricsSet.add(f));
+        }
+        // ВАЖНО: если нота совсем не опознана, мы НЕ добавляем 0 с фиктивным весом в знаменатель,
+        // чтобы неизвестная нота не искажала и не стягивала центр масс аромата в (0, 0)!
       }
     }
   };
@@ -540,6 +615,12 @@ export function calculatePerfumeCoordinatesFromNotes(
   // Итоговые координаты с ограничением от -1.00 до +1.00
   let rawX = totalWeightX > 0 ? sumWeightedX / totalWeightX : 0;
   let rawY = totalWeightY > 0 ? sumWeightedY / totalWeightY : 0;
+
+  // Если переданы подтвержденные AI-координаты и не было распознанных нот, используем их
+  if (forcedCoords) {
+    rawX = forcedCoords.x;
+    rawY = forcedCoords.y;
+  }
 
   // Округляем до двух знаков
   const xCoord = Number(Math.max(-1.0, Math.min(1.0, rawX)).toFixed(2));

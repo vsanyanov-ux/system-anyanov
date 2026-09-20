@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PerfumeItem, SolfeggioAnalysis, NoteEngineAnalysis } from '../types';
 import { 
   Sparkles, 
@@ -12,9 +12,10 @@ import {
   Atom,
   HeartHandshake
 } from 'lucide-react';
-import { AXIS_LABELS } from '../engine/styleSolfeggio';
+import { AXIS_LABELS, INTENT_AXES, ENVIRONMENT_AXES } from '../engine/styleSolfeggio';
 import { HUMAN_VIBE_ARCHETYPES } from '../data/humanScents';
 import { getPerfumeBottleImage } from '../data/fragrances';
+import { computeOlfactoryDynamics } from '../engine/periodicNotesEngine';
 
 interface FragranceMatchCardProps {
   perfume: PerfumeItem;
@@ -59,6 +60,14 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
   const bottleImage = getPerfumeBottleImage(perfume);
   const showPhoto = Boolean(bottleImage && !imgError && viewModeBottle === 'photo');
   const humanArchetype = HUMAN_VIBE_ARCHETYPES.find((a) => a.targetPerfumeId === perfume.id);
+
+  const dynamics = useMemo(() => {
+    return notesEngine?.olfactoryDynamics || computeOlfactoryDynamics(perfume?.pyramid);
+  }, [notesEngine?.olfactoryDynamics, perfume?.pyramid]);
+
+  const topNotes = Array.isArray(perfume?.pyramid?.top) ? perfume.pyramid.top : [];
+  const heartNotes = Array.isArray(perfume?.pyramid?.heart) ? perfume.pyramid.heart : [];
+  const baseNotes = Array.isArray(perfume?.pyramid?.base) ? perfume.pyramid.base : [];
 
   return (
     <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-xl relative overflow-hidden">
@@ -279,19 +288,86 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
             </div>
           )}
 
-          {/* Pyramid Notes */}
-          <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800 text-[11px] space-y-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="text-sky-400 font-bold font-mono text-[10px] shrink-0">ВЕРХ:</span>
-              <span className="text-slate-300 truncate">{perfume.pyramid.top.join(' • ')}</span>
+          {/* Анатомия раскрытия (Крылья • Сердце • Якорь) */}
+          <div className="bg-slate-950/70 p-3 rounded-2xl border border-slate-800 text-[11px] flex flex-col gap-2.5 shadow-inner">
+            <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-amber-400" />
+                Анатомия раскрытия: Физика &amp; Дистанция
+              </span>
+              <span className="text-[9px] font-mono text-amber-300/90 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-500/30">
+                Координаты нот
+              </span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-amber-400 font-bold font-mono text-[10px] shrink-0">СЕРДЦЕ:</span>
-              <span className="text-slate-300 truncate">{perfume.pyramid.heart.join(' • ')}</span>
+
+            {/* 1. Верх (+Y): Крылья и летучесть */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-mono">
+                <span className="font-bold text-sky-400 flex items-center gap-1">
+                  <span>▲ ВЕРХ (+Y):</span>
+                  <span className="text-slate-400 font-normal">Летучесть &amp; Импульс</span>
+                </span>
+                <span className="text-sky-300/90">
+                  {Math.round(dynamics.topVolatilesScore * 100)}% диффузия
+                </span>
+              </div>
+              <div className="text-slate-300 text-[11px] truncate">
+                {topNotes.length > 0 ? topNotes.join(' • ') : '—'}
+              </div>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-indigo-400 font-bold font-mono text-[10px] shrink-0">БАЗА:</span>
-              <span className="text-slate-300 truncate">{perfume.pyramid.base.join(' • ')}</span>
+
+            {/* 2. СЕРДЦЕ (X): Психологическая дистанция */}
+            <div className="p-2.5 rounded-xl bg-slate-900/90 border border-amber-500/30 space-y-1.5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-black text-amber-300 flex items-center gap-1">
+                  <span>● СЕРДЦЕ (X):</span>
+                  <span className="text-amber-100 font-semibold">{dynamics.heartDistanceLabel}</span>
+                </span>
+                <span className="text-[10px] font-mono text-amber-400 font-bold bg-amber-950/80 px-1.5 py-0.2 rounded border border-amber-500/30">
+                  {dynamics.heartDistanceScore > 0 ? `+${dynamics.heartDistanceScore}` : dynamics.heartDistanceScore}
+                </span>
+              </div>
+              
+              {/* Визуальная шкала дистанции сердца */}
+              <div className="space-y-1">
+                <div className="relative h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-700/80">
+                  {/* Центр */}
+                  <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-slate-500/70 z-10" />
+                  {/* Ползунок текущего положения */}
+                  <div 
+                    className="absolute top-0 bottom-0 w-3 rounded-full -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-200 shadow-[0_0_10px_#f59e0b] transition-all duration-300"
+                    style={{ left: `${((dynamics.heartDistanceScore + 1) / 2) * 100}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-[8px] font-mono text-slate-400">
+                  <span>◄ Границы / Дистанция (–X)</span>
+                  <span>Баланс</span>
+                  <span>Сближение / Интим (+X) ►</span>
+                </div>
+              </div>
+
+              <div className="text-amber-200/90 text-[11px] font-medium pt-0.5 truncate">
+                {heartNotes.length > 0 ? heartNotes.join(' • ') : '—'}
+              </div>
+              <p className="text-[10px] text-slate-400 leading-snug">
+                {dynamics.heartInterpretation}
+              </p>
+            </div>
+
+            {/* 3. База (-Y): Якорь и фиксаторы */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-mono">
+                <span className="font-bold text-indigo-400 flex items-center gap-1">
+                  <span>▼ БАЗА (–Y):</span>
+                  <span className="text-slate-400 font-normal">Якорь &amp; Фиксация</span>
+                </span>
+                <span className="text-indigo-300/90">
+                  {Math.round(dynamics.baseFixationScore * 100)}% стойкость
+                </span>
+              </div>
+              <div className="text-slate-300 text-[11px] truncate">
+                {baseNotes.length > 0 ? baseNotes.join(' • ') : '—'}
+              </div>
             </div>
           </div>
 
@@ -428,45 +504,203 @@ export const FragranceMatchCard: React.FC<FragranceMatchCardProps> = ({
         </div>
       )}
 
-      {/* 8D Solfeggio Radar Breakdown & Clashes */}
+      {/* Каноническая Тетрада Воплощения (4 Выходных Канала: Форма — Фактура — Цвет — Запах) */}
+      {solfeggio.tetrad && (
+        <div className="border-t border-slate-800/80 pt-3 flex flex-col gap-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+            <span className="text-xs font-mono font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              Каноническая Тетрада Воплощения (Canonical Tetrad)
+            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span
+                className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                  solfeggio.tetrad.amplitude === 'FORTISSIMO'
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                    : solfeggio.tetrad.amplitude === 'PIANISSIMO'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    : 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                }`}
+              >
+                {solfeggio.tetrad.amplitude === 'FORTISSIMO'
+                  ? '⚡ Fortissimo (Statement)'
+                  : solfeggio.tetrad.amplitude === 'PIANISSIMO'
+                  ? '🕊️ Pianissimo (Quiet Luxury)'
+                  : '⚖️ Mezzo (Сбалансированная)'}
+              </span>
+              <span
+                className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                  solfeggio.tetrad.isMonolithic
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                    : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                }`}
+              >
+                {solfeggio.tetrad.isMonolithic ? '✨ Монолит' : '🎼 Полифония'}
+              </span>
+            </div>
+          </div>
+
+          {/* 4 Канала Тетрады */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[11px]">
+            {/* Форма */}
+            <div className="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 flex flex-col gap-1">
+              <div className="flex items-center justify-between text-[10px] font-mono">
+                <span className="text-sky-400 font-bold uppercase tracking-wider">1. ФОРМА</span>
+                <span className={`px-1.5 py-0.2 rounded font-bold ${
+                  solfeggio.tetrad.form.status === 'CONSONANT' ? 'text-emerald-400 bg-emerald-950/60' : solfeggio.tetrad.form.status === 'CONTRAPUNCT' ? 'text-amber-400 bg-amber-950/60' : 'text-rose-400 bg-rose-950/60'
+                }`}>
+                  {solfeggio.tetrad.form.resonanceScore}%
+                </span>
+              </div>
+              <p className="font-semibold text-slate-200 text-[11px] leading-tight line-clamp-1" title={solfeggio.tetrad.form.value}>
+                {solfeggio.tetrad.form.value}
+              </p>
+              <p className="text-[10px] text-slate-400 leading-snug line-clamp-2">
+                {solfeggio.tetrad.form.detail}
+              </p>
+            </div>
+
+            {/* Фактура */}
+            <div className="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 flex flex-col gap-1">
+              <div className="flex items-center justify-between text-[10px] font-mono">
+                <span className="text-emerald-400 font-bold uppercase tracking-wider">2. ФАКТУРА</span>
+                <span className={`px-1.5 py-0.2 rounded font-bold ${
+                  solfeggio.tetrad.texture.status === 'CONSONANT' ? 'text-emerald-400 bg-emerald-950/60' : solfeggio.tetrad.texture.status === 'CONTRAPUNCT' ? 'text-amber-400 bg-amber-950/60' : 'text-rose-400 bg-rose-950/60'
+                }`}>
+                  {solfeggio.tetrad.texture.resonanceScore}%
+                </span>
+              </div>
+              <p className="font-semibold text-slate-200 text-[11px] leading-tight line-clamp-1" title={solfeggio.tetrad.texture.value}>
+                {solfeggio.tetrad.texture.value}
+              </p>
+              <p className="text-[10px] text-slate-400 leading-snug line-clamp-2">
+                {solfeggio.tetrad.texture.detail}
+              </p>
+            </div>
+
+            {/* Цвет */}
+            <div className="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 flex flex-col gap-1">
+              <div className="flex items-center justify-between text-[10px] font-mono">
+                <span className="text-amber-400 font-bold uppercase tracking-wider">3. ЦВЕТ</span>
+                <span className={`px-1.5 py-0.2 rounded font-bold ${
+                  solfeggio.tetrad.color.status === 'CONSONANT' ? 'text-emerald-400 bg-emerald-950/60' : solfeggio.tetrad.color.status === 'CONTRAPUNCT' ? 'text-amber-400 bg-amber-950/60' : 'text-rose-400 bg-rose-950/60'
+                }`}>
+                  {solfeggio.tetrad.color.resonanceScore}%
+                </span>
+              </div>
+              <p className="font-semibold text-slate-200 text-[11px] leading-tight line-clamp-1" title={solfeggio.tetrad.color.value}>
+                {solfeggio.tetrad.color.value}
+              </p>
+              <p className="text-[10px] text-slate-400 leading-snug line-clamp-2">
+                {solfeggio.tetrad.color.detail}
+              </p>
+            </div>
+
+            {/* Запах */}
+            <div className="bg-slate-950/70 p-2.5 rounded-xl border border-slate-800 flex flex-col gap-1">
+              <div className="flex items-center justify-between text-[10px] font-mono">
+                <span className="text-purple-400 font-bold uppercase tracking-wider">4. ЗАПАХ</span>
+                <span className={`px-1.5 py-0.2 rounded font-bold ${
+                  solfeggio.tetrad.scent.status === 'CONSONANT' ? 'text-emerald-400 bg-emerald-950/60' : solfeggio.tetrad.scent.status === 'CONTRAPUNCT' ? 'text-amber-400 bg-amber-950/60' : 'text-rose-400 bg-rose-950/60'
+                }`}>
+                  {solfeggio.tetrad.scent.resonanceScore}%
+                </span>
+              </div>
+              <p className="font-semibold text-slate-200 text-[11px] leading-tight line-clamp-1" title={solfeggio.tetrad.scent.value}>
+                {solfeggio.tetrad.scent.value}
+              </p>
+              <p className="text-[10px] text-slate-400 leading-snug line-clamp-2">
+                {solfeggio.tetrad.scent.detail}
+              </p>
+            </div>
+          </div>
+
+          <div className="text-[11px] text-slate-300 font-serif italic bg-slate-950/50 p-2 rounded-lg border border-slate-800/60">
+            «{solfeggio.tetrad.summaryVerdict}»
+          </div>
+        </div>
+      )}
+
+      {/* 10D Solfeggio Radar Breakdown & Clashes */}
       <div className="border-t border-slate-800/80 pt-3 flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <Sliders className="w-3.5 h-3.5 text-indigo-400" />
-            Канонический 8D-радар Аньянова (Гардероб vs Аромат)
+            Канонический 10D-радар Аньянова (5 Намерения × 5 Среды)
           </span>
           <span className="text-[10px] font-mono text-slate-400">
-            cos(θ) = {solfeggio.cosineSimilarity}
+            cos(θ) = {solfeggio.cosineSimilarity} • D = {solfeggio.distance}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
-          {(Object.keys(AXIS_LABELS) as (keyof typeof AXIS_LABELS)[]).map((axis) => {
-            const meta = AXIS_LABELS[axis];
-            const oVal = solfeggio.outfitVector[axis];
-            const pVal = solfeggio.perfumeVector[axis];
-            const diff = Math.abs(oVal - pVal);
+        {/* 5 осей намерения X */}
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-mono text-indigo-400 font-bold uppercase tracking-wider">
+            Базис Социального Воздействия (5 осей воли / X):
+          </span>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-[10px]">
+            {INTENT_AXES.map((axis) => {
+              const meta = AXIS_LABELS[axis];
+              const oVal = solfeggio.outfitVector[axis];
+              const pVal = solfeggio.perfumeVector[axis];
+              const diff = Math.abs(oVal - pVal);
 
-            return (
-              <div
-                key={axis}
-                className="bg-slate-950/60 p-2 rounded-lg border border-slate-800/80 flex flex-col gap-1"
-              >
-                <div className="flex justify-between items-center text-slate-300 font-medium">
-                  <span>{meta.name}</span>
-                  <span className={`font-mono font-bold ${
-                    diff >= 1.0 ? 'text-rose-400' : diff >= 0.65 ? 'text-amber-400' : 'text-emerald-400'
-                  }`}>
-                    Δ {diff.toFixed(2)}
-                  </span>
+              return (
+                <div
+                  key={axis}
+                  className="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800/80 flex flex-col gap-0.5"
+                >
+                  <div className="flex justify-between items-center text-slate-300 font-medium">
+                    <span className="truncate" title={meta.name}>{meta.name}</span>
+                    <span className={`font-mono font-bold text-[9px] ${
+                      diff >= 1.0 ? 'text-rose-400' : diff >= 0.65 ? 'text-amber-400' : 'text-emerald-400'
+                    }`}>
+                      Δ {diff.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[8px] text-slate-500 font-mono">
+                    <span className="text-indigo-300">Л: {oVal > 0 ? '+' : ''}{oVal.toFixed(2)}</span>
+                    <span className="text-amber-300">П: {pVal > 0 ? '+' : ''}{pVal.toFixed(2)}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-[9px] text-slate-500 font-mono">
-                  <span className="text-indigo-300">Лук: {oVal > 0 ? '+' : ''}{oVal.toFixed(2)}</span>
-                  <span className="text-amber-300">Парфюм: {pVal > 0 ? '+' : ''}{pVal.toFixed(2)}</span>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 5 осей среды Y */}
+        <div className="flex flex-col gap-1 mt-1">
+          <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">
+            Базис Физического Контекста (5 осей среды / Y):
+          </span>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-[10px]">
+            {ENVIRONMENT_AXES.map((axis) => {
+              const meta = AXIS_LABELS[axis];
+              const oVal = solfeggio.outfitVector[axis];
+              const pVal = solfeggio.perfumeVector[axis];
+              const diff = Math.abs(oVal - pVal);
+
+              return (
+                <div
+                  key={axis}
+                  className="bg-slate-950/60 p-1.5 rounded-lg border border-slate-800/80 flex flex-col gap-0.5"
+                >
+                  <div className="flex justify-between items-center text-slate-300 font-medium">
+                    <span className="truncate" title={meta.name}>{meta.name}</span>
+                    <span className={`font-mono font-bold text-[9px] ${
+                      diff >= 1.0 ? 'text-rose-400' : diff >= 0.65 ? 'text-amber-400' : 'text-emerald-400'
+                    }`}>
+                      Δ {diff.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-[8px] text-slate-500 font-mono">
+                    <span className="text-indigo-300">Л: {oVal > 0 ? '+' : ''}{oVal.toFixed(2)}</span>
+                    <span className="text-amber-300">П: {pVal > 0 ? '+' : ''}{pVal.toFixed(2)}</span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {solfeggio.clashes.length > 0 && (

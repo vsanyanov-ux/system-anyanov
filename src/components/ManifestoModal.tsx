@@ -74,6 +74,35 @@ export const ManifestoModal: React.FC<ManifestoModalProps> = ({ isOpen, onClose 
           </div>
         </div>
 
+        {/* The Mystery of Heart Notes & Olfactory Coordinates */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-950 to-pink-500/10 border border-amber-500/40 flex flex-col gap-2.5 shadow-lg">
+          <div className="flex items-center gap-2 text-amber-400 font-mono font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            Тайна нот сердца: Почему они так называются?
+          </div>
+          <p className="text-slate-100 text-sm font-semibold leading-relaxed">
+            «Верх привлекает внимание. База оставляет память во времени. А Сердце решает, кто подойдёт ближе.»
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1 pt-2.5 border-t border-slate-800 text-xs text-slate-300">
+            <div className="space-y-1">
+              <span className="text-sky-300 font-bold font-mono text-[11px] block uppercase">
+                ▲/▼ Вертикаль Y: Физика испарения
+              </span>
+              <p className="leading-relaxed text-[11px] text-slate-400">
+                Верхние ноты (+Y) дают импульс и полет (летучесть, озон, цитрус), а База (–Y) служит монументальным якорем (смолы, уд, кожа, мох).
+              </p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-pink-300 font-bold font-mono text-[11px] block uppercase">
+                ◄/► Горизонталь X: Дистанция сердца
+              </span>
+              <p className="leading-relaxed text-[11px] text-slate-400">
+                Ноты сердца — это не просто «середина хронометража». Это эмоциональное ядро: суверенный щит личных границ (ирис, лаванда, ветивер: –X) либо теплое сокращение дистанции (пряности, сахар, табак: +X).
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Principles */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1.5">

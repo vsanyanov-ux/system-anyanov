@@ -32,6 +32,12 @@ export const BOTTLE_IMAGES: Record<string, string> = {
   'versace-eros': '/bottles/versace-eros.jpg',
   'jpg-le-male': '/bottles/jpg-le-male.jpg',
   'lattafa-khamrah': '/bottles/lattafa-khamrah.jpg',
+  'versace-pour-homme': '/bottles/versace-oud-noir.jpg',
+  'versace-dylan-blue': '/bottles/versace-oud-noir.jpg',
+  'versace-dylan-blue-edt': '/bottles/versace-oud-noir.jpg',
+  'versace-dylan-blue-edp': '/bottles/versace-oud-noir.jpg',
+  'versace-the-dreamer': '/bottles/versace-oud-noir.jpg',
+  'versace-eros-edp': '/bottles/versace-eros.jpg',
 };
 
 export const getPerfumeBottleImage = (perfumeOrId?: PerfumeItem | string | null): string | null => {
@@ -43,6 +49,112 @@ export const getPerfumeBottleImage = (perfumeOrId?: PerfumeItem | string | null)
 };
 
 export const PERFUME_DATABASE: PerfumeItem[] = [
+  // =========================================================================
+  // ЭТАЛОННЫЙ КВИНТЕТ АНЬЯНОВА: VERSACE BENCHMARK ARCHITECTURE
+  // =========================================================================
+  {
+    id: 'versace-pour-homme',
+    name: 'Pour Homme (2008)',
+    brand: 'Versace',
+    xCoord: -0.55,
+    yCoord: 0.60,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Нероли, калабрийский бергамот, кедр, мускатный шалфей, дисциплина',
+    bestOccasion: 'Работа, переговоры, университет, дневной протокол',
+    whyFitsOutfit: 'Идеальный рабочий спутник: структурированный пиджак, белая сорочка, ясный фокус без лишних эмоций.',
+    colorTheme: 'from-sky-500 to-blue-700',
+    pyramid: {
+      top: ['Лимон', 'Нероли', 'Бергамот', 'Майская роза'],
+      heart: ['Гиацинт', 'Мускатный шалфей', 'Кедр', 'Герань'],
+      base: ['Бобы тонка', 'Мускус', 'Амбра']
+    }
+  },
+  {
+    id: 'versace-dylan-blue-edt',
+    name: 'Dylan Blue EDT (2016)',
+    brand: 'Versace',
+    xCoord: 0.00,
+    yCoord: 0.05,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Бергамот, грейпфрут, лист инжира, амброксан, ладан, пачули',
+    bestOccasion: 'Универсал (Лето): университет, офис, город, встречи с друзьями',
+    whyFitsOutfit: 'Абсолютный хамелеон: звучит одинаково органично и с Business Casual, и со Smart Casual.',
+    colorTheme: 'from-blue-600 to-indigo-900',
+    pyramid: {
+      top: ['Калабрийский бергамот', 'Грейпфрут', 'Водные ноты', 'Лист инжира'],
+      heart: ['Амброксан', 'Пачули', 'Черный перец', 'Лист фиалки', 'Папирус'],
+      base: ['Ладан', 'Мускус', 'Бобы тонка', 'Шафран']
+    }
+  },
+  {
+    id: 'versace-dylan-blue-edp',
+    name: 'Dylan Blue EDP / Parfum',
+    brand: 'Versace',
+    xCoord: 0.00,
+    yCoord: -0.15,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Глубокий ладан, амброксан, темный бергамот, смолистое тепло',
+    bestOccasion: 'Универсал (Зима): университет, офис в холодный сезон, вечерний баланс',
+    whyFitsOutfit: 'Более густая, теплая и смолистая версия Dylan Blue для прохладной погоды и уютного трикотажа.',
+    colorTheme: 'from-blue-800 to-slate-950',
+    pyramid: {
+      top: ['Темный бергамот', 'Грейпфрут', 'Инжир'],
+      heart: ['Черный перец', 'Амброксан', 'Смолы', 'Пачули'],
+      base: ['Дымный ладан', 'Минеральная амбра', 'Бобы тонка']
+    }
+  },
+  {
+    id: 'versace-man-eau-fraiche',
+    name: 'Man Eau Fraîche (2006)',
+    brand: 'Versace',
+    xCoord: 0.50,
+    yCoord: 0.75,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Карамбола, белый лимон, тархун, белый кедр, пляжный бриз',
+    bestOccasion: 'Отпуск, пляж, летняя терраса, прогулка с друзьями',
+    whyFitsOutfit: 'Идеален со льном, шортами, поло и белыми кедами. Дает ощущение абсолютной чистоты и свободы.',
+    colorTheme: 'from-cyan-400 to-sky-600',
+    pyramid: {
+      top: ['Белый лимон', 'Карамбола', 'Розовое дерево', 'Кардамон'],
+      heart: ['Тархун', 'Шалфей', 'Кедр'],
+      base: ['Мускус', 'Амбра', 'Древесные ноты', 'Шафран']
+    }
+  },
+  {
+    id: 'versace-the-dreamer',
+    name: 'The Dreamer (1996)',
+    brand: 'Versace',
+    xCoord: 0.55,
+    yCoord: 0.45,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Цветок табака, можжевельник, ирис, льняная пудра, амбра',
+    bestOccasion: 'Зимний выходной, утренний кофе, неспешные встречи, релакс',
+    whyFitsOutfit: 'Мягкий шерстяной джемпер, фланелевые брюки или вельвет: создает обволакивающий уют в прохладную погоду.',
+    colorTheme: 'from-amber-400 to-emerald-800',
+    pyramid: {
+      top: ['Можжевельник', 'Полынь', 'Тархун'],
+      heart: ['Цветок табака', 'Ирис', 'Лен', 'Амбра'],
+      base: ['Амбра', 'Эстрагон', 'Бобы тонка']
+    }
+  },
+  {
+    id: 'versace-eros-edp',
+    name: 'Eros Eau de Parfum (2020)',
+    brand: 'Versace',
+    xCoord: 0.70,
+    yCoord: -0.65,
+    diffusion: 'Ударная',
+    dominantVibe: 'Засахаренное яблоко, мадагаскарская ваниль, кожа, кедр, согревающий эрос',
+    bestOccasion: 'Зимнее свидание, романтический вечер на морозе, бар, клуб',
+    whyFitsOutfit: 'Плотная ванильно-кожаная основа не замерзает на зимнем воздухе, формируя непреодолимое тактильное притяжение.',
+    colorTheme: 'from-teal-700 to-cyan-950',
+    pyramid: {
+      top: ['Мята', 'Засахаренное яблоко', 'Лимон', 'Мандарин'],
+      heart: ['Амброксан', 'Мускатный шалфей', 'Герань'],
+      base: ['Ваниль', 'Кожа', 'Сандал', 'Пачули', 'Кедр']
+    }
+  },
+
   // =========================================================================
   // КВАДРАНТ I: СЕВЕРО-ЗАПАД (ХОЛОД / ДЕНЬ + ВЛАСТЬ / ФОКУС / СТАТУС / ДИСТАНЦИЯ)
   // X: [-1.00 ... 0.00], Y: [0.00 ... +1.00]

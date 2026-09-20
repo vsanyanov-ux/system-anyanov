@@ -27,8 +27,8 @@ class CalibrateCoordinatesInput(BaseModel):
 
 
 class EvaluateHarmonyInput(BaseModel):
-    outfit_vector: Dict[str, float] = Field(..., description="8D-вектор слоев одежды L1..L4")
-    fragrance_vector: Dict[str, float] = Field(..., description="8D-вектор аромата")
+    outfit_vector: Dict[str, float] = Field(..., description="10D-вектор слоев одежды L1..L4 (5 осей намерения x 5 осей среды)")
+    fragrance_vector: Dict[str, float] = Field(..., description="10D-вектор аромата")
     outfit_name: str = Field("Outfit", description="Название аутфита")
     fragrance_name: str = Field("Fragrance", description="Название аромата")
 
@@ -36,7 +36,7 @@ class EvaluateHarmonyInput(BaseModel):
 ADK_TOOL_DECLARATIONS = [
     {
         "name": "calibrate_anyanov_coordinates",
-        "description": "Калибрует 8D эстетические и физические координаты Системы Аньянова под повод, социальный статус и температуру.",
+        "description": "Калибрует ортогональные координаты Системы Аньянова (10D базис: 5 осей намерения x 5 осей среды) под повод, социальный статус и температуру.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -51,7 +51,7 @@ ADK_TOOL_DECLARATIONS = [
     },
     {
         "name": "evaluate_fragrance_harmony",
-        "description": "Рассчитывает 8D-сольфеджио гармонии (дистанция, контрапункт, диссонанс) между аутфитом и ароматом.",
+        "description": "Рассчитывает 10D-сольфеджио гармонии (дистанция, контрапункт, диссонанс) между аутфитом и ароматом с синтезом Тетрады.",
         "parameters": {
             "type": "object",
             "properties": {

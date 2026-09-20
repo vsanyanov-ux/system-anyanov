@@ -152,7 +152,32 @@ export const MannequinVisualizer: React.FC<MannequinVisualizerProps> = ({
 
         {/* Right: Detailed Layer breakdown (7 cols) */}
         <div className="md:col-span-7 flex flex-col gap-2">
-          {/* L4 */}
+          {/* Overwear (Транзит до мероприятия) */}
+          {outfit.overwear && (
+            <div className="p-2.5 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div
+                  className="w-4 h-4 rounded-md shrink-0 border border-white/20"
+                  style={{ backgroundColor: outfit.overwear.color }}
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-950/60 px-1.5 py-0.2 rounded border border-amber-500/30">
+                      ТРАНЗИТ
+                    </span>
+                    <span className="text-xs font-bold text-white truncate">
+                      {outfit.overwear.name} (Улица • Сдается в гардероб)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-amber-200/70 truncate">
+                    {outfit.overwear.fabric} • Защитный барьер по дороге
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* L4: Жакет / Пиджак на мероприятии */}
           <div className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2.5 min-w-0">
               <div
@@ -161,15 +186,15 @@ export const MannequinVisualizer: React.FC<MannequinVisualizerProps> = ({
               />
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-900 px-1.5 py-0.2 rounded">
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-slate-900 px-1.5 py-0.2 rounded">
                     L4
                   </span>
                   <span className="text-xs font-bold text-white truncate">
-                    {l4 ? l4.name : 'Без верхнего слоя (Жара / Открытый торс)'}
+                    {l4 ? l4.name : 'Без пиджака (Летний режим: Торс + Брюки + Обувь)'}
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-400 truncate">
-                  {l4 ? l4.fabric + ' • ' + l4.description : 'Идеально для дневного зноя'}
+                  {l4 ? `${l4.fabric} • ${l4.description}` : '3 легких слоя для дневного зноя'}
                 </p>
               </div>
             </div>

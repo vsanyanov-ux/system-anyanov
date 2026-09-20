@@ -1,4 +1,5 @@
 import { PeriodicNoteElement } from '../types';
+import { STORAGE_KEYS } from '../constants/storage';
 
 /**
  * ПЕРИОДИЧЕСКАЯ СИСТЕМА НОТ (Ольфакторная таблица элементов Аньянова)
@@ -690,14 +691,77 @@ export function findPeriodicNote(rawName: string): PeriodicNoteElement | undefin
 }
 
 /**
+ * Загрузка пользовательских / AI-откалиброванных нот из LocalStorage
+ */
+export function loadCustomNotesFromStorage(): PeriodicNoteElement[] {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return [];
+    const raw = localStorage.getItem(STORAGE_KEYS.CUSTOM_PERIODIC_NOTES);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn('Не удалось загрузить кастомные ноты из LocalStorage:', e);
+    return [];
+  }
+}
+
+/**
+ * Сохранение списка пользовательских нот в LocalStorage
+ */
+export function saveCustomNotesToStorage(notes: PeriodicNoteElement[]): void {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return;
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_PERIODIC_NOTES, JSON.stringify(notes));
+  } catch (e) {
+    console.warn('Не удалось сохранить кастомные ноты в LocalStorage:', e);
+  }
+}
+
+/**
  * Динамическая регистрация новой ноты в Периодической системе
- * Позволяет масштабировать базу нот без изменения исходного кода.
+ * Добавляет ноту в активный реестр и сохраняет в LocalStorage.
  */
 export function registerPeriodicNote(newElement: PeriodicNoteElement): void {
-  const existingIdx = PERIODIC_NOTE_ELEMENTS.findIndex((n) => n.id === newElement.id);
+  const cleanId = newElement.id.trim().toLowerCase();
+  const cleanName = newElement.name.trim().toLowerCase();
+
+  const existingIdx = PERIODIC_NOTE_ELEMENTS.findIndex(
+    (n) => n.id.toLowerCase() === cleanId || n.name.toLowerCase() === cleanName
+  );
+
   if (existingIdx >= 0) {
     PERIODIC_NOTE_ELEMENTS[existingIdx] = newElement;
   } else {
     PERIODIC_NOTE_ELEMENTS.push(newElement);
   }
+
+  // Обновляем алиас
+  NOTE_ALIASES[cleanName] = newElement.id;
+
+  // Синхронизируем с LocalStorage
+  const stored = loadCustomNotesFromStorage().filter(
+    (n) => n.id.toLowerCase() !== cleanId && n.name.toLowerCase() !== cleanName
+  );
+  stored.push(newElement);
+  saveCustomNotesToStorage(stored);
+}
+
+// Первоначальная инициализация сохраненных пользовательских нот
+try {
+  const initialCustomNotes = loadCustomNotesFromStorage();
+  if (initialCustomNotes && initialCustomNotes.length > 0) {
+    initialCustomNotes.forEach((note) => {
+      const idx = PERIODIC_NOTE_ELEMENTS.findIndex(
+        (n) => n.id.toLowerCase() === note.id.toLowerCase() || n.name.toLowerCase() === note.name.toLowerCase()
+      );
+      if (idx >= 0) {
+        PERIODIC_NOTE_ELEMENTS[idx] = note;
+      } else {
+        PERIODIC_NOTE_ELEMENTS.push(note);
+      }
+      NOTE_ALIASES[note.name.toLowerCase()] = note.id;
+    });
+  }
+} catch (e) {
+  console.warn('Ошибка инициализации кастомных нот из хранилища:', e);
 }

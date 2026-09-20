@@ -1,6 +1,7 @@
 """
-Style Solfeggio 8D: Mathematical Harmony Engine between Fashion & Fragrance.
-Implements the 8 canonical invariant axes of Sistema Anyanova.
+Style Solfeggio 10D: Mathematical Harmony Engine between Fashion & Fragrance.
+Implements the 10 canonical orthogonal invariant axes of Sistema Anyanova:
+5 Intent Axes (X) × 5 Environment Axes (Y).
 """
 
 from dataclasses import dataclass
@@ -14,26 +15,39 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
-AXES = [
-    "distance",       # -1 (Обособленность / Субординация) <-> +1 (Интим / Сближение)
+# 5 осей намерения (X)
+INTENT_AXES = [
+    "distance",       # -1 (Обособленность) <-> +1 (Интим / Сближение)
     "formality",      # -1 (Business Formal) <-> +1 (Casual)
-    "power",          # -1 (Статус / Твердая власть) <-> +1 (Соблазн / Шарм)
+    "power",          # -1 (Статус / Власть) <-> +1 (Соблазн / Шарм)
     "mood",           # -1 (Собранность / Фокус) <-> +1 (Легкость / Свобода)
-    "diffusion",      # -1 (Долгое действие / Шлейф) <-> +1 (Быстрое действие / Вспышка)
-    "temperature",    # -1 (Тепло / Согревающий) <-> +1 (Холод / Освежающий)
-    "time_of_day",    # -1 (Вечер / Глубина) <-> +1 (День / Свет)
-    "season",         # -1 (Зима / Плотность) <-> +1 (Лето / Воздух)
+    "expression",     # -1 (Statement / Fortissimo) <-> +1 (Quiet Luxury / Pianissimo)
 ]
 
+# 5 осей среды (Y)
+ENVIRONMENT_AXES = [
+    "season",         # -1 (Зима / Плотность) <-> +1 (Лето / Воздух)
+    "temperature",    # -1 (Тепло / Согревающий) <-> +1 (Холод / Освежающий)
+    "time_of_day",    # -1 (Вечер / Глубина) <-> +1 (День / Свет)
+    "space",          # -1 (Indoor / Помещение) <-> +1 (Outdoor / Стихия)
+    "chronometry",    # -1 (Марафон / 12+ ч) <-> +1 (Спринт / Экспресс)
+]
+
+AXES = INTENT_AXES + ENVIRONMENT_AXES
+
 DEFAULT_WEIGHTS = {
+    # Намерение
     "distance": 1.2,
     "formality": 1.2,
     "power": 1.1,
     "mood": 1.0,
-    "diffusion": 0.9,
+    "expression": 1.0,
+    # Среда
+    "season": 0.9,
     "temperature": 1.0,
-    "time_of_day": 0.8,
-    "season": 0.8,
+    "time_of_day": 0.9,
+    "space": 0.8,
+    "chronometry": 0.8,
 }
 
 @dataclass
@@ -142,10 +156,12 @@ OUTFITS = {
             "formality": -0.90,
             "power": -0.85,
             "mood": -0.80,
-            "diffusion": -0.75,
+            "expression": 0.70,
+            "season": -0.80,
             "temperature": -0.60,
             "time_of_day": -0.50,
-            "season": -0.80,
+            "space": -0.50,
+            "chronometry": -0.80,
         },
         description="Плотная шерсть, строгая плечевая линия, сухая текстура."
     ),
@@ -157,10 +173,12 @@ OUTFITS = {
             "formality": 0.90,
             "power": 0.60,
             "mood": 0.85,
-            "diffusion": 0.70,
+            "expression": -0.70,
+            "season": 0.90,
             "temperature": 0.80,
             "time_of_day": 0.75,
-            "season": 0.90,
+            "space": 0.85,
+            "chronometry": -0.70,
         },
         description="Невесомая вискоза, расстегнутый ворот, полная деконструкция формы."
     ),
@@ -172,10 +190,12 @@ OUTFITS = {
             "formality": 0.20,
             "power": 0.80,
             "mood": 0.20,
-            "diffusion": 0.30,
+            "expression": 0.60,
+            "season": 0.30,
             "temperature": 0.20,
             "time_of_day": -0.70,
-            "season": 0.30,
+            "space": -0.70,
+            "chronometry": 0.20,
         },
         description="Лаконичный шелк, тонкие бретели, струящаяся геометрия."
     ),
@@ -187,10 +207,12 @@ OUTFITS = {
             "formality": 0.30,
             "power": -0.40,
             "mood": -0.70,
-            "diffusion": 0.50,
+            "expression": -0.60,
+            "season": -0.30,
             "temperature": 0.70,
             "time_of_day": -0.60,
-            "season": -0.30,
+            "space": 0.85,
+            "chronometry": -0.70,
         },
         description="Функциональный технологичный минимализм мегаполиса."
     )
@@ -205,10 +227,12 @@ FRAGRANCES = {
             "formality": -0.85,
             "power": -0.80,
             "mood": -0.75,
-            "diffusion": -0.60,
+            "expression": 0.60,
+            "season": -0.60,
             "temperature": -0.20,
             "time_of_day": -0.60,
-            "season": -0.60,
+            "space": -0.40,
+            "chronometry": -0.80,
         },
         description="Строгий аристократичный шипр старой школы."
     ),
@@ -220,10 +244,12 @@ FRAGRANCES = {
             "formality": 0.80,
             "power": 0.50,
             "mood": 0.85,
-            "diffusion": 0.80,
+            "expression": -0.70,
+            "season": 0.90,
             "temperature": 0.85,
             "time_of_day": 0.80,
-            "season": 0.90,
+            "space": 0.80,
+            "chronometry": 0.60,
         },
         description="Яркий коктейльный цитрусово-акватический шлейф."
     ),
@@ -235,10 +261,12 @@ FRAGRANCES = {
             "formality": -0.20,
             "power": -0.20,
             "mood": -0.50,
-            "diffusion": 0.40,
+            "expression": 0.80,
+            "season": 0.30,
             "temperature": 0.50,
             "time_of_day": 0.20,
-            "season": 0.30,
+            "space": -0.60,
+            "chronometry": -0.60,
         },
         description="Холодная интеллектуальная урбанистическая вуаль."
     )
@@ -256,7 +284,7 @@ def run_benchmark():
     ]
 
     print("=" * 75)
-    print("  МУЛЬТИМОДАЛЬНОЕ СОЛЬФЕДЖИО СТИЛЯ (8D): РАСЧЕТ ДИСТАНЦИЙ И РЕЗОНАНСА")
+    print("  МУЛЬТИМОДАЛЬНОЕ СОЛЬФЕДЖИО СТИЛЯ (10D): РАСЧЕТ ДИСТАНЦИЙ И РЕЗОНАНСА")
     print("=" * 75)
 
     for o_key, f_key in pairs:

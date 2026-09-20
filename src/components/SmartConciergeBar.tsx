@@ -204,7 +204,7 @@ export const SmartConciergeBar: React.FC<SmartConciergeBarProps> = ({
             <div className="p-2.5 rounded-lg bg-slate-900/90 border border-amber-500/20 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  Сольфеджио 8D
+                  Сольфеджио 10D
                 </span>
                 <span className="text-slate-300">
                   Резонансный парфюм: <strong className="text-white">{agentResult.state.matchedFragrance.name}</strong> ({agentResult.state.matchedFragrance.brand})

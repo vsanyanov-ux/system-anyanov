@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { AnyanovCoordinates } from '../types';
+import { AnyanovCoordinates, AnyanovSeason, ControlMode } from '../types';
 import { STORAGE_KEYS, DEFAULT_COORDINATES } from '../constants/storage';
 import { safeGetItem, safeSetItem, safeGetJson, safeSetJson } from '../utils/storage';
 import { SHELF_PRESETS } from '../data/fragrances';
@@ -12,6 +12,35 @@ import { analyzeStyleSolfeggio } from '../engine/styleSolfeggio';
 export type AnyanovTab = 'simple' | 'pro' | 'benchmarks';
 
 export function useAnyanovState() {
+  // 0. Сезон (Лето / Зима по зарисовкам Аньянова)
+  const [season, setSeasonState] = useState<AnyanovSeason>(() => {
+    const saved = safeGetItem('anyanov_season', 'summer');
+    return (saved === 'winter' ? 'winter' : 'summer') as AnyanovSeason;
+  });
+
+  const setSeason = useCallback((s: AnyanovSeason) => {
+    setSeasonState(s);
+    safeSetItem('anyanov_season', s);
+  }, []);
+
+  const toggleSeason = useCallback(() => {
+    setSeasonState((prev) => {
+      const next = prev === 'summer' ? 'winter' : 'summer';
+      safeSetItem('anyanov_season', next);
+      return next;
+    });
+  }, []);
+
+  // 0.1 Режим пульта управления (Наряд: Новичок vs Парфюм: Профи)
+  const [controlMode, setControlModeState] = useState<ControlMode>(() => {
+    const saved = safeGetItem('anyanov_control_mode', 'outfit');
+    return (saved === 'perfume' ? 'perfume' : 'outfit') as ControlMode;
+  });
+
+  const setControlMode = useCallback((m: ControlMode) => {
+    setControlModeState(m);
+    safeSetItem('anyanov_control_mode', m);
+  }, []);
   // 1. Активная вкладка
   const [activeTab, setActiveTabState] = useState<AnyanovTab>(() => {
     const saved = safeGetItem(STORAGE_KEYS.TAB, 'simple');
@@ -135,6 +164,13 @@ export function useAnyanovState() {
     loadGoldenShelf,
     isCatalogMode,
     toggleCatalogMode,
+
+    // Сезон и Режим управления (Эскизы Аньянова)
+    season,
+    setSeason,
+    toggleSeason,
+    controlMode,
+    setControlMode,
 
     // Модальные окна
     isManifestoOpen,

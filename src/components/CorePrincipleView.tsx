@@ -16,7 +16,8 @@ import {
   Droplets,
   Atom,
   AlertTriangle,
-  HeartHandshake
+  HeartHandshake,
+  Compass
 } from 'lucide-react';
 import { AnyanovCoordinates, OutfitStack, PerfumeItem, SolfeggioAnalysis, NoteEngineAnalysis } from '../types';
 import { PERFUME_DATABASE } from '../data/fragrances';
@@ -174,8 +175,12 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
     if (displayPerfume.id === perfume.id && notesEngine) {
       return notesEngine;
     }
-    return analyzePeriodicNotesSynergy(displayPerfume.pyramid, outfit);
+    return analyzePeriodicNotesSynergy(displayPerfume?.pyramid || { top: [], heart: [], base: [] }, outfit);
   }, [displayPerfume, perfume, notesEngine, outfit]);
+
+  const displayTopNotes = Array.isArray(displayPerfume?.pyramid?.top) ? displayPerfume.pyramid.top : [];
+  const displayHeartNotes = Array.isArray(displayPerfume?.pyramid?.heart) ? displayPerfume.pyramid.heart : [];
+  const displayBaseNotes = Array.isArray(displayPerfume?.pyramid?.base) ? displayPerfume.pyramid.base : [];
 
   const handleSelectArchetype = (arch: CoreArchetype) => {
     onChangeCoords({
@@ -378,7 +383,26 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
 
               {/* Список вещей простым человеческим языком */}
               <div className="space-y-3">
-                {outfit.l4 && (
+                {/* Транзитная уличная верхняя одежда (если холодно на улице) */}
+                {outfit.overwear && (
+                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-amber-950/20 border border-amber-500/30">
+                    <div 
+                      className="w-4 h-4 rounded-full border border-white/20 shrink-0" 
+                      style={{ backgroundColor: outfit.overwear.color }}
+                      title={outfit.overwear.colorName}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-amber-400 font-mono uppercase font-bold">Транзит (Улица • Сдается в гардероб)</span>
+                        <span className="text-[10px] text-amber-300/70 font-mono">до мероприятия</span>
+                      </div>
+                      <div className="text-sm font-semibold text-white truncate">{outfit.overwear.name}</div>
+                      <div className="text-xs text-slate-400">{outfit.overwear.fabric}</div>
+                    </div>
+                  </div>
+                )}
+
+                {outfit.l4 ? (
                   <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80">
                     <div 
                       className="w-4 h-4 rounded-full border border-white/20 shrink-0" 
@@ -386,9 +410,17 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
                       title={outfit.l4.colorName}
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs text-amber-400 font-mono uppercase text-[10px]">Верхняя одежда</div>
+                      <div className="text-xs text-amber-400 font-mono uppercase text-[10px]">L4 • Жакет / Пиджак (На мероприятии)</div>
                       <div className="text-sm font-semibold text-white truncate">{outfit.l4.name}</div>
                       <div className="text-xs text-slate-400">{outfit.l4.fabric}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-950/30 border border-dashed border-slate-800 text-slate-500">
+                    <div className="w-4 h-4 rounded-full border border-dashed border-slate-700 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] font-mono uppercase text-slate-500">L4 • Пиджак снят (Летний режим)</div>
+                      <div className="text-xs text-slate-400">Только торс, брюки и обувь — максимальная легкость в зной</div>
                     </div>
                   </div>
                 )}
@@ -587,27 +619,103 @@ export const CorePrincipleView: React.FC<CorePrincipleViewProps> = ({
                 </div>
               )}
 
-              {/* Ключевые ноты */}
-              <div className="space-y-2">
-                <div className="text-[11px] font-mono text-slate-400 uppercase">Ключевой ольфакторный аккорд:</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {displayPerfume.pyramid.top.map((note, i) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-slate-300 font-medium">
-                      {note}
+              {/* Анатомия раскрытия (Крылья • Сердце • Якорь) */}
+              {effectiveNotesEngine?.olfactoryDynamics && (
+                <div className="bg-slate-950/70 p-3 rounded-2xl border border-slate-800 text-[11px] flex flex-col gap-2.5 shadow-inner">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                      <Compass className="w-3.5 h-3.5 text-amber-400" />
+                      Анатомия раскрытия (Физика &amp; Дистанция)
                     </span>
-                  ))}
-                  {displayPerfume.pyramid.heart.map((note, i) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-amber-300/90 font-medium">
-                      {note}
+                    <span className="text-[9px] font-mono text-amber-300/90 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-500/30">
+                      Координаты нот
                     </span>
-                  ))}
-                  {displayPerfume.pyramid.base.map((note, i) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800 text-indigo-300/90 font-medium">
-                      {note}
-                    </span>
-                  ))}
+                  </div>
+
+                  {/* 1. Верх (+Y): Крылья и летучесть */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-mono">
+                      <span className="font-bold text-sky-400 flex items-center gap-1">
+                        <span>▲ ВЕРХ (+Y):</span>
+                        <span className="text-slate-400 font-normal">Летучесть &amp; Импульс</span>
+                      </span>
+                      <span className="text-sky-300/90">
+                        {Math.round(effectiveNotesEngine.olfactoryDynamics.topVolatilesScore * 100)}% диффузия
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {displayTopNotes.map((note, i) => (
+                        <span key={i} className="text-xs px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-slate-300">
+                          {note}
+                        </span>
+                      ))}
+                      {displayTopNotes.length === 0 && <span className="text-slate-500 text-xs">—</span>}
+                    </div>
+                  </div>
+
+                  {/* 2. СЕРДЦЕ (X): Психологическая дистанция */}
+                  <div className="p-2.5 rounded-xl bg-slate-900/90 border border-amber-500/30 space-y-1.5 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-black text-amber-300 flex items-center gap-1">
+                        <span>● СЕРДЦЕ (X):</span>
+                        <span className="text-amber-100 font-semibold">{effectiveNotesEngine.olfactoryDynamics.heartDistanceLabel}</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-amber-400 font-bold bg-amber-950/80 px-1.5 py-0.2 rounded border border-amber-500/30">
+                        {effectiveNotesEngine.olfactoryDynamics.heartDistanceScore > 0 ? `+${effectiveNotesEngine.olfactoryDynamics.heartDistanceScore}` : effectiveNotesEngine.olfactoryDynamics.heartDistanceScore}
+                      </span>
+                    </div>
+                    
+                    {/* Визуальная шкала дистанции сердца */}
+                    <div className="space-y-1">
+                      <div className="relative h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-700/80">
+                        <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-slate-500/70 z-10" />
+                        <div 
+                          className="absolute top-0 bottom-0 w-3 rounded-full -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-200 shadow-[0_0_10px_#f59e0b] transition-all duration-300"
+                          style={{ left: `${((effectiveNotesEngine.olfactoryDynamics.heartDistanceScore + 1) / 2) * 100}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[8px] font-mono text-slate-400">
+                        <span>◄ Границы / Дистанция (–X)</span>
+                        <span>Баланс</span>
+                        <span>Сближение / Интим (+X) ►</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1 pt-0.5">
+                      {displayHeartNotes.map((note, i) => (
+                        <span key={i} className="text-xs px-2 py-0.5 rounded-md bg-amber-950/40 border border-amber-500/30 text-amber-200 font-medium">
+                          {note}
+                        </span>
+                      ))}
+                      {displayHeartNotes.length === 0 && <span className="text-slate-500 text-xs">—</span>}
+                    </div>
+                    <p className="text-[10px] text-slate-400 leading-snug">
+                      {effectiveNotesEngine.olfactoryDynamics.heartInterpretation}
+                    </p>
+                  </div>
+
+                  {/* 3. База (-Y): Якорь и фиксаторы */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-mono">
+                      <span className="font-bold text-indigo-400 flex items-center gap-1">
+                        <span>▼ БАЗА (–Y):</span>
+                        <span className="text-slate-400 font-normal">Якорь &amp; Фиксация</span>
+                      </span>
+                      <span className="text-indigo-300/90">
+                        {Math.round(effectiveNotesEngine.olfactoryDynamics.baseFixationScore * 100)}% стойкость
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {displayBaseNotes.map((note, i) => (
+                        <span key={i} className="text-xs px-2 py-0.5 rounded-md bg-indigo-950/40 border border-indigo-500/30 text-indigo-200">
+                          {note}
+                        </span>
+                      ))}
+                      {displayBaseNotes.length === 0 && <span className="text-slate-500 text-xs">—</span>}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Почему они звучат вместе: Двигатель нот */}

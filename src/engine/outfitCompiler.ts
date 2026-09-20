@@ -59,9 +59,10 @@ export function compileAnyanovOutfit(
     return score;
   };
 
-  const pickBest = (layer: 'L4' | 'L3' | 'L2' | 'L1'): WardrobeItem => {
-    const list = suitableItems(layer);
-    const pool = list.length > 0 ? list : basePool.filter((i) => i.layer === layer);
+  const pickBest = (layer: 'L4' | 'L3' | 'L2' | 'L1', excludeOverwear: boolean = false): WardrobeItem => {
+    const list = suitableItems(layer).filter(i => excludeOverwear ? !i.isOverwear : true);
+    const fallback = basePool.filter(i => i.layer === layer && (excludeOverwear ? !i.isOverwear : true));
+    const pool = list.length > 0 ? list : (fallback.length > 0 ? fallback : basePool.filter(i => i.layer === layer));
     let bestItem = pool[0];
     let bestScore = -Infinity;
     for (const item of pool) {
@@ -83,15 +84,41 @@ export function compileAnyanovOutfit(
   // L3: Торс
   const l3 = pickBest('L3');
 
-  // L4: Верхний слой (при жаре > 25°C и casual стиле L4 можно опустить, если это не строгий костюм)
+  // Overwear: Транзитная верхняя одежда для улицы при прохладной/холодной погоде (до 12°C)
+  let overwear: WardrobeItem | null = null;
+  if (temperatureC <= 12) {
+    const overwearPool = basePool.filter(i => i.isOverwear);
+    if (overwearPool.length > 0) {
+      let bestO = overwearPool[0];
+      let bestScore = -Infinity;
+      for (const item of overwearPool) {
+        const s = scoreItem(item);
+        if (s > bestScore) {
+          bestScore = s;
+          bestO = item;
+        }
+      }
+      overwear = bestO;
+    }
+  }
+
+  // L4: Жакет / Пиджак / Блейзер (для помещения)
+  // При жаре > 24°C и неформальном стиле (formalIndex = 1) пиджак опускается — 3 слоя (рубашка, брюки, обувь)
   let l4: WardrobeItem | null = null;
   if (temperatureC <= 24 || formalIndex >= 2) {
-    l4 = pickBest('L4');
+    // Выбираем строго пиджак/блейзер для помещения (не пальто)
+    l4 = pickBest('L4', true);
   }
 
   // Аудит правил гармонии Аньянова:
   if (is21Mode) {
     rulesApplied.push('Канон 21: образ скомпилирован строго из 21 эталонного предмета капсулы.');
+  }
+  if (overwear) {
+    rulesApplied.push(`Транзитный протокол: ${overwear.name} защищает в пути (на улице) и сдается в гардероб мероприятия.`);
+  }
+  if (!l4 && temperatureC > 24) {
+    rulesApplied.push('Летний триумвират (3 слоя): в жару пиджак снят — основа образа: торс, брюки и обувь.');
   }
   if (formalIndex === 3) {
     rulesApplied.push('Правило строгого этикета: синхронизация линии плеча пиджака и жесткого воротника.');
@@ -108,7 +135,7 @@ export function compileAnyanovOutfit(
   }
 
   return {
-    stack: { l4, l3, l2, l1 },
+    stack: { overwear, l4, l3, l2, l1 },
     rulesApplied
   };
 }

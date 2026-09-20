@@ -6,18 +6,44 @@ export type LayerType = 'L4' | 'L3' | 'L2' | 'L1';
 // L2: Ноги (брюки со стрелками, чинос, джинсы, шорты)
 // L1: Обувь (оксфорды, лоферы, дерби, кеды, кроссовки)
 
-export interface Anyanov8DVector {
-  distance: number;     // -1.0 (Обособленность / Субординация) <-> +1.0 (Интим / Сближение)
-  formality: number;    // -1.0 (Business Formal) <-> +1.0 (Casual)
-  power: number;        // -1.0 (Статус / Твердая власть) <-> +1.0 (Соблазн / Мягкая сила)
-  mood: number;         // -1.0 (Собранность / Фокус) <-> +1.0 (Легкость / Свобода)
-  diffusion: number;    // -1.0 (Долгое действие / Шлейф) <-> +1.0 (Быстрое действие / Вспышка)
-  temperature: number;  // -1.0 (Тепло / Согревающий) <-> +1.0 (Холод / Освежающий)
-  time_of_day: number;  // -1.0 (Вечер / Глубина) <-> +1.0 (День / Свет)
-  season: number;       // -1.0 (Зима / Плотность) <-> +1.0 (Лето / Воздух)
+/**
+ * 10 Канонических Ортогональных Измерений Системы Аньянова (5 осей намерения X × 5 осей среды Y):
+ * 
+ * Базис Социального Воздействия (Ось X: Семиотика и Воля):
+ * 1. distance: -1.0 (Обособленность / Субординация) <-> +1.0 (Интим / Сближение)
+ * 2. formality: -1.0 (Business Formal) <-> +1.0 (Casual)
+ * 3. power: -1.0 (Статус / Твердая власть) <-> +1.0 (Соблазн / Шарм / Эрос)
+ * 4. mood: -1.0 (Собранность / Фокус) <-> +1.0 (Легкость / Свобода / Релакс)
+ * 5. expression: -1.0 (Statement / Драма / Fortissimo) <-> +1.0 (Quiet Luxury / Сдержанность / Pianissimo)
+ * 
+ * Базис Физического Контекста (Ось Y: Хронотоп и Термодинамика):
+ * 6. season: -1.0 (Зима / Плотность) <-> +1.0 (Лето / Воздух)
+ * 7. temperature: -1.0 (Тепло / Согревающий) <-> +1.0 (Холод / Освежающий)
+ * 8. time_of_day: -1.0 (Вечер / Глубина) <-> +1.0 (День / Свет)
+ * 9. space: -1.0 (Indoor / Помещение / Замкнутость) <-> +1.0 (Outdoor / Стихия / Открытый воздух)
+ * 10. chronometry: -1.0 (Марафон / Долгий день 12+ ч) <-> +1.0 (Спринт / Экспресс 30–60 мин)
+ */
+export interface Anyanov10DVector {
+  // 5 осей намерения (Социальный контур / Ось X)
+  distance: number;
+  formality: number;
+  power: number;
+  mood: number;
+  expression: number;
+
+  // 5 осей среды (Физико-временной контур / Ось Y)
+  season: number;
+  temperature: number;
+  time_of_day: number;
+  space: number;
+  chronometry: number;
 }
 
-export type AestheticValues = Anyanov8DVector;
+// Канонический 10D-базис
+export type AestheticValues = Anyanov10DVector;
+
+// Алиас для обратной совместимости
+export type Anyanov8DVector = Anyanov10DVector;
 
 export interface WardrobeItem {
   id: string;
@@ -32,14 +58,16 @@ export interface WardrobeItem {
   fabric: string;
   description: string;
   silhouette: 'structured' | 'relaxed' | 'draped';
+  isOverwear?: boolean; // Транзитная уличная верхняя одежда (пальто/куртка, сдается в помещении)
   aestheticValues?: Partial<AestheticValues>;
 }
 
 export interface OutfitStack {
-  l4: WardrobeItem | null;
-  l3: WardrobeItem;
-  l2: WardrobeItem;
-  l1: WardrobeItem;
+  overwear?: WardrobeItem | null; // Транзитная уличная защита (пальто / куртка)
+  l4: WardrobeItem | null;        // Жакет / Пиджак / Блейзер (для помещения)
+  l3: WardrobeItem;               // Торс (сорочка, поло, трикотаж)
+  l2: WardrobeItem;               // Брюки (шерсть, чинос, джинсы, лен)
+  l1: WardrobeItem;               // Обувь (оксфорды, лоферы, кеды)
 }
 
 export interface PerfumeNotePyramid {
@@ -75,6 +103,9 @@ export interface AnyanovCoordinates {
   temperatureC: number;
 }
 
+export type AnyanovSeason = 'summer' | 'winter';
+export type ControlMode = 'outfit' | 'perfume';
+
 export type QuadrantType = 'NW_FOCUS' | 'NE_EASE' | 'SW_POWER' | 'SE_SEDUCTION';
 
 export interface QuadrantInfo {
@@ -102,6 +133,39 @@ export interface AxisClash {
   diagnosis: string;
 }
 
+export type TetradChannelName = 'Форма' | 'Фактура' | 'Цвет' | 'Запах';
+
+export interface TetradChannelEvaluation {
+  name: TetradChannelName;
+  value: string;
+  detail: string;
+  targetIntent: string;
+  status: 'CONSONANT' | 'CONTRAPUNCT' | 'CLASH';
+  resonanceScore: number; // 0..100
+}
+
+export type SignalAmplitude = 'PIANISSIMO' | 'MEZZO' | 'FORTISSIMO';
+
+export type QuadrantSeasonalStatus = 'ACTIVE' | 'LOCKED' | 'PIANISSIMO_ONLY';
+
+export interface SeasonalAsymmetryAudit {
+  isWinterLock: boolean; // Зимний аппаратный замок на Q1 (NE)
+  isSummerPianissimoRequired: boolean; // Требование режима Pianissimo для Q3/Q4 летом
+  activeNotice?: string;
+}
+
+export interface CanonicalTetrad {
+  form: TetradChannelEvaluation;
+  texture: TetradChannelEvaluation;
+  color: TetradChannelEvaluation;
+  scent: TetradChannelEvaluation;
+  isMonolithic: boolean; // Все 4 канала созвучны без критических противоречий
+  zeroCrossingViolation: boolean; // Нарушение Закона Нулевой Границы
+  amplitude: SignalAmplitude; // Fortissimo (Statement) vs Pianissimo (Quiet Luxury)
+  summaryVerdict: string;
+  seasonalAudit?: SeasonalAsymmetryAudit;
+}
+
 export interface SolfeggioAnalysis {
   distance: number;
   cosineSimilarity: number;
@@ -113,6 +177,7 @@ export interface SolfeggioAnalysis {
   outfitVector: AestheticValues;
   perfumeVector: AestheticValues;
   outfitCoords: { x: number; y: number };
+  tetrad: CanonicalTetrad;
 }
 
 export interface CompiledLook {
@@ -157,6 +222,16 @@ export interface NoteClashWarning {
   warning: string;
 }
 
+export interface OlfactoryDynamics {
+  heartDistanceScore: number; // -1.0 (Обособленность / Дистанция) .. +1.0 (Сближение / Интим)
+  heartDistanceLabel: string;
+  heartInterpretation: string;
+  topVolatilesScore: number; // 0..1.0 (Летучесть и рассеивание)
+  topInterpretation: string;
+  baseFixationScore: number; // 0..1.0 (Плотность и фиксация)
+  baseInterpretation: string;
+}
+
 export interface NoteEngineAnalysis {
   resonantPairs: NoteFabricResonancePair[];
   clashes: NoteClashWarning[];
@@ -165,6 +240,7 @@ export interface NoteEngineAnalysis {
   baseAnchorVerdict: string;
   heartSocialVerdict: string;
   topAuraVerdict: string;
+  olfactoryDynamics?: OlfactoryDynamics;
 }
 
 export interface HumanVibeArchetype {

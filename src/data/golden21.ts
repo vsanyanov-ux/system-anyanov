@@ -82,8 +82,59 @@ export const GOLDEN_WARDROBE_21: WardrobeItem[] = GOLDEN_WARDROBE_IDS_21
   .map(id => WARDROBE_ITEMS.find(w => w.id === id))
   .filter((w): w is WardrobeItem => Boolean(w));
 
+// ============================================================================
+// ПЕРИОДИЧЕСКАЯ ТАБЛИЦА ОДЕЖДЫ АНЬЯНОВА: 21 ЭЛЕМЕНТ (СИМВОЛЫ МЕНДЕЛЕЕВА)
+// 4 Периода (Слои L1-L4) x 5 Групп (Степени формальности от Casual до Black Tie)
+// ============================================================================
+export interface PeriodicWardrobeElement {
+  number: number;
+  symbol: string;
+  name: string;
+  layer: 'L1' | 'L2' | 'L3' | 'L4';
+  group: 'I' | 'II' | 'III' | 'IV' | 'V';
+  groupLabel: string;
+  formalIndex: number;
+  color: string;
+  colorName: string;
+  fabric: string;
+  vibe: string;
+  isCore?: boolean;
+}
+
+export const PERIODIC_WARDROBE_ELEMENTS_21: PeriodicWardrobeElement[] = [
+  // Период I: L1 Обувь
+  { number: 1, symbol: 'Sn', name: 'Белые кеды', layer: 'L1', group: 'I', groupLabel: 'Casual', formalIndex: 1.0, color: '#ffffff', colorName: 'Белый', fabric: 'Кожа', vibe: 'Легкость, комфорт' },
+  { number: 2, symbol: 'Lf', name: 'Лоферы', layer: 'L1', group: 'III', groupLabel: 'Smart/Business Casual', formalIndex: 2.0, color: '#78350f', colorName: 'Шоколадный', fabric: 'Замша/Кожа', vibe: 'Баланс, стиль', isCore: true },
+  { number: 3, symbol: 'Ox', name: 'Оксфорды', layer: 'L1', group: 'IV', groupLabel: 'Business Formal/Black Tie', formalIndex: 3.0, color: '#0f172a', colorName: 'Черный', fabric: 'Глянцевая кожа', vibe: 'Протокол, статус' },
+
+  // Период II: L2 Брюки
+  { number: 4, symbol: 'Sl', name: 'Слаксы', layer: 'L2', group: 'I', groupLabel: 'Casual Light', formalIndex: 1.0, color: '#e2e8f0', colorName: 'Светло-серый', fabric: 'Хлопок', vibe: 'Свобода' },
+  { number: 5, symbol: 'Jn', name: 'Джинсы', layer: 'L2', group: 'II', groupLabel: 'Casual City', formalIndex: 1.4, color: '#1d4ed8', colorName: 'Индиго', fabric: 'Селвидж деним', vibe: 'Динамика' },
+  { number: 6, symbol: 'Ch', name: 'Чиносы беж', layer: 'L2', group: 'III', groupLabel: 'Smart Casual', formalIndex: 2.0, color: '#d97706', colorName: 'Бежевый', fabric: 'Хлопковый твил', vibe: 'Ядро баланса', isCore: true },
+  { number: 7, symbol: 'Np', name: 'Непарные брюки', layer: 'L2', group: 'III', groupLabel: 'Office Smart', formalIndex: 2.3, color: '#475569', colorName: 'Серо-стальной', fabric: 'Хлопок-шерсть', vibe: 'Деловой силуэт' },
+  { number: 8, symbol: 'Wp', name: 'Шерстяные брюки Navy', layer: 'L2', group: 'IV', groupLabel: 'Business Formal', formalIndex: 2.8, color: '#1e293b', colorName: 'Темно-синий', fabric: 'Шерсть со стрелкой', vibe: 'Дисциплина' },
+  { number: 9, symbol: 'Wc', name: 'Костюмные брюки серые', layer: 'L2', group: 'V', groupLabel: 'Formal/Black Tie', formalIndex: 3.0, color: '#334155', colorName: 'Графитовый', fabric: 'Костюмная шерсть', vibe: 'Вечерний вес' },
+
+  // Период III: L3 Торс
+  { number: 10, symbol: 'Ts', name: 'Белая футболка', layer: 'L3', group: 'I', groupLabel: 'Casual Light', formalIndex: 1.0, color: '#ffffff', colorName: 'Белый', fabric: 'Хлопок 240г', vibe: 'Базовая чистота' },
+  { number: 11, symbol: 'Pl', name: 'Вязаное поло', layer: 'L3', group: 'II', groupLabel: 'Smart Casual', formalIndex: 1.6, color: '#0f766e', colorName: 'Морской/кедр', fabric: 'Мерсеризованный хлопок', vibe: 'Тактильность' },
+  { number: 12, symbol: 'Of', name: 'Рубашка Оксфорд', layer: 'L3', group: 'III', groupLabel: 'Business Casual', formalIndex: 2.0, color: '#60a5fa', colorName: 'Голубой', fabric: 'Оксфорд хлопок', vibe: 'Универсал', isCore: true },
+  { number: 13, symbol: 'St', name: 'Рубашка в полоску', layer: 'L3', group: 'III', groupLabel: 'Smart/Office', formalIndex: 2.4, color: '#3b82f6', colorName: 'Синяя полоса', fabric: 'Поплин', vibe: 'Ритм и уверенность' },
+  { number: 14, symbol: 'Sh', name: 'Белая сорочка + галстук', layer: 'L3', group: 'IV', groupLabel: 'Business Formal', formalIndex: 3.0, color: '#ffffff', colorName: 'Белый + бордо', fabric: 'Поплин Super 140s', vibe: 'Протокол' },
+  { number: 15, symbol: 'Sg', name: 'Голубая сорочка + галстук', layer: 'L3', group: 'IV', groupLabel: 'Formal', formalIndex: 2.9, color: '#93c5fd', colorName: 'Голубой + изумруд', fabric: 'Твил', vibe: 'Аристократизм' },
+
+  // Период IV: L4 Верх
+  { number: 16, symbol: 'Jk', name: 'Джинсовая куртка', layer: 'L4', group: 'I', groupLabel: 'Casual Light', formalIndex: 1.0, color: '#2563eb', colorName: 'Индиго', fabric: 'Деним', vibe: 'Свобода' },
+  { number: 17, symbol: 'Bm', name: 'Бомбер', layer: 'L4', group: 'II', groupLabel: 'Casual City', formalIndex: 1.3, color: '#1e293b', colorName: 'Черный/Navy', fabric: 'Нейлон', vibe: 'Динамика' },
+  { number: 18, symbol: 'Bz', name: 'Блейзер Navy', layer: 'L4', group: 'III', groupLabel: 'Smart/Business Casual', formalIndex: 2.0, color: '#1e3a8a', colorName: 'Navy', fabric: 'Hopsack шерсть', vibe: 'Ядро гардероба', isCore: true },
+  { number: 19, symbol: 'Nj', name: 'Непарный серый пиджак', layer: 'L4', group: 'III', groupLabel: 'Smart/Office', formalIndex: 2.4, color: '#475569', colorName: 'Серый меланж', fabric: 'Фланель', vibe: 'Интеллект' },
+  { number: 20, symbol: 'Sj', name: 'Костюмный пиджак Navy', layer: 'L4', group: 'IV', groupLabel: 'Business Formal', formalIndex: 2.8, color: '#0f172a', colorName: 'Глубокий Navy', fabric: 'Шерсть Super 130s', vibe: 'Власть' },
+  { number: 21, symbol: 'Sc', name: 'Костюмный пиджак серый', layer: 'L4', group: 'V', groupLabel: 'Black Tie', formalIndex: 3.0, color: '#18181b', colorName: 'Графит/Смокинг', fabric: 'Шерсть/Шелк', vibe: 'Монумент' },
+];
+
 export interface GoldenMirrorPair {
   perfumeId: string;
+  outfitName: string;
   quadrantCode: 'NW_FOCUS' | 'NE_EASE' | 'SW_POWER' | 'SE_SEDUCTION' | 'CENTER';
   periodicRole: 'center' | 'north' | 'south' | 'west' | 'east' | 'q1' | 'q2' | 'q3' | 'q4';
   quadrantName: string;
@@ -105,6 +156,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'bleu-de-chanel-edp',
+    outfitName: '«Синий Камертон»',
     quadrantCode: 'CENTER',
     periodicRole: 'center',
     quadrantName: 'Центр • Нулевой Камертон Баланса',
@@ -125,6 +177,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: '4711-eau-de-cologne',
+    outfitName: '«Белый Зенит»',
     quadrantCode: 'CENTER',
     periodicRole: 'north',
     quadrantName: 'Северный Полюс • Зенит Летучести',
@@ -144,6 +197,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'tom-ford-tuscan-leather',
+    outfitName: '«Тёмный Надир»',
     quadrantCode: 'CENTER',
     periodicRole: 'south',
     quadrantName: 'Южный Полюс • Надир Плотности',
@@ -164,6 +218,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'chanel-platinum-egoiste',
+    outfitName: '«Холодный Барьер»',
     quadrantCode: 'CENTER',
     periodicRole: 'west',
     quadrantName: 'Западный Полюс • Металлический Барьер',
@@ -184,6 +239,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'jpg-ultra-male',
+    outfitName: '«Неоновый Магнит»',
     quadrantCode: 'CENTER',
     periodicRole: 'east',
     quadrantName: 'Восточный Полюс • Магнит Контакта',
@@ -204,6 +260,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'versace-man-eau-fraiche',
+    outfitName: '«Ривьера»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
     quadrantName: 'Квадрант I • Открытая Свежесть',
@@ -219,6 +276,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'acqua-di-gio',
+    outfitName: '«Океанский Бриз»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
     quadrantName: 'Квадрант I • Открытая Свежесть',
@@ -234,6 +292,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'dior-sauvage',
+    outfitName: '«Городской Драйв»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
     quadrantName: 'Квадрант I • Открытая Свежесть',
@@ -249,6 +308,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'dior-homme-cologne',
+    outfitName: '«Белый Хлопок»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
     quadrantName: 'Квадрант I • Открытая Свежесть',
@@ -268,6 +328,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'dior-eau-sauvage',
+    outfitName: '«Протокол»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
     quadrantName: 'Квадрант II • Холодный Контроль',
@@ -284,6 +345,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'prada-lhomme',
+    outfitName: '«Белый Воротник»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
     quadrantName: 'Квадрант II • Холодный Контроль',
@@ -300,6 +362,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'paco-rabanne-pour-homme',
+    outfitName: '«Стальной Дипломат»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
     quadrantName: 'Квадрант II • Холодный Контроль',
@@ -316,6 +379,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'ysl-lhomme',
+    outfitName: '«Аналитик»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
     quadrantName: 'Квадрант II • Холодный Контроль',
@@ -335,6 +399,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'terre-dhermes',
+    outfitName: '«Минеральный Титан»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
     quadrantName: 'Квадрант III • Темный Статус',
@@ -351,6 +416,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'guy-laroche-drakkar-noir',
+    outfitName: '«Тень Нуара»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
     quadrantName: 'Квадрант III • Темный Статус',
@@ -367,6 +433,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'dior-homme-intense',
+    outfitName: '«Гранд-Опера»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
     quadrantName: 'Квадрант III • Темный Статус',
@@ -383,6 +450,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'versace-oud-noir',
+    outfitName: '«Чёрный Кардинал»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
     quadrantName: 'Квадрант III • Темный Статус',
@@ -403,6 +471,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   // =========================================================================
   {
     perfumeId: 'creed-aventus',
+    outfitName: '«Триумфатор»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
     quadrantName: 'Квадрант IV • Тактильное Тепло',
@@ -419,6 +488,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'versace-eros',
+    outfitName: '«Кашемировый Магнит»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
     quadrantName: 'Квадрант IV • Тактильное Тепло',
@@ -435,6 +505,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'jpg-le-male',
+    outfitName: '«Ночной Барвелюр»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
     quadrantName: 'Квадрант IV • Тактильное Тепло',
@@ -450,6 +521,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
   },
   {
     perfumeId: 'lattafa-khamrah',
+    outfitName: '«Пряный Гедонизм»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
     quadrantName: 'Квадрант IV • Тактильное Тепло',

@@ -31,6 +31,7 @@ import {
   getStoredGeminiApiKey,
   saveStoredGeminiApiKey,
 } from '../engine/geminiService';
+import { findPeriodicNote, registerPeriodicNote } from '../data/periodicNotes';
 
 interface AddPerfumeModalProps {
   isOpen: boolean;
@@ -129,10 +130,12 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
     base: customBase,
   }), [customTop, customHeart, customBase]);
 
-  // Расчет координат в реальном времени
+  const [aiPredictedCoords, setAiPredictedCoords] = useState<{ x: number; y: number } | null>(null);
+
+  // Расчет координат в реальном времени с учетом AI-калибровки
   const calculatedMeta = useMemo(() => {
-    return calculatePerfumeCoordinatesFromNotes(currentPyramid, dominantVibe);
-  }, [currentPyramid, dominantVibe]);
+    return calculatePerfumeCoordinatesFromNotes(currentPyramid, dominantVibe, aiPredictedCoords || undefined);
+  }, [currentPyramid, dominantVibe, aiPredictedCoords]);
 
   // Запрос нот через Google Gemini API
   const handleFetchWithGemini = async () => {
@@ -159,6 +162,36 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
       setDominantVibe(result.dominantVibe);
       setBestOccasion(result.bestOccasion);
       setDiffusion(result.diffusion);
+
+      // Автоматическая регистрация откалиброванных нот в Периодической таблице элементов
+      if (result.calibratedNotes && result.calibratedNotes.length > 0) {
+        result.calibratedNotes.forEach((cn) => {
+          const cleanId = cn.name.toLowerCase().replace(/[^a-z0-9а-яё]+/gi, '_');
+          registerPeriodicNote({
+            id: cleanId,
+            name: cn.name,
+            symbol: cn.symbol,
+            period: cn.distanceX <= 0
+              ? cn.thermoY >= 0 ? 'II' : 'III'
+              : cn.thermoY >= 0 ? 'I' : 'IV',
+            tier: cn.tier,
+            layerAffinity: cn.tier === 'top' ? 'AURA' : cn.tier === 'heart' ? 'L3' : 'L4',
+            category: cn.category,
+            thermoY: cn.thermoY,
+            distanceX: cn.distanceX,
+            massWeight: cn.massWeight,
+            resonantFabrics: cn.resonantFabrics,
+            vibeDescription: cn.vibeDescription,
+          });
+        });
+      }
+
+      if (result.predictedCoords) {
+        setAiPredictedCoords(result.predictedCoords);
+      } else {
+        setAiPredictedCoords(null);
+      }
+
       setIsVerifiedByGemini(true);
       setIsManualNotesEdited(false);
     } catch (err: any) {
@@ -592,6 +625,28 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
               )}
             </div>
 
+            {/* AI Olfactive Calibration Coverage Banner */}
+            {(customTop.length + customHeart.length + customBase.length) > 0 && (
+              <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-indigo-950/40 border border-indigo-500/30 text-indigo-300">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>
+                    <strong>Ольфакторная калибровка:</strong>{' '}
+                    {[...customTop, ...customHeart, ...customBase].filter((n) => !!findPeriodicNote(n)).length} из{' '}
+                    {customTop.length + customHeart.length + customBase.length} нот в Периодической таблице
+                  </span>
+                </div>
+                <span className="font-mono text-emerald-400 font-bold">
+                  {Math.round(
+                    ([...customTop, ...customHeart, ...customBase].filter((n) => !!findPeriodicNote(n)).length /
+                      Math.max(1, customTop.length + customHeart.length + customBase.length)) *
+                      100
+                  )}
+                  % охват
+                </span>
+              </div>
+            )}
+
             {/* Top Notes */}
             <div className="bg-slate-950/50 p-2.5 rounded-xl border border-slate-800/80">
               <span className="text-[11px] font-mono text-amber-400/80 block mb-1">
@@ -601,21 +656,34 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
                 {customTop.length === 0 && (
                   <span className="text-xs text-slate-500 italic">Нажмите «Запросить у Gemini»</span>
                 )}
-                {customTop.map((note) => (
-                  <span
-                    key={note}
-                    className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300"
-                  >
-                    {note}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveNote('top', note)}
-                      className="hover:text-rose-400 transition-colors ml-0.5"
+                {customTop.map((note) => {
+                  const noteEl = findPeriodicNote(note);
+                  return (
+                    <span
+                      key={note}
+                      title={
+                        noteEl
+                          ? `${noteEl.name} [${noteEl.symbol}] | X: ${noteEl.distanceX}, Y: ${noteEl.thermoY} | ${noteEl.category}`
+                          : 'Откалибровано семантически'
+                      }
+                      className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300"
                     >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
+                      {noteEl && (
+                        <span className="font-mono font-black text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/40">
+                          {noteEl.symbol}
+                        </span>
+                      )}
+                      <span>{note}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveNote('top', note)}
+                        className="hover:text-rose-400 transition-colors ml-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
@@ -628,21 +696,34 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
                 {customHeart.length === 0 && (
                   <span className="text-xs text-slate-500 italic">Нажмите «Запросить у Gemini»</span>
                 )}
-                {customHeart.map((note) => (
-                  <span
-                    key={note}
-                    className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300"
-                  >
-                    {note}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveNote('heart', note)}
-                      className="hover:text-rose-400 transition-colors ml-0.5"
+                {customHeart.map((note) => {
+                  const noteEl = findPeriodicNote(note);
+                  return (
+                    <span
+                      key={note}
+                      title={
+                        noteEl
+                          ? `${noteEl.name} [${noteEl.symbol}] | X: ${noteEl.distanceX}, Y: ${noteEl.thermoY} | ${noteEl.category}`
+                          : 'Откалибровано семантически'
+                      }
+                      className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300"
                     >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
+                      {noteEl && (
+                        <span className="font-mono font-black text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-200 border border-rose-500/40">
+                          {noteEl.symbol}
+                        </span>
+                      )}
+                      <span>{note}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveNote('heart', note)}
+                        className="hover:text-rose-400 transition-colors ml-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
@@ -655,21 +736,34 @@ export const AddPerfumeModal: React.FC<AddPerfumeModalProps> = ({
                 {customBase.length === 0 && (
                   <span className="text-xs text-slate-500 italic">Нажмите «Запросить у Gemini»</span>
                 )}
-                {customBase.map((note) => (
-                  <span
-                    key={note}
-                    className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300"
-                  >
-                    {note}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveNote('base', note)}
-                      className="hover:text-rose-400 transition-colors ml-0.5"
+                {customBase.map((note) => {
+                  const noteEl = findPeriodicNote(note);
+                  return (
+                    <span
+                      key={note}
+                      title={
+                        noteEl
+                          ? `${noteEl.name} [${noteEl.symbol}] | X: ${noteEl.distanceX}, Y: ${noteEl.thermoY} | ${noteEl.category}`
+                          : 'Откалибровано семантически'
+                      }
+                      className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300"
                     >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
+                      {noteEl && (
+                        <span className="font-mono font-black text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-200 border border-sky-500/40">
+                          {noteEl.symbol}
+                        </span>
+                      )}
+                      <span>{note}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveNote('base', note)}
+                        className="hover:text-rose-400 transition-colors ml-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  );
+                })}
               </div>
             </div>
 

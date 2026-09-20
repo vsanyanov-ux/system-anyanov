@@ -30,7 +30,8 @@ export const WARDROBE_ITEMS: WardrobeItem[] = [
     colorName: 'Графитовый',
     fabric: 'Мериносовая шерсть 550 г/м²',
     description: 'Длинное пальто прямого кроя, защищающее от ветра и холода.',
-    silhouette: 'structured'
+    silhouette: 'structured',
+    isOverwear: true
   },
   {
     id: 'l4-hopsack-blazer',
@@ -58,7 +59,8 @@ export const WARDROBE_ITEMS: WardrobeItem[] = [
     colorName: 'Кэмел (Теплый бежевый)',
     fabric: 'Шерсть с добавлением кашемира',
     description: 'Элегантный и теплый акцент для прохладного времени.',
-    silhouette: 'draped'
+    silhouette: 'draped',
+    isOverwear: true
   },
   {
     id: 'l4-suede-overshirt',

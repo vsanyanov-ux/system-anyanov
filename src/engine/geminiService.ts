@@ -1,4 +1,14 @@
-import { PerfumeNotePyramid } from '../types';
+export interface CalibratedNoteItem {
+  name: string;
+  symbol: string;
+  tier: 'top' | 'heart' | 'base';
+  distanceX: number;
+  thermoY: number;
+  massWeight: number;
+  category: string;
+  resonantFabrics: string[];
+  vibeDescription: string;
+}
 
 export interface GeminiPerfumeAnalysis {
   normalizedBrand?: string;
@@ -11,6 +21,8 @@ export interface GeminiPerfumeAnalysis {
   bestOccasion: string;
   whyFitsOutfit?: string;
   confidenceNotes?: string;
+  calibratedNotes?: CalibratedNoteItem[];
+  predictedCoords?: { x: number; y: number };
 }
 
 const STORAGE_KEY_GEMINI = 'anyanov_gemini_api_key_v1';
@@ -144,8 +156,11 @@ export async function fetchPerfumeNotesWithGemini(
 
   const { brand, name } = preNormalizeFragranceInput(rawBrand, rawName);
 
-  const prompt = `Ты — ведущий мировой ольфакторный архивариус и эксперт по базе Fragrantica (fragrantica.com и fragrantica.ru).
-Твоя ГЛАВНАЯ задача — через веб-поиск Google найти карточку данного аромата на FRAGRANTICA и вернуть СТРОГО ОФИЦИАЛЬНУЮ пирамиду нот, указанную на Fragrantica.
+  const prompt = `Ты — ведущий мировой ольфакторный архивариус, химик-парфюмер и эксперт по базе Fragrantica (fragrantica.com и fragrantica.ru), а также эксперт по Системе координат нот Аньянова.
+
+Твоя ГЛАВНАЯ задача:
+1. Через веб-поиск Google найти официальную карточку данного аромата на FRAGRANTICA и вернуть СТРОГО ОФИЦИАЛЬНУЮ пирамиду нот (Top, Heart, Base).
+2. Выступить в роли эксперта-ольфактора: для КАЖДОЙ найденной ноты пирамиды определить физико-математические координаты в Периодической системе элементов Аньянова.
 
 Запрос для поиска:
 Бренд: "${brand}"
@@ -161,22 +176,57 @@ export async function fetchPerfumeNotesWithGemini(
    - top: Верхние ноты (Top Notes) на русском языке
    - heart: Ноты сердца / средние ноты (Middle / Heart Notes) на русском языке
    - base: Базовые ноты (Base Notes) на русском языке
-   Переводи ингредиенты точно (например: Akigalawood -> Акигалавуд, Amberwood -> Амбервуд, Geranium -> Герань, Saffron -> Шафран, Italian Mandarin -> Итальянский мандарин, Somali Incense -> Сомалийский ладан, Labdanum -> Лабданум, Benzoin -> Бензоин).
-   КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО выдумывать ноты или добавлять стандартные "уд" или "кожу", если их нет в пирамиде на Fragrantica!
-4. Определи характеристики:
-   - diffusion: "Интимная" | "Умеренная" | "Шлейфовая" | "Ударная"
-   - dominantVibe: краткий емкий вайб звучания (5-8 слов)
-   - bestOccasion: повод для ношения
-   - whyFitsOutfit: с какими тканями и стилем одежды лучше резонирует
+   Переводи ингредиенты точно (например: Akigalawood -> Акигалавуд, Amberwood -> Амбервуд, Geranium -> Герань, Saffron -> Шафран, Italian Mandarin -> Итальянский мандарин, Somali Incense -> Сомалийский ладан, Labdanum -> Лабданум, Benzoin -> Бензоин, Immortelle -> Бессмертник, Tonka Bean -> Бобы тонка).
+   КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО выдумывать ноты, которых нет в пирамиде на Fragrantica!
+
+ПРАВИЛА ОЛЬФАКТОРНОЙ КАЛИБРОВКИ НОТ (СИСТЕМА АНЬЯНОВА):
+Для каждой ноты из top, heart, base рассчитай параметры:
+- distanceX (число от -1.00 до +1.00, Социальная дистанция / Барьер vs Соблазн):
+  * -1.00 .. -0.20 (Холодный авторитет, дистанция, дисциплина): кожа, деготь, уд, дубовый мох, ладан, ветивер, минералы, розмарин.
+  * -0.20 .. +0.20 (Нейтральный баланс, цитрусы, чистые альдегиды, чай, ирис).
+  * +0.20 .. +1.00 (Сближение, соблазн, интим, тепло): ваниль, пралине, финики, кокос, бобы тонка, карамель, корица, амбра, мускус, сладкие фрукты.
+- thermoY (число от -1.00 до +1.00, Температура / Термодинамика):
+  * +0.20 .. +1.00 (Холод, свежесть, лето, день, озон): цитрусы, акватика, мята, бергамот, зеленый чай, эвкалипт.
+  * -0.20 .. +0.20 (Умеренный демисезон): ирис, лаванда, розовый перец, кедр, шафран.
+  * -1.00 .. -0.20 (Тепло, согревающий огонь, вечер, зима, плотность): густые смолы, табак, кофе, корица, ваниль, бензоин, лабданум, кашеран.
+- massWeight (число от 0.20 до 0.95, Молекулярная масса и стойкость ноты):
+  * Летучий верх (цитрусы, травы, мята): 0.25 - 0.40
+  * Сердечные аккорды (цветы, пряности, чай, кофе): 0.45 - 0.65
+  * Тяжелая база и фиксаторы (уд, смолы, кожа, амбра, мох): 0.70 - 0.95
+- symbol: химический символ ноты из 2-3 латинских букв (напр. 'Akg', 'Saf', 'Lbd', 'Bnz', 'Vn', 'Ir', 'Om')
+- category: категория ('Древесные', 'Пряные', 'Гурманские', 'Шипровые', 'Цитрусовые', 'Смолы / Бальзамы', 'Кожаные', 'Цветочные', 'Минеральные')
+- resonantFabrics: массив резонирующих тканей из ('Шерсть', 'Кашемир', 'Твид', 'Хлопок', 'Лен', 'Шелк', 'Кожа', 'Фланель', 'Драп', 'Поплин')
+- vibeDescription: емкая характеристика ноты на русском языке (5-10 слов)
+
+Также определи:
+- diffusion: "Интимная" | "Умеренная" | "Шлейфовая" | "Ударная"
+- dominantVibe: краткий емкий вайб звучания всего флакона (5-8 слов)
+- bestOccasion: лучший повод для ношения
+- whyFitsOutfit: с какими фактурами одежды лучше всего сочетается
+- predictedCoords: { "x": число от -1.00 до +1.00, "y": число от -1.00 до +1.00 } - общее взвешенное положение флакона на матрице
 
 ФОРМАТ ВЫВОДА:
-Верни ТОЛЬКО валидный JSON (без лишнего текста перед или после):
+Верни ТОЛЬКО валидный JSON (без лишнего текста):
 {
   "normalizedBrand": "${brand}",
   "normalizedName": "${name}",
   "top": ["Нота 1", "Нота 2"],
   "heart": ["Нота 1", "Нота 2"],
   "base": ["Нота 1", "Нота 2"],
+  "calibratedNotes": [
+    {
+      "name": "Нота 1",
+      "symbol": "Nt",
+      "tier": "top",
+      "distanceX": 0.10,
+      "thermoY": 0.85,
+      "massWeight": 0.30,
+      "category": "Цитрусовые",
+      "resonantFabrics": ["Хлопок", "Лен"],
+      "vibeDescription": "Искрящаяся цитрусовая свежесть"
+    }
+  ],
+  "predictedCoords": { "x": 0.05, "y": 0.35 },
   "diffusion": "Шлейфовая",
   "dominantVibe": "...",
   "bestOccasion": "...",
@@ -260,6 +310,38 @@ function parseGeminiResponse(data: any, fallbackBrand: string, fallbackName: str
 
   try {
     const parsed = JSON.parse(cleanJson);
+
+    // Нормализация калиброванных нот
+    let calibratedNotes: CalibratedNoteItem[] | undefined = undefined;
+    if (Array.isArray(parsed.calibratedNotes)) {
+      calibratedNotes = parsed.calibratedNotes.map((cn: any) => ({
+        name: String(cn.name || '').trim(),
+        symbol: String(cn.symbol || 'Nt').trim().slice(0, 4),
+        tier: ['top', 'heart', 'base'].includes(cn.tier) ? cn.tier : 'heart',
+        distanceX: Number(Math.max(-1.0, Math.min(1.0, Number(cn.distanceX) || 0)).toFixed(2)),
+        thermoY: Number(Math.max(-1.0, Math.min(1.0, Number(cn.thermoY) || 0)).toFixed(2)),
+        massWeight: Number(Math.max(0.1, Math.min(1.0, Number(cn.massWeight) || 0.5)).toFixed(2)),
+        category: String(cn.category || 'Восточные / Древесные').trim(),
+        resonantFabrics: Array.isArray(cn.resonantFabrics) && cn.resonantFabrics.length > 0
+          ? cn.resonantFabrics.map((f: any) => String(f).trim())
+          : ['Шерсть', 'Хлопок'],
+        vibeDescription: String(cn.vibeDescription || '').trim() || 'Ольфакторный аккорд',
+      })).filter((cn: CalibratedNoteItem) => cn.name.length > 0);
+    }
+
+    // Нормализация общих предсказанных координат
+    let predictedCoords: { x: number; y: number } | undefined = undefined;
+    if (parsed.predictedCoords && typeof parsed.predictedCoords === 'object') {
+      const px = Number(parsed.predictedCoords.x);
+      const py = Number(parsed.predictedCoords.y);
+      if (!isNaN(px) && !isNaN(py)) {
+        predictedCoords = {
+          x: Number(Math.max(-1.0, Math.min(1.0, px)).toFixed(2)),
+          y: Number(Math.max(-1.0, Math.min(1.0, py)).toFixed(2)),
+        };
+      }
+    }
+
     return {
       normalizedBrand: parsed.normalizedBrand || fallbackBrand,
       normalizedName: parsed.normalizedName || fallbackName,
@@ -272,6 +354,8 @@ function parseGeminiResponse(data: any, fallbackBrand: string, fallbackName: str
       dominantVibe: parsed.dominantVibe || 'Благородное звучание нот',
       bestOccasion: parsed.bestOccasion || 'Smart Casual, городские встречи',
       whyFitsOutfit: parsed.whyFitsOutfit || 'Поддерживает гармонию силуэта и натуральных тканей.',
+      calibratedNotes,
+      predictedCoords,
     };
   } catch (err) {
     console.error('Ошибка парсинга ответа Gemini:', textContent);

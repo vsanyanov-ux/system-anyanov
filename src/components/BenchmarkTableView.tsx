@@ -359,8 +359,8 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                         </div>
                         <div className="text-sm font-black text-white truncate">{p.name}</div>
                         <div className="text-[11px] text-slate-400 truncate">{p.dominantVibe}</div>
-                        <div className="mt-2 text-[10px] font-mono px-2 py-0.5 rounded bg-sky-950/60 border border-sky-800/40 text-sky-300 inline-block">
-                          {pair?.badge || 'Зенит Летучести'}
+                        <div className="mt-2 text-[10px] font-mono px-2 py-0.5 rounded bg-sky-950/60 border border-sky-800/40 text-sky-300 inline-block font-semibold">
+                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Зенит Летучести')}
                         </div>
                       </div>
                     );
@@ -399,7 +399,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                           </div>
                           <div className="text-xs font-bold text-white truncate">{p.name}</div>
                           <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                            <span className="text-sky-400/90 truncate">{pair?.badge}</span>
+                            <span className="text-sky-400/90 truncate font-semibold">{pair?.outfitName || pair?.badge}</span>
                             <span>[{p.xCoord}, {p.yCoord > 0 ? `+${p.yCoord}` : p.yCoord}]</span>
                           </div>
                         </div>
@@ -436,7 +436,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                           </div>
                           <div className="text-xs font-bold text-white truncate">{p.name}</div>
                           <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                            <span className="text-cyan-400/90 truncate">{pair?.badge}</span>
+                            <span className="text-cyan-400/90 truncate font-semibold">{pair?.outfitName || pair?.badge}</span>
                             <span>[+{p.xCoord}, +{p.yCoord}]</span>
                           </div>
                         </div>
@@ -472,8 +472,8 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                         </div>
                         <div className="text-xs sm:text-sm font-black text-white truncate">{p.name}</div>
                         <div className="text-[10px] text-amber-400/90 uppercase font-mono">{p.brand}</div>
-                        <div className="mt-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 inline-block">
-                          {pair?.badge || 'Абсолютный Барьер'}
+                        <div className="mt-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 inline-block font-semibold">
+                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Абсолютный Барьер')}
                         </div>
                       </div>
                     );
@@ -503,7 +503,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                         <div className="text-base font-black text-white tracking-tight">{p.name}</div>
                         <div className="text-xs text-amber-400/90 font-mono uppercase">{p.brand} (2010)</div>
                         <div className="mt-2 text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 inline-block font-bold">
-                          {pair?.badge || 'Точка Баланса'}
+                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Точка Баланса')}
                         </div>
                       </div>
                     );
@@ -532,8 +532,8 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                         </div>
                         <div className="text-xs sm:text-sm font-black text-white truncate">{p.name}</div>
                         <div className="text-[10px] text-amber-400/90 uppercase font-mono">{p.brand}</div>
-                        <div className="mt-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/60 border border-blue-800/40 text-blue-300 inline-block">
-                          {pair?.badge || 'Максимальный Контакт'}
+                        <div className="mt-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/60 border border-blue-800/40 text-blue-300 inline-block font-semibold">
+                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Максимальный Контакт')}
                         </div>
                       </div>
                     );
@@ -573,7 +573,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                           </div>
                           <div className="text-xs font-bold text-white truncate">{p.name}</div>
                           <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                            <span className="text-amber-400/90 truncate">{pair?.badge}</span>
+                            <span className="text-amber-400/90 truncate font-semibold">{pair?.outfitName || pair?.badge}</span>
                             <span>[{p.xCoord}, {p.yCoord}]</span>
                           </div>
                         </div>
@@ -610,7 +610,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                           </div>
                           <div className="text-xs font-bold text-white truncate">{p.name}</div>
                           <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-                            <span className="text-rose-400/90 truncate">{pair?.badge}</span>
+                            <span className="text-rose-400/90 truncate font-semibold">{pair?.outfitName || pair?.badge}</span>
                             <span>[+{p.xCoord}, {p.yCoord}]</span>
                           </div>
                         </div>
@@ -644,8 +644,8 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                         </div>
                         <div className="text-sm font-black text-white truncate">{p.name}</div>
                         <div className="text-[11px] text-slate-400 truncate">{p.dominantVibe}</div>
-                        <div className="mt-2 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800/40 text-amber-300 inline-block">
-                          {pair?.badge || 'Надир Плотности'}
+                        <div className="mt-2 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800/40 text-amber-300 inline-block font-semibold">
+                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Надир Плотности')}
                         </div>
                       </div>
                     );
@@ -757,15 +757,15 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                     <div className="pt-2 border-t border-slate-800/80 space-y-2 text-xs">
                       <div>
                         <span className="text-[10px] font-mono text-slate-400 block uppercase">Верхние ноты:</span>
-                        <span className="text-slate-300 font-medium">{currentPerfume.pyramid.top.join(', ')}</span>
+                        <span className="text-slate-300 font-medium">{currentPerfume.pyramid?.top?.join(', ') || '—'}</span>
                       </div>
                       <div>
                         <span className="text-[10px] font-mono text-amber-400/80 block uppercase">Сердце:</span>
-                        <span className="text-amber-200 font-medium">{currentPerfume.pyramid.heart.join(', ')}</span>
+                        <span className="text-amber-200 font-medium">{currentPerfume.pyramid?.heart?.join(', ') || '—'}</span>
                       </div>
                       <div>
                         <span className="text-[10px] font-mono text-indigo-400/80 block uppercase">База:</span>
-                        <span className="text-indigo-200 font-medium">{currentPerfume.pyramid.base.join(', ')}</span>
+                        <span className="text-indigo-200 font-medium">{currentPerfume.pyramid?.base?.join(', ') || '—'}</span>
                       </div>
                     </div>
                   </div>
@@ -796,9 +796,14 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
 
                   {/* Col 3: Paired Wardrobe Look */}
                   <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
-                    <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase flex items-center gap-2">
-                      <Shirt className="w-3.5 h-3.5" />
-                      <span>Парный лук из капсулы 21</span>
+                    <div className="flex items-center justify-between">
+                      <div className="text-[11px] font-mono text-emerald-400 font-bold uppercase flex items-center gap-2">
+                        <Shirt className="w-3.5 h-3.5" />
+                        <span>Наряд-зеркало</span>
+                      </div>
+                      <span className="text-xs font-mono font-bold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                        {currentPair.outfitName}
+                      </span>
                     </div>
 
                     <div className="space-y-2 text-xs">
@@ -924,17 +929,17 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
 
                   {/* Pyramid snippet */}
                   <div className="flex flex-wrap gap-1 pt-1">
-                    {perfume.pyramid.top.slice(0, 2).map((note, i) => (
+                    {(perfume.pyramid?.top || []).slice(0, 2).map((note, i) => (
                       <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-800">
                         {note}
                       </span>
                     ))}
-                    {perfume.pyramid.heart.slice(0, 1).map((note, i) => (
+                    {(perfume.pyramid?.heart || []).slice(0, 1).map((note, i) => (
                       <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-950 text-amber-400/90 border border-slate-800">
                         {note}
                       </span>
                     ))}
-                    {perfume.pyramid.base.slice(0, 1).map((note, i) => (
+                    {(perfume.pyramid?.base || []).slice(0, 1).map((note, i) => (
                       <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-950 text-indigo-400/90 border border-slate-800">
                         {note}
                       </span>
@@ -944,9 +949,14 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
 
                 {/* Mirror Outfit Capsule */}
                 <div className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-2">
-                  <div className="text-[10px] font-mono text-slate-400 uppercase flex items-center gap-1.5">
-                    <Shirt className="w-3 h-3 text-sky-400" />
-                    <span>Парный лук-зеркало:</span>
+                  <div className="flex items-center justify-between">
+                    <div className="text-[10px] font-mono text-slate-400 uppercase flex items-center gap-1.5">
+                      <Shirt className="w-3 h-3 text-sky-400" />
+                      <span>Наряд:</span>
+                    </div>
+                    <span className="text-xs font-bold text-amber-300 font-mono">
+                      {pair.outfitName}
+                    </span>
                   </div>
 
                   <div className="text-xs space-y-1 text-slate-300">
@@ -1018,6 +1028,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 <th className="py-3.5 px-4">#</th>
                 <th className="py-3.5 px-4">Аромат и Бренд</th>
                 <th className="py-3.5 px-4">Квадрант</th>
+                <th className="py-3.5 px-4">Наряд-зеркало</th>
                 <th className="py-3.5 px-4">Координаты</th>
                 <th className="py-3.5 px-4">Пирамида нот</th>
                 <th className="py-3.5 px-4">Диффузия</th>
@@ -1028,7 +1039,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
             <tbody className="divide-y divide-slate-800/60">
               {filteredPerfumes.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-slate-500 font-mono">
+                  <td colSpan={9} className="py-8 text-center text-slate-500 font-mono">
                     Ароматы для выбранного квадранта не найдены
                   </td>
                 </tr>
@@ -1066,6 +1077,11 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                       <td className="py-3 px-4 font-mono">
                         <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-300 text-[10px]">
                           {pair?.quadrantName.split('•')[0] || 'Центр'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 font-mono">
+                        <span className="font-mono text-amber-300 font-bold text-xs bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-lg whitespace-nowrap">
+                          {pair?.outfitName || '—'}
                         </span>
                       </td>
                       <td className="py-3 px-4 font-mono text-slate-400">

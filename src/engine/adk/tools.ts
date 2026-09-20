@@ -34,7 +34,7 @@ export interface ADKFunctionDeclaration {
 export const ADK_TOOL_DECLARATIONS: ADKFunctionDeclaration[] = [
   {
     name: 'calibrate_anyanov_coordinates',
-    description: 'Калибрует 8D эстетические и физические координаты Системы Аньянова под повод, социальный статус и температуру.',
+    description: 'Калибрует ортогональные координаты Системы Аньянова (10D базис: 5 осей намерения x 5 осей среды) под повод, социальный статус и температуру.',
     parameters: {
       type: 'object',
       properties: {
@@ -90,7 +90,7 @@ export const ADK_TOOL_DECLARATIONS: ADKFunctionDeclaration[] = [
   },
   {
     name: 'evaluate_fragrance_harmony',
-    description: 'Подбирает идеальный парфюм и рассчитывает 8D-сольфеджио гармонии (дистанция, контрапункт, диссонанс) между аутфитом и ароматом.',
+    description: 'Подбирает идеальный парфюм и рассчитывает 10D-сольфеджио гармонии (дистанция, контрапункт, диссонанс) между аутфитом и ароматом с синтезом Тетрады.',
     parameters: {
       type: 'object',
       properties: {
@@ -110,7 +110,7 @@ export const ADK_TOOL_DECLARATIONS: ADKFunctionDeclaration[] = [
   },
   {
     name: 'diagnose_style_clashes',
-    description: 'Выявляет скрытые стилистические диссонансы и разрывы по 8 каноническим осям Системы Аньянова.',
+    description: 'Выявляет скрытые стилистические диссонансы и разрывы по 10 каноническим осям Системы Аньянова.',
     parameters: {
       type: 'object',
       properties: {

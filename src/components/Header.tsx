@@ -1,4 +1,5 @@
-import { Sparkles, BookOpen, ShieldCheck, Layers, Zap, SlidersHorizontal, Crown, Atom, HeartHandshake } from 'lucide-react';
+import { Sparkles, BookOpen, ShieldCheck, Layers, Zap, SlidersHorizontal, Crown, Atom, HeartHandshake, Sun, Snowflake } from 'lucide-react';
+import { AnyanovSeason } from '../types';
 
 interface HeaderProps {
   activeTab: 'simple' | 'pro' | 'benchmarks';
@@ -10,6 +11,8 @@ interface HeaderProps {
   shelfCount?: number;
   is21Mode?: boolean;
   onToggle21Mode?: () => void;
+  season?: AnyanovSeason;
+  onToggleSeason?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -22,6 +25,8 @@ export const Header: React.FC<HeaderProps> = ({
   shelfCount = 0,
   is21Mode = false,
   onToggle21Mode,
+  season = 'summer',
+  onToggleSeason,
 }) => {
   return (
     <header className="w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50">
@@ -92,8 +97,27 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
-        {/* Right Action: Mode 21, Shelf, Manifesto & Guarantee */}
+        {/* Right Action: Mode 21, Season, Shelf, Manifesto & Guarantee */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          {onToggleSeason && (
+            <button
+              onClick={onToggleSeason}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer ${
+                season === 'summer'
+                  ? 'bg-amber-500/10 text-amber-300 border-amber-500/40 hover:bg-amber-500/20'
+                  : 'bg-sky-500/10 text-sky-300 border-sky-500/40 hover:bg-sky-500/20'
+              }`}
+              title={`Текущий сезон: ${season === 'summer' ? 'Лето ☀️' : 'Зима ❄️'} (нажмите для смены)`}
+            >
+              {season === 'summer' ? (
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+              ) : (
+                <Snowflake className="w-3.5 h-3.5 text-sky-400" />
+              )}
+              <span className="hidden sm:inline">{season === 'summer' ? 'Лето' : 'Зима'}</span>
+            </button>
+          )}
+
           {onToggle21Mode && (
             <button
               onClick={onToggle21Mode}

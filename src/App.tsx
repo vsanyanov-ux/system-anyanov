@@ -56,6 +56,12 @@ export function App() {
     setIsPeriodicTableOpen,
     isHumanFinderOpen,
     setIsHumanFinderOpen,
+    // Сезон и Режим управления из эскизов Аньянова
+    season,
+    setSeason,
+    toggleSeason,
+    controlMode,
+    setControlMode,
     quadrant,
     stack,
     rulesApplied,
@@ -65,7 +71,7 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#05070D] text-slate-100 font-sans selection:bg-amber-500 selection:text-black">
-      {/* 1. Header with brand, shelf button, manifesto & tabs */}
+      {/* 1. Header with brand, shelf button, manifesto, season & tabs */}
       <Header
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -76,6 +82,8 @@ export function App() {
         shelfCount={userShelfIds.length}
         is21Mode={is21Mode}
         onToggle21Mode={toggle21Mode}
+        season={season}
+        onToggleSeason={toggleSeason}
       />
 
       {/* 2. Main Workspace */}
@@ -140,12 +148,19 @@ export function App() {
                   perfume={matchResult.perfume}
                   solfeggio={solfeggio}
                   onChangeCoords={updateCoords}
+                  season={season}
+                  onSeasonChange={setSeason}
+                  controlMode={controlMode}
                 />
 
-                {/* Sliders for precision tuning */}
+                {/* Sliders for precision tuning (Dual-Mode: Outfit vs Perfume with Knobs) */}
                 <AnyanovSliders
                   coords={coords}
                   onChangeCoords={updateCoords}
+                  controlMode={controlMode}
+                  onControlModeChange={setControlMode}
+                  season={season}
+                  onSeasonChange={setSeason}
                 />
               </div>
 
@@ -208,6 +223,7 @@ export function App() {
           <PeriodicTableModal
             isOpen={isPeriodicTableOpen}
             onClose={() => setIsPeriodicTableOpen(false)}
+            onApplyCoords={(newCoords) => setCoords(newCoords)}
           />
         )}
 
