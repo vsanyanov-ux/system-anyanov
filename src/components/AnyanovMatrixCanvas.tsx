@@ -184,27 +184,27 @@ export const AnyanovMatrixCanvas: React.FC<AnyanovMatrixCanvasProps> = ({
 
         <div className="absolute left-2 top-1/2 -translate-y-1/2 flex flex-col items-start pointer-events-none text-left max-w-[130px]">
           <span className="text-[9px] font-black uppercase tracking-wider text-indigo-300 bg-slate-950/90 px-1.5 py-0.5 rounded border border-indigo-500/30 shadow-md">
-            {controlMode === 'outfit' ? '◄ FORMAL / BLACK TIE' : '◄ ДИСТАНЦИЯ (СТАТУС)'}
+            {controlMode === 'outfit' ? '◄ FORMAL (ВЛАСТЬ / ДИСТАНЦИЯ)' : '◄ ДИСТАНЦИЯ (ВЛАСТЬ)'}
           </span>
         </div>
 
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col items-end pointer-events-none text-right max-w-[130px]">
           <span className="text-[9px] font-black uppercase tracking-wider text-pink-400 bg-slate-950/90 px-1.5 py-0.5 rounded border border-pink-500/30 shadow-md">
-            {controlMode === 'outfit' ? 'CASUAL / РЕЛАКС ►' : 'МАГНЕТИЗМ (ИНТИМ) ►'}
+            {controlMode === 'outfit' ? 'CASUAL / ЛЕГКОСТЬ ►' : 'ПРИТЯЖЕНИЕ (БЛИЗОСТЬ) ►'}
           </span>
         </div>
 
-        {/* СЕЗОННАЯ АСИММЕТРИЯ: Оверлей Зимнего Замка на Квадрант I (Северо-Восток: лён, нероли) */}
+        {/* СЕЗОННАЯ АСИММЕТРИЯ: Оверлей Зимнего Замка на Квадрант I (Северо-Восток: Легкость, лён, нероли) */}
         {season === 'winter' && (
           <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-slate-950/75 backdrop-blur-[1px] border-l border-b border-sky-500/30 flex flex-col items-center justify-center pointer-events-none z-10 p-2 text-center transition-all duration-300">
             <div className="w-7 h-7 rounded-full bg-sky-950/90 border border-sky-400/60 flex items-center justify-center text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.3)] mb-1">
               <Lock className="w-3.5 h-3.5 text-sky-400" />
             </div>
             <span className="text-[9px] font-black uppercase tracking-wider text-sky-300 font-mono">
-              Q1: HARDWARE LOCK
+              Q1 (ЛЕГКОСТЬ): HARDWARE LOCK
             </span>
             <span className="text-[7.5px] text-sky-400/80 leading-tight mt-0.5 max-w-[130px]">
-              Зимой лён и нероли выключены. Возврат в Камертон (0,0)
+              Зимой лён и нероли выключены. Возврат в Равновесие (0,0)
             </span>
           </div>
         )}

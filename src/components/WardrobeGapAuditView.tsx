@@ -28,13 +28,22 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
   onSwitchTab,
   onOpenShelfModal,
 }) => {
-  // Полные данные по флаконам пользователя
+  // Полные данные по флаконам пользователя (строгая дедупликация)
   const ownedPerfumes = useMemo(() => {
-    return PERFUME_DATABASE.filter((p) => userShelfIds.includes(p.id));
+    const uniqueIds = Array.from(new Set(userShelfIds));
+    const seen = new Set<string>();
+    return PERFUME_DATABASE.filter((p) => {
+      if (uniqueIds.includes(p.id) && !seen.has(p.id)) {
+        seen.add(p.id);
+        return true;
+      }
+      return false;
+    });
   }, [userShelfIds]);
 
-  // Распределение по 4 квадрантам
+  // Распределение по Центру и 4 квадрантам матрицы Аньянова
   const quadrantStats = useMemo(() => {
+    const center: PerfumeItem[] = [];
     const nw: PerfumeItem[] = [];
     const ne: PerfumeItem[] = [];
     const sw: PerfumeItem[] = [];
@@ -42,7 +51,8 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
 
     ownedPerfumes.forEach((p) => {
       const q = getQuadrantInfo(p.xCoord, p.yCoord);
-      if (q.code === 'NW_FOCUS') nw.push(p);
+      if (q.code === 'CENTER_BALANCE') center.push(p);
+      else if (q.code === 'NW_FOCUS') nw.push(p);
       else if (q.code === 'NE_EASE') ne.push(p);
       else if (q.code === 'SW_POWER') sw.push(p);
       else if (q.code === 'SE_SEDUCTION') se.push(p);
@@ -50,61 +60,89 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
 
     const quadrants = [
       {
-        code: 'NW_FOCUS',
-        title: 'Фокус & Дисциплина (NW)',
-        subtitle: 'Business Formal • Офис • Переговоры',
+        code: 'CENTER_BALANCE' as const,
+        title: 'Равновесие (Центр 0,0)',
+        subtitle: 'Универсал 365 • Всесезонность • Любой дресс-код',
+        coords: { socialX: 0.0, thermoY: 0.0, formalIndex: 2 as const, temperatureC: 20 },
+        items: center,
+        targetRole: 'Калабрийский бергамот, инжир, амброксан, чистый ладан, благородный кедр',
+        vulnerabilityText:
+          'Отсутствует базовое нейтральное равновесие (0, 0). Приходится либо перегружать образ вечерней плотностью, либо мерзнуть в акватике там, где требуется строгий дипломатический баланс.',
+        recommendedCatalog: PERFUME_DATABASE.filter(
+          (p) => !userShelfIds.includes(p.id) && getQuadrantInfo(p.xCoord, p.yCoord).code === 'CENTER_BALANCE'
+        ).slice(0, 3),
+        accentColor: 'border-amber-500/50 text-amber-400 bg-amber-950/20',
+        badgeColor: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+        isCenter: true,
+      },
+      {
+        code: 'NW_FOCUS' as const,
+        title: 'Собранность (Квадрант II • NW)',
+        subtitle: 'Business Formal • Офис • Переговоры • Дистанция',
         coords: { socialX: -0.65, thermoY: 0.6, formalIndex: 3 as const, temperatureC: 21 },
         items: nw,
         targetRole: 'Ледяной цитрон, мыльно-пудровая чистота, сухой ирис, горький ветивер',
+        vulnerabilityText:
+          'В переговорах и деловом протоколе вам нечем закрепить невербальную дистанцию. Излишняя сладость будет считываться как несобранность.',
         recommendedCatalog: PERFUME_DATABASE.filter(
           (p) => !userShelfIds.includes(p.id) && getQuadrantInfo(p.xCoord, p.yCoord).code === 'NW_FOCUS'
         ).slice(0, 3),
         accentColor: 'border-sky-500/40 text-sky-400 bg-sky-950/20',
         badgeColor: 'bg-sky-500/10 text-sky-300 border-sky-500/30',
+        isCenter: false,
       },
       {
-        code: 'NE_EASE',
-        title: 'Дневная Лёгкость (NE)',
-        subtitle: 'Casual • Солнце • Выходной • Свобода',
+        code: 'NE_EASE' as const,
+        title: 'Легкость (Квадрант I • NE)',
+        subtitle: 'Casual • Солнце • Выходной • Свобода • Лето',
         coords: { socialX: 0.65, thermoY: 0.6, formalIndex: 1 as const, temperatureC: 24 },
         items: ne,
         targetRole: 'Морская соль, свежий бергамот, мята, белый мускус',
+        vulnerabilityText:
+          'В жаркие дни и на отдыхе вам не хватает воздушного освежающего шлейфа — тяжелые ароматы в жару вызывают обонятельную усталость.',
         recommendedCatalog: PERFUME_DATABASE.filter(
           (p) => !userShelfIds.includes(p.id) && getQuadrantInfo(p.xCoord, p.yCoord).code === 'NE_EASE'
         ).slice(0, 3),
         accentColor: 'border-emerald-500/40 text-emerald-400 bg-emerald-950/20',
         badgeColor: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
+        isCenter: false,
       },
       {
-        code: 'SW_POWER',
-        title: 'Твёрдая Власть (SW)',
-        subtitle: 'Black Tie • Статус • Вечер • Вес',
+        code: 'SW_POWER' as const,
+        title: 'Власть (Квадрант III • SW)',
+        subtitle: 'Night Formal • Статус • Вечер • Вес • Зима',
         coords: { socialX: -0.65, thermoY: -0.6, formalIndex: 3 as const, temperatureC: 18 },
         items: sw,
         targetRole: 'Темный уд, березовая кожа, дымный ладан, смолы',
+        vulnerabilityText:
+          'На статусных вечерних протоколах и на зимнем морозе легкие ароматы мгновенно разрушаются, лишая вас солидного авторитетного веса.',
         recommendedCatalog: PERFUME_DATABASE.filter(
           (p) => !userShelfIds.includes(p.id) && getQuadrantInfo(p.xCoord, p.yCoord).code === 'SW_POWER'
         ).slice(0, 3),
         accentColor: 'border-indigo-500/40 text-indigo-400 bg-indigo-950/20',
         badgeColor: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
+        isCenter: false,
       },
       {
-        code: 'SE_SEDUCTION',
-        title: 'Соблазн & Магнетизм (SE)',
-        subtitle: 'Smart Casual / Night • Свидание • Интим',
+        code: 'SE_SEDUCTION' as const,
+        title: 'Притяжение (Квадрант IV • SE)',
+        subtitle: 'Smart Casual / Night • Свидание • Близость • Тепло',
         coords: { socialX: 0.65, thermoY: -0.6, formalIndex: 2 as const, temperatureC: 20 },
         items: se,
         targetRole: 'Табачный лист, стручковая ваниль, кардамон, амбра',
+        vulnerabilityText:
+          'В романтических ситуациях и на свиданиях вам нечем создать тактильное притяжение и сократить психологическую дистанцию.',
         recommendedCatalog: PERFUME_DATABASE.filter(
           (p) => !userShelfIds.includes(p.id) && getQuadrantInfo(p.xCoord, p.yCoord).code === 'SE_SEDUCTION'
         ).slice(0, 3),
         accentColor: 'border-amber-500/40 text-amber-400 bg-amber-950/20',
         badgeColor: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+        isCenter: false,
       },
     ];
 
     const coveredQuadrants = quadrants.filter((q) => q.items.length > 0).length;
-    const balanceScore = Math.round((coveredQuadrants / 4) * 100);
+    const balanceScore = Math.round((coveredQuadrants / 5) * 100);
 
     return { quadrants, coveredQuadrants, balanceScore };
   }, [ownedPerfumes, userShelfIds]);
@@ -126,7 +164,7 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
               Детектор ольфакторных брешей (Wardrobe Gap)
             </h2>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Анализ вашей парфюмерной полки по 4 квадрантам матрицы Аньянова. Узнайте, в каких
+              Анализ вашей парфюмерной полки по 5 ключевым зонам матрицы Аньянова (Центральный Камертон Баланса + 4 квадранта). Узнайте, в каких
               жизненных ситуациях у вас психологическая броня, а где гардероб оставляет вас уязвимым.
             </p>
           </div>
@@ -135,9 +173,9 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
           <div className="flex items-center gap-4 bg-slate-950/80 p-4 rounded-2xl border border-slate-800 backdrop-blur-md self-start md:self-auto shrink-0">
             <div className="text-center px-2">
               <div className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-indigo-300">
-                {quadrantStats.balanceScore}%
+                {quadrantStats.coveredQuadrants} / 5
               </div>
-              <div className="text-[11px] text-slate-400 font-medium">Баланс гардероба</div>
+              <div className="text-[11px] text-slate-400 font-medium">Закрыто зон (Баланс {quadrantStats.balanceScore}%)</div>
             </div>
             <div className="w-px h-10 bg-slate-800" />
             <div className="text-center px-2">
@@ -154,12 +192,12 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
           <div className="flex items-center gap-2 text-xs sm:text-sm">
             {criticalGaps.length === 0 ? (
               <span className="flex items-center gap-2 text-emerald-400 font-semibold">
-                <ShieldCheck className="w-4 h-4" /> Все 4 квадранта закрыты — безупречный баланс!
+                <ShieldCheck className="w-4 h-4" /> Все 5 ольфакторных зон закрыты (Центр + 4 квадранта) — безупречный гардероб!
               </span>
             ) : (
               <span className="flex items-center gap-2 text-amber-400 font-semibold">
                 <AlertTriangle className="w-4 h-4 text-amber-400" />
-                Обнаружено {criticalGaps.length} критических брешей гардероба
+                Обнаружено {criticalGaps.length} бреш(ей) в ольфакторной защите
               </span>
             )}
           </div>
@@ -173,15 +211,22 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
         </div>
       </div>
 
-      {/* 4 Quadrants Matrix Grid */}
+      {/* 5 Zones Matrix Grid: Center as top full-width foundation + 4 Quadrants below */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {quadrantStats.quadrants.map((quad) => {
           const isCovered = quad.items.length > 0;
+          const isCenter = quad.isCenter;
           return (
             <div
               key={quad.code}
               className={`rounded-2xl border p-5 sm:p-6 transition-all flex flex-col justify-between ${
-                isCovered
+                isCenter ? 'md:col-span-2' : ''
+              } ${
+                isCenter
+                  ? isCovered
+                    ? 'bg-gradient-to-r from-amber-500/[0.08] via-slate-900/90 to-sky-500/[0.08] border-amber-500/50 shadow-xl shadow-amber-500/5 ring-1 ring-amber-500/20'
+                    : 'bg-gradient-to-r from-rose-950/20 via-slate-900/90 to-rose-950/20 border-rose-500/30'
+                  : isCovered
                   ? 'bg-slate-900/60 border-slate-800/90 hover:border-slate-700'
                   : 'bg-rose-950/10 border-rose-500/30'
               }`}
@@ -190,8 +235,13 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold text-base text-white">{quad.title}</h3>
+                      {isCenter && (
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-wider">
+                          Ядро 365
+                        </span>
+                      )}
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${quad.badgeColor}`}>
                         {isCovered ? `${quad.items.length} флакон(ов)` : 'ПУСТО • БРЕШЬ'}
                       </span>
@@ -238,8 +288,7 @@ export const WardrobeGapAuditView: React.FC<WardrobeGapAuditViewProps> = ({
                       Психологическая уязвимость образа:
                     </div>
                     <p className="text-slate-300 text-[11px] leading-relaxed">
-                      В этой ситуации вам нечем закрепить невербальный статус. Использование аромата
-                      из другого сектора создаст диссонанс с контекстом и одеждой.
+                      {quad.vulnerabilityText}
                     </p>
                   </div>
                 )}

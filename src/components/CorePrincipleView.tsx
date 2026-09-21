@@ -64,8 +64,8 @@ interface CoreArchetype {
 const ARCHETYPES: CoreArchetype[] = [
   {
     id: 'status_power',
-    title: 'Монументальный Статус',
-    badge: 'Власть и Дистанция',
+    title: 'Власть',
+    badge: 'Квадрант III • Вес',
     subtitle: 'Важные переговоры, совет директоров, закрытый клуб',
     icon: <Crown className="w-5 h-5 text-amber-400" />,
     accentColor: 'text-amber-400',
@@ -81,8 +81,8 @@ const ARCHETYPES: CoreArchetype[] = [
   },
   {
     id: 'focus_balance',
-    title: 'Собранность и Контроль',
-    badge: 'Фокус и Дисциплина',
+    title: 'Собранность',
+    badge: 'Квадрант II • Фокус',
     subtitle: 'Офис, аналитика, деловой Smart Casual',
     icon: <Briefcase className="w-5 h-5 text-sky-400" />,
     accentColor: 'text-sky-400',
@@ -98,8 +98,8 @@ const ARCHETYPES: CoreArchetype[] = [
   },
   {
     id: 'seduction_warmth',
-    title: 'Магнетизм и Соблазн',
-    badge: 'Тепло и Сближение',
+    title: 'Притяжение',
+    badge: 'Квадрант IV • Тепло',
     subtitle: 'Романтическое свидание, вечерний коктейль, театр',
     icon: <Heart className="w-5 h-5 text-rose-400" />,
     accentColor: 'text-rose-400',
@@ -115,8 +115,8 @@ const ARCHETYPES: CoreArchetype[] = [
   },
   {
     id: 'ease_breeze',
-    title: 'Дневная Легкость',
-    badge: 'Свежесть и Открытость',
+    title: 'Легкость',
+    badge: 'Квадрант I • Воздух',
     subtitle: 'Летняя терраса, прогулка, уикенд с друзьями',
     icon: <SunMedium className="w-5 h-5 text-emerald-400" />,
     accentColor: 'text-emerald-400',

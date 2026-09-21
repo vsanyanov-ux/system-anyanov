@@ -22,6 +22,9 @@ const BenchmarkTableView = lazy(() =>
 const BrandMatrixView = lazy(() =>
   import('./components/BrandMatrixView').then((m) => ({ default: m.BrandMatrixView }))
 );
+const CloneFinderView = lazy(() =>
+  import('./components/CloneFinderView').then((m) => ({ default: m.CloneFinderView }))
+);
 const ManifestoModal = lazy(() =>
   import('./components/ManifestoModal').then((m) => ({ default: m.ManifestoModal }))
 );
@@ -166,6 +169,19 @@ export function App() {
             />
           )}
 
+          {/* Режим: Поиск клона */}
+          {activeTab === 'clone-finder' && (
+            <Suspense fallback={<LazyFallback />}>
+              <CloneFinderView
+                userShelfIds={userShelfIds}
+                onToggleShelfId={toggleShelfId}
+                onApplyCoords={setCoords}
+                onSwitchTab={setActiveTab}
+                onOpenShelfModal={() => setIsShelfModalOpen(true)}
+              />
+            </Suspense>
+          )}
+
           {/* Режим 3: Аудит гардероба (Wardrobe Gap) */}
           {activeTab === 'gap-audit' && (
             <WardrobeGapAuditView
@@ -237,7 +253,7 @@ export function App() {
             </>
           )}
 
-          {/* Режим 7.1: Матрица Брендов 1-2-5-9 */}
+          {/* Режим 7.1: Матрица Брендов 1-3-5-9 */}
           {activeTab === 'brand-matrix' && (
             <>
               <SmartConciergeBar

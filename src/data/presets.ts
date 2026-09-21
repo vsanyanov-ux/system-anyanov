@@ -38,9 +38,9 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
   },
   {
     id: 'univer_balance',
-    title: 'Универ / Универсал',
+    title: 'Универсальный / Баланс',
     subtitle: 'Business / Smart Casual • Ровный баланс',
-    icon: '🎓',
+    icon: '🎯',
     coords: {
       socialX: 0.00,
       thermoY: 0.00,
@@ -52,7 +52,7 @@ export const PRESET_SCENARIOS: PresetScenario[] = [
   {
     id: 'theater_power',
     title: 'Театр / Вечер',
-    subtitle: 'Black Tie • Монументальная Власть',
+    subtitle: 'Night Formal • Вечерний Статус',
     icon: '🎭',
     coords: {
       socialX: -0.50,

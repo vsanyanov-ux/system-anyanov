@@ -69,9 +69,9 @@ export function parseNaturalLanguageQuery(rawQuery: string): SemanticParseResult
     detectedFactors.push({
       category: 'Повод',
       label: 'Светский прием / Королевский протокол',
-      impact: 'Высшая субординация (Grand Formal / Black Tie), монументальный статус, строгая дистанция',
+      impact: 'Высшая субординация (Night Formal / Статус), монументальный статус, строгая дистанция',
     });
-    summary = 'Высший светский раут и королевский протокол (Grand Formal)';
+    summary = 'Светский вечер и закрытое культурное событие (Night Formal)';
   } else if (q.includes('свадьб') || q.includes('венчан') || q.includes('торжеств')) {
     formalIndex = 2;
     socialX += 0.35;

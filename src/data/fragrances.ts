@@ -77,7 +77,7 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     yCoord: 0.05,
     diffusion: 'Шлейфовая',
     dominantVibe: 'Бергамот, грейпфрут, лист инжира, амброксан, ладан, пачули',
-    bestOccasion: 'Универсал (Лето): университет, офис, город, встречи с друзьями',
+    bestOccasion: 'Универсал (Лето): универсальный баланс, офис, город, встречи с друзьями',
     whyFitsOutfit: 'Абсолютный хамелеон: звучит одинаково органично и с Business Casual, и со Smart Casual.',
     colorTheme: 'from-blue-600 to-indigo-900',
     pyramid: {
@@ -94,7 +94,7 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
     yCoord: -0.15,
     diffusion: 'Шлейфовая',
     dominantVibe: 'Глубокий ладан, амброксан, темный бергамот, смолистое тепло',
-    bestOccasion: 'Универсал (Зима): университет, офис в холодный сезон, вечерний баланс',
+    bestOccasion: 'Универсал (Зима): универсальный баланс, офис в холодный сезон, вечерний баланс',
     whyFitsOutfit: 'Более густая, теплая и смолистая версия Dylan Blue для прохладной погоды и уютного трикотажа.',
     colorTheme: 'from-blue-800 to-slate-950',
     pyramid: {
@@ -434,23 +434,6 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
       top: ['Грейпфрут', 'Лимон', 'Мята', 'Розовый перец'],
       heart: ['Имбирь', 'Мускатный орех', 'Жасмин', 'Iso E Super'],
       base: ['Ладан', 'Ветивер', 'Кедр', 'Сандал', 'Пачули']
-    }
-  },
-  {
-    id: 'versace-man-eau-fraiche',
-    name: 'Man Eau Fraîche (2006)',
-    brand: 'Versace',
-    xCoord: 0.35,
-    yCoord: 0.75,
-    diffusion: 'Умеренная',
-    dominantVibe: 'Искристая карамбола, белый лимон, лазурная вода, беззаботный курорт',
-    bestOccasion: 'Жара +25°C..+35°C, открытая веранда, пляж, выходной день',
-    whyFitsOutfit: 'Ультралегкая свежесть, идеально гармонирующая с темно-синим поло пике и светлыми чинос.',
-    colorTheme: 'from-cyan-300 to-blue-400',
-    pyramid: {
-      top: ['Карамбола', 'Белый лимон', 'Бергамот', 'Кардамон'],
-      heart: ['Кедр', 'Эстрагон', 'Шалфей', 'Черный перец'],
-      base: ['Белый мускус', 'Серая амбра', 'Древесные ноты', 'Шафран']
     }
   },
   {
@@ -1092,11 +1075,746 @@ export const PERFUME_DATABASE: PerfumeItem[] = [
       heart: ['Лаванда'],
       base: ['Лакричник', 'Сандал', 'Амбра', 'Пачули', 'Гаитянский ветивер']
     }
-  }
+  },
+
+  // =========================================================================
+  // КОЛЛЕКЦИЯ ПОЛЬЗОВАТЕЛЯ (45 ФЛАКОНОВ): РАСШИРЕННЫЙ КАТАЛОГ
+  // =========================================================================
+  {
+    id: 'abercrombie-first-instinct',
+    name: 'First Instinct (2016)',
+    brand: 'Abercrombie & Fitch',
+    xCoord: 0.60,
+    yCoord: 0.50,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Дыня кивано, джин-тоник, замша, фиалка, соблазнительный летний задор',
+    bestOccasion: 'Летняя тусовка, свидание на открытом воздухе, пляжный бар',
+    whyFitsOutfit: 'Непринужденный Smart/Casual: открытая льняная рубашка, светлые брюки или шорты.',
+    colorTheme: 'from-amber-400 to-yellow-600',
+    pyramid: {
+      top: ['Дыня Кивано', 'Джин-тоник', 'Лист фиалки'],
+      heart: ['Сычуаньский перец', 'Лист цитруса', 'Замша'],
+      base: ['Амбра', 'Мускус', 'Свежий кедр']
+    }
+  },
+  {
+    id: 'al-haramain-detour-noir',
+    name: 'Detour Noir',
+    brand: 'Al Haramain',
+    xCoord: 0.40,
+    yCoord: -0.55,
+    diffusion: 'Ударная',
+    dominantVibe: 'Хрустящее зеленое яблоко, лаванда, миндальная ваниль, сандал (профиль PDM Layton)',
+    bestOccasion: 'Осенне-зимний вечер, свидание, клуб, стильное пальто',
+    whyFitsOutfit: 'Один из самых комплиментарных вечерних профилей. Прекрасен с темным монохромом и кашемиром.',
+    colorTheme: 'from-violet-900 to-indigo-950',
+    pyramid: {
+      top: ['Миндаль', 'Зеленое яблоко', 'Лаванда', 'Бергамот'],
+      heart: ['Жасмин', 'Фиалка', 'Герань'],
+      base: ['Ваниль', 'Кардамон', 'Сандал', 'Гваяк', 'Пачули']
+    }
+  },
+  {
+    id: 'antonio-banderas-blue-seduction',
+    name: 'Blue Seduction (2007)',
+    brand: 'Antonio Banderas',
+    xCoord: 0.30,
+    yCoord: 0.65,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Сочная дыня, мята, бергамот, капучино, морская волна',
+    bestOccasion: 'Жаркое лето, отдых у воды, повседневный летний спорт-кэжуал',
+    whyFitsOutfit: 'Легкое поло, хлопковые чиносы, светлые кеды: непринужденная акватическая свежесть с десертным нюансом.',
+    colorTheme: 'from-cyan-400 to-blue-600',
+    pyramid: {
+      top: ['Дыня', 'Бергамот', 'Мята', 'Черная смородина'],
+      heart: ['Морская вода', 'Зеленое яблоко', 'Капучино', 'Кардамон', 'Мускатный орех'],
+      base: ['Древесные ноты', 'Амбра']
+    }
+  },
+  {
+    id: 'guess-1981-los-angeles',
+    name: '1981 Los Angeles Men (2019)',
+    brand: 'Guess',
+    xCoord: 0.45,
+    yCoord: -0.40,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Сливовая сладость, черный перец, имбирь, амбра, табачная дымка',
+    bestOccasion: 'Вечерний город, бар, свидание, прохладный демисезон',
+    whyFitsOutfit: 'Кожаная куртка или замшевый бомбер, темные джинсы: теплый амброво-фруктовый акцент.',
+    colorTheme: 'from-amber-700 to-rose-950',
+    pyramid: {
+      top: ['Слива', 'Черный перец', 'Бергамот'],
+      heart: ['Имбирь', 'Герань', 'Мята'],
+      base: ['Амбра', 'Табак', 'Сандал', 'Ветивер']
+    }
+  },
+  {
+    id: 'hugo-boss-boss-bottled',
+    name: 'Boss Bottled (1998)',
+    brand: 'Hugo Boss',
+    xCoord: -0.15,
+    yCoord: 0.05,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Печеное яблоко, корица, ваниль, слива, благородный кедр',
+    bestOccasion: 'Офис, деловые встречи, демисезонный Business Casual',
+    whyFitsOutfit: 'Золотой стандарт европейского кэжуала: джемпер поверх сорочки, структурированный блейзер, теплота и надежность.',
+    colorTheme: 'from-amber-600 to-stone-800',
+    pyramid: {
+      top: ['Яблоко', 'Слива', 'Лимон', 'Бергамот', 'Дубовый мох'],
+      heart: ['Корица', 'Красное дерево', 'Гвоздика'],
+      base: ['Ваниль', 'Сандал', 'Кедр', 'Ветивер', 'Оливковое дерево']
+    }
+  },
+  {
+    id: 'lattafa-al-nashama-caprice',
+    name: 'Al Nashama Caprice',
+    brand: 'Lattafa',
+    xCoord: 0.35,
+    yCoord: -0.20,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Кардамон, свежий имбирь, лаванда, кедр (профиль Bleu Électrique)',
+    bestOccasion: 'Романтический вечер, ужин в ресторане, ночные прогулки',
+    whyFitsOutfit: 'Черная рубашка, минималистичный темный костюм или приталенный пиджак: магнетический пряно-лавандовый шлейф.',
+    colorTheme: 'from-blue-700 to-purple-950',
+    pyramid: {
+      top: ['Кардамон', 'Имбирь', 'Бергамот', 'Лимон'],
+      heart: ['Лаванда', 'Герань', 'Мята'],
+      base: ['Кедр', 'Ветивер', 'Пачули', 'Амбра']
+    }
+  },
+  {
+    id: 'lattafa-ansaam-silver',
+    name: 'Ansaam Silver',
+    brand: 'Lattafa',
+    xCoord: 0.60,
+    yCoord: -0.70,
+    diffusion: 'Ударная',
+    dominantVibe: 'Пряный кардамон, давана, сливочный тоффи, амбра, ваниль (профиль Azzaro The Most Wanted)',
+    bestOccasion: 'Морозная зима, ночной клуб, яркое свидание',
+    whyFitsOutfit: 'Теплый шерстяной свитер крупной вязки или стильная дубленка: густая манящая сладость.',
+    colorTheme: 'from-amber-600 to-slate-950',
+    pyramid: {
+      top: ['Кардамон', 'Бергамот'],
+      heart: ['Давана', 'Лаванда'],
+      base: ['Ваниль', 'Бобы тонка', 'Амбра', 'Пачули']
+    }
+  },
+  {
+    id: 'lattafa-badee-al-oud-honor-glory',
+    name: 'Bade\'e Al Oud Honor & Glory',
+    brand: 'Lattafa',
+    xCoord: 0.50,
+    yCoord: -0.50,
+    diffusion: 'Ударная',
+    dominantVibe: 'Карамелизованный ананас, крем-брюле, куркума, корица, ванильный бензоин',
+    bestOccasion: 'Праздники, вечеринки, прохладный сезон, эффектный выход',
+    whyFitsOutfit: 'Элегантный контрастный образ: бежевое пальто, водолазка, стильные акценты.',
+    colorTheme: 'from-amber-400 to-yellow-800',
+    pyramid: {
+      top: ['Ананас', 'Крем-брюле'],
+      heart: ['Бензоин', 'Куркума', 'Корица', 'Черный перец'],
+      base: ['Ваниль', 'Кашмеран', 'Сандал', 'Мох']
+    }
+  },
+  {
+    id: 'lattafa-qaed-al-fursan',
+    name: 'Qaed Al Fursan',
+    brand: 'Lattafa',
+    xCoord: 0.40,
+    yCoord: 0.10,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Сочнейший спелый ананас на гриле, шафран, пихтовый бальзам, кедр, смолы',
+    bestOccasion: 'Универсал: вечерний отдых, встречи с друзьями, теплая осень и весна',
+    whyFitsOutfit: 'Ультра-комплиментарный ананасовый штрих. Идеален со Smart Casual и черной кожаной курткой.',
+    colorTheme: 'from-yellow-500 to-neutral-900',
+    pyramid: {
+      top: ['Ананас', 'Шафран'],
+      heart: ['Жасмин', 'Пихтовый бальзам'],
+      base: ['Амбра', 'Кедр', 'Уд']
+    }
+  },
+  {
+    id: 'lattafa-ramz-silver',
+    name: 'Ramz Lattafa (Silver)',
+    brand: 'Lattafa',
+    xCoord: 0.70,
+    yCoord: -0.60,
+    diffusion: 'Ударная',
+    dominantVibe: 'Сладкая сочная груша, мята, лаванда, черная ваниль (профиль JPG Ultra Male)',
+    bestOccasion: 'Клуб, бар, ночная тусовка, зимний уикенд',
+    whyFitsOutfit: 'Яркий молодежный кэжуал, темный деним, худи или оверсайз куртка.',
+    colorTheme: 'from-sky-500 to-indigo-950',
+    pyramid: {
+      top: ['Груша', 'Лаванда', 'Бергамот', 'Мята'],
+      heart: ['Кардамон', 'Шалфей'],
+      base: ['Ваниль', 'Амбра', 'Мускус', 'Пачули']
+    }
+  },
+  {
+    id: 'lattafa-fakhr-black',
+    name: 'Fakhr Black',
+    brand: 'Lattafa',
+    xCoord: 0.10,
+    yCoord: 0.25,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Хрустящее яблоко, имбирь, шалфей, ягоды можжевельника, бобы тонка (профиль YSL Y EDP)',
+    bestOccasion: 'Универсальный солдат: офис, спортзал, прогулка, свидание',
+    whyFitsOutfit: 'Чистый, собранный, свежий с легкой сладостью. Подходит под 95% повседневного гардероба.',
+    colorTheme: 'from-slate-700 to-black',
+    pyramid: {
+      top: ['Яблоко', 'Бергамот', 'Имбирь'],
+      heart: ['Лаванда', 'Шалфей', 'Ягоды можжевельника', 'Герань'],
+      base: ['Бобы тонка', 'Амбровое дерево', 'Кедр', 'Ветивер']
+    }
+  },
+  {
+    id: 'lattafa-najdia',
+    name: 'Najdia',
+    brand: 'Lattafa',
+    xCoord: 0.25,
+    yCoord: 0.45,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Водный аккорд, цитрусы, корица, яблоко, серая амбра (свеже-энергетичный профиль)',
+    bestOccasion: 'Летние прогулки, спортзал, активный отдых на открытом воздухе',
+    whyFitsOutfit: 'Спортивный кэжуал: поло, шорты, легкая ветровка, белые кроссовки.',
+    colorTheme: 'from-teal-500 to-emerald-900',
+    pyramid: {
+      top: ['Лимон', 'Корица', 'Яблоко', 'Бергамот', 'Лемонграсс'],
+      heart: ['Водные ноты', 'Лаванда', 'Розмарин', 'Кардамон'],
+      base: ['Серая амбра', 'Мускус', 'Сандал', 'Кедр', 'Табак']
+    }
+  },
+  {
+    id: 'lattafa-al-qiam-silver',
+    name: 'Al Qiam Silver',
+    brand: 'Lattafa',
+    xCoord: -0.10,
+    yCoord: 0.55,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Искрящийся грейпфрут, имбирь, сухой минеральный амброксан, ветивер (профиль Tygar)',
+    bestOccasion: 'Летний офис, деловые переговоры в жару, премиальный дневной статус',
+    whyFitsOutfit: 'Безупречная белая рубашка или льняной пиджак: дорогой цитрусово-минеральный шлейф без лишней сладости.',
+    colorTheme: 'from-slate-400 to-amber-600',
+    pyramid: {
+      top: ['Грейпфрут', 'Имбирь'],
+      heart: ['Амброксан', 'Сандал'],
+      base: ['Ветивер', 'Мускус']
+    }
+  },
+  {
+    id: 'loewe-solo-cedro',
+    name: 'Solo Cedro (2015)',
+    brand: 'Loewe',
+    xCoord: -0.45,
+    yCoord: 0.20,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Кедр, мускатный орех, мандарин, лаванда, сдержанная испанская аристократичность',
+    bestOccasion: 'Архитектурный офис, кабинет, переговоры, осенний день',
+    whyFitsOutfit: 'Серый твидовый пиджак, качественный кашемировый лонгслив, оксфорды: интеллигентная древесная дистанция.',
+    colorTheme: 'from-amber-700 to-stone-900',
+    pyramid: {
+      top: ['Мандарин', 'Розовый перец'],
+      heart: ['Лаванда', 'Мускатный орех'],
+      base: ['Кедр', 'Бензоин']
+    }
+  },
+  {
+    id: 'maison-alhambra-alpine-homme-sport',
+    name: 'Alpine Homme Sport',
+    brand: 'Maison Alhambra',
+    xCoord: 0.20,
+    yCoord: 0.65,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Мандарин, перечная мята, морской бриз, кедр, белый мускус (профиль Allure Homme Sport)',
+    bestOccasion: 'Спорт, летний утренний выезд, офис без галстуков',
+    whyFitsOutfit: 'Свежее хлопковое поло, светлый деним, премиальные минималистичные кеды.',
+    colorTheme: 'from-slate-300 to-orange-500',
+    pyramid: {
+      top: ['Мандарин', 'Мята', 'Морские ноты', 'Апельсин'],
+      heart: ['Черный перец', 'Нероли', 'Кедр'],
+      base: ['Бобы тонка', 'Белый мускус', 'Амбра', 'Ветивер']
+    }
+  },
+  {
+    id: 'moschino-toy-boy',
+    name: 'Toy Boy (2019)',
+    brand: 'Moschino',
+    xCoord: 0.50,
+    yCoord: -0.15,
+    diffusion: 'Ударная',
+    dominantVibe: 'Темная роза, розовый перец, пряная груша, гвоздика, шелковистый кашмеран',
+    bestOccasion: 'Арт-вечеринка, выставка, модное свидание, дерзкий вечерний выход',
+    whyFitsOutfit: 'Авангардный лук, total black, кожаный плащ или пиджак свободного кроя. Аромат для уверенных в себе мужчин.',
+    colorTheme: 'from-neutral-900 to-rose-950',
+    pyramid: {
+      top: ['Розовый перец', 'Груша', 'Индонезийский мускатный орех', 'Элеми', 'Бергамот'],
+      heart: ['Роза', 'Гвоздика (пряность)', 'Магнолия', 'Лен'],
+      base: ['Кашмеран', 'Гаитянский ветивер', 'Sylkolide', 'Сандал', 'Амбра']
+    }
+  },
+  {
+    id: 'pendora-scents-the-dream-catcher',
+    name: 'The Dream Catcher',
+    brand: 'Pendora Scents',
+    xCoord: 0.55,
+    yCoord: -0.45,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Грейпфрут, теплый кориандр, пряный табак, амбра, кедр (профиль D&G The One)',
+    bestOccasion: 'Интимное свидание, кино, вечерний бар, уютная кофейня',
+    whyFitsOutfit: 'Один из величайших ароматов для сближения. Фланелевая рубашка или мягкий трикотаж, создающий желание подойти ближе.',
+    colorTheme: 'from-amber-600 to-stone-900',
+    pyramid: {
+      top: ['Грейпфрут', 'Кориандр', 'Базилик'],
+      heart: ['Имбирь', 'Кардамон', 'Цветок апельсина'],
+      base: ['Табак', 'Амбра', 'Кедр']
+    }
+  },
+  {
+    id: 'versace-blue-jeans',
+    name: 'Blue Jeans (1994)',
+    brand: 'Versace',
+    xCoord: 0.35,
+    yCoord: 0.20,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Цитрусы, можжевельник, лаванда, ваниль, сандал, ностальгическая винтажная свобода 90-х',
+    bestOccasion: 'Выходной день, прогулка по городу, музыкальный фестиваль, встреча выпускников',
+    whyFitsOutfit: 'Винтажная джинсовка, базовые Levi\'s, белая футболка: дерзкая классика эпохи Джанни Версаче.',
+    colorTheme: 'from-blue-500 to-indigo-700',
+    pyramid: {
+      top: ['Цитрусы', 'Бергамот', 'Можжевельник', 'Анис', 'Палисандр', 'Базилик'],
+      heart: ['Лаванда', 'Роза', 'Гвоздика', 'Герань', 'Жасмин', 'Шалфей'],
+      base: ['Ваниль', 'Бобы тонка', 'Сандал', 'Ирис', 'Мускус', 'Амбра', 'Кедр', 'Пачули']
+    }
+  },
+  {
+    id: 'versace-l-homme-1984',
+    name: 'L\'Homme (1984)',
+    brand: 'Versace',
+    xCoord: -0.65,
+    yCoord: 0.10,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Итальянский лимон, базилик, корица, благородная кожа, дубовый мох, золотой век маскулинности',
+    bestOccasion: 'Деловой протокол, совет директоров, осенний статус, сигарный клуб',
+    whyFitsOutfit: 'Классический двубортный костюм, шерстяное пальто, кожаные дерби: авторитет и бескомпромиссная порода.',
+    colorTheme: 'from-yellow-700 to-amber-950',
+    pyramid: {
+      top: ['Лимон', 'Базилик', 'Бергамот', 'Петитгрейн', 'Зеленые ноты'],
+      heart: ['Корица', 'Гвоздика', 'Пачули', 'Сандал', 'Роза', 'Кедр', 'Жасмин'],
+      base: ['Кожа', 'Дубовый мох', 'Лабданум', 'Амбра', 'Мускус', 'Ваниль']
+    }
+  },
+  {
+    id: 'nautica-voyage',
+    name: 'Voyage (2006)',
+    brand: 'Nautica',
+    xCoord: 0.10,
+    yCoord: 0.80,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Хрустящее зеленое яблоко, зеленые листья, водяной лотос, мимоза, кедр, морской бриз',
+    bestOccasion: 'Жара +30°C, пляж, спортзал, повседневный летний зной',
+    whyFitsOutfit: 'Белая льняная рубашка с закатанными рукавами, шорты чинос, топсайдеры: абсолютное ощущение прохладного душа.',
+    colorTheme: 'from-cyan-400 to-blue-500',
+    pyramid: {
+      top: ['Зеленые листья', 'Зеленое яблоко'],
+      heart: ['Лотос', 'Мимоза'],
+      base: ['Мускус', 'Кедр', 'Дубовый мох', 'Амбра']
+    }
+  },
+  {
+    id: 'bentley-for-men-intense',
+    name: 'Bentley for Men Intense (2013)',
+    brand: 'Bentley',
+    xCoord: -0.30,
+    yCoord: -0.85,
+    diffusion: 'Ударная',
+    dominantVibe: 'Выдержанный ром, грубая кожа, церковный ладан, корица, бензоин, древесный дым',
+    bestOccasion: 'Глубокая зима, метель, вечерний статус, бар с камином, строго 1-2 пшика',
+    whyFitsOutfit: 'Тяжелое шерстяное пальто, кожаные перчатки, фактурный кашемир: образ респектабельного мужчины.',
+    colorTheme: 'from-amber-800 to-stone-950',
+    pyramid: {
+      top: ['Черный перец', 'Лавр', 'Бергамот'],
+      heart: ['Ром', 'Древесные ноты', 'Корица', 'Мускатный шалфей', 'Герань'],
+      base: ['Ладан', 'Кожа', 'Бензоин', 'Пачули', 'Кедр']
+    }
+  },
+  {
+    id: 'salvatore-ferragamo-f-by-ferragamo',
+    name: 'F by Ferragamo Black (2009)',
+    brand: 'Salvatore Ferragamo',
+    xCoord: -0.10,
+    yCoord: -0.15,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Лаванда, острый черный перец, кориандр, бобы тонка, вечерний итальянский баланс',
+    bestOccasion: 'Деловой вечер, ужин в ресторане, осенне-весенний офис',
+    whyFitsOutfit: 'Темно-синий костюм без галстука или черный блейзер: строгая привлекательность без избыточной сладости.',
+    colorTheme: 'from-slate-700 to-purple-950',
+    pyramid: {
+      top: ['Лаванда', 'Яблоко'],
+      heart: ['Черный перец', 'Кориандр'],
+      base: ['Бобы тонка', 'Лабданум']
+    }
+  },
+  {
+    id: 'armani-code',
+    name: 'Armani Code (2004)',
+    brand: 'Giorgio Armani',
+    xCoord: 0.20,
+    yCoord: -0.40,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Бергамот, звездчатый анис, цветок оливы, кожа, светлый табак, бобы тонка',
+    bestOccasion: 'Свидание, театр, вечерний смокинг или костюм, элегантный ресторан',
+    whyFitsOutfit: 'Один из самых утонченных вечерних кодов: черный атлас, шелковый платок, выглаженная сорочка.',
+    colorTheme: 'from-slate-900 to-indigo-950',
+    pyramid: {
+      top: ['Бергамот', 'Лимон'],
+      heart: ['Звездчатый анис', 'Цветок оливы', 'Гваяк'],
+      base: ['Кожа', 'Табак', 'Бобы тонка']
+    }
+  },
+  {
+    id: 'viktor-rolf-spicebomb',
+    name: 'Spicebomb (2012)',
+    brand: 'Viktor&Rolf',
+    xCoord: 0.50,
+    yCoord: -0.65,
+    diffusion: 'Ударная',
+    dominantVibe: 'Взрыв розового перца, корицы, шафрана, чили, табака и кожи',
+    bestOccasion: 'Холодная осень, зима, новогодние праздники, вечерний бар',
+    whyFitsOutfit: 'Кожаная куртка, объемный шарф, тяжелые ботинки: согревающий и взрывной пряный ореол.',
+    colorTheme: 'from-orange-700 to-stone-900',
+    pyramid: {
+      top: ['Розовый перец', 'Элеми', 'Бергамот', 'Грейпфрут'],
+      heart: ['Корица', 'Шафран', 'Паприка (чили)'],
+      base: ['Табак', 'Кожа', 'Ветивер']
+    }
+  },
+  {
+    id: 'mancera-cedrat-boise',
+    name: 'Cedrat Boise',
+    brand: 'Mancera',
+    xCoord: -0.10,
+    yCoord: 0.30,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Сицилийский лимон, черная смородина, пряности, белая кожа, кедр, сандал',
+    bestOccasion: 'Универсал круглый год: от деловых встреч до вечерних посиделок',
+    whyFitsOutfit: 'Идеальный баланс нишевой цитрусовой свежести и благородной кожи. Гармонирует со Smart Casual любого уровня.',
+    colorTheme: 'from-amber-500 to-yellow-700',
+    pyramid: {
+      top: ['Сицилийский лимон', 'Черная смородина', 'Бергамот', 'Пряности'],
+      heart: ['Фруктовые ноты', 'Лист пачули', 'Водяной жасмин'],
+      base: ['Кедр', 'Кожа', 'Сандал', 'Ваниль', 'Белый мускус', 'Мох']
+    }
+  },
+  {
+    id: 'maison-alhambra-opulence-leather',
+    name: 'Opulence Leather',
+    brand: 'Maison Alhambra',
+    xCoord: -0.40,
+    yCoord: -0.70,
+    diffusion: 'Ударная',
+    dominantVibe: 'Спелая малина, шафран, тимьян, тяжелая сырая кожа, черная замша, амбра (профиль Tuscan Leather)',
+    bestOccasion: 'Статусные переговоры, вечер в костюме, холодная осень и зима',
+    whyFitsOutfit: 'Кожаный пиджак, фактурное пальто, брендовые аксессуары: бескомпромиссное выражение доминирования.',
+    colorTheme: 'from-amber-900 to-rose-950',
+    pyramid: {
+      top: ['Малина', 'Шафран', 'Тимьян'],
+      heart: ['Олибанум', 'Жасмин'],
+      base: ['Кожа', 'Замша', 'Древесные ноты', 'Амбра']
+    }
+  },
+  {
+    id: 'fragrance-world-woody-oud',
+    name: 'Woody Oud',
+    brand: 'Fragrance World',
+    xCoord: -0.35,
+    yCoord: -0.50,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Удовое дерево, палисандр, сычуаньский перец, кардамон, сандал, ветивер (профиль TF Oud Wood)',
+    bestOccasion: 'Деловой протокол, осенний офис, интеллектуальные встречи, вечерний релакс',
+    whyFitsOutfit: 'Минималистичный темно-серый или темно-синий костюм, шелковый трикотаж: полированная статусная интеллигентность.',
+    colorTheme: 'from-stone-700 to-neutral-900',
+    pyramid: {
+      top: ['Кардамон', 'Розовое дерево (палисандр)', 'Сычуаньский перец'],
+      heart: ['Уд', 'Сандал', 'Ветивер'],
+      base: ['Бобы тонка', 'Ваниль', 'Амбра']
+    }
+  },
+  // =========================================================================
+  // РУССКАЯ ПАРФЮМЕРНАЯ КОЛЛЕКЦИЯ: SERGIO NERO («АДМИРАЛЪ») & PRIME MINISTER
+  // =========================================================================
+  {
+    id: 'prime-minister-action-decisive',
+    name: 'Action Décisive',
+    brand: 'Prime Minister',
+    xCoord: 0.20,
+    yCoord: 0.35,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Ананас, бергамот, хрустящий ревень, роза, сандал, амбра, белое дерево',
+    bestOccasion: 'Весна, лето, деловой casual, городские встречи, открытые пространства',
+    whyFitsOutfit: 'Сочный ананасово-ревеневый фужер авторства Эрика Фракапана: отлично садится под светлую рубашку, чиносы и замшевые лоферы.',
+    colorTheme: 'from-amber-500 to-emerald-700',
+    pyramid: {
+      top: ['Ананас', 'Бергамот'],
+      heart: ['Ревень', 'Роза'],
+      base: ['Сандал', 'Амбра', 'Белое дерево']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-classic',
+    name: 'Адмиралъ (Классический)',
+    brand: 'Sergio Nero',
+    xCoord: 0.00,
+    yCoord: 0.10,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Морской аккорд, апельсин, мандарин, альдегиды, кедр, нероли, черный перец, ветивер, бобы тонка',
+    bestOccasion: 'Круглый год (Камертон): офис, спорт, прогулка, универсальный дневной протокол',
+    whyFitsOutfit: 'Внесезонный морской универсал (Allure Homme Sport vibe): безупречен с синим блейзером, поло или белой футболкой.',
+    colorTheme: 'from-blue-600 to-sky-800',
+    pyramid: {
+      top: ['Морской аккорд', 'Апельсин', 'Мандарин', 'Альдегиды'],
+      heart: ['Кедр', 'Нероли', 'Черный перец', 'Ветивер'],
+      base: ['Бобы тонка', 'Белая амбра', 'Ваниль', 'Мускус']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-andreevsky-flag',
+    name: 'Адмиралъ: Андреевский флаг',
+    brand: 'Sergio Nero',
+    xCoord: -0.45,
+    yCoord: 0.50,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Грейпфрут, мандарин, бергамот, черный перец, кардамон, лаванда, кедр, ветивер',
+    bestOccasion: 'Офис, деловые встречи, утренние совещания, жесткий рацио-фокус',
+    whyFitsOutfit: 'Сухой цитрусово-пряный фужер с офицерской дисциплиной: идеально сидит под накрахмаленную сорочку и строгий костюм.',
+    colorTheme: 'from-sky-700 to-indigo-950',
+    pyramid: {
+      top: ['Грейпфрут', 'Мандарин', 'Бергамот'],
+      heart: ['Черный перец', 'Кардамон', 'Лаванда'],
+      base: ['Кедр', 'Ветивер', 'Пряные древесные аккорды']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-arktika',
+    name: 'Адмиралъ: Арктика',
+    brand: 'Sergio Nero',
+    xCoord: 0.40,
+    yCoord: 0.80,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Ледяной лайм, бергамот, зеленые ноты, эвкалипт, кардамон, сосновая хвоя, белый кедр',
+    bestOccasion: 'Летний зной +30°C, спорт, активный отдых, ледяная свежесть',
+    whyFitsOutfit: 'Морозный хвойно-эвкалиптовый бриз: лучший выбор под льняную светлую одежду, шорты и белые кеды в раскаленном городе.',
+    colorTheme: 'from-cyan-400 to-teal-700',
+    pyramid: {
+      top: ['Лайм', 'Бергамот', 'Зеленые ноты'],
+      heart: ['Эвкалипт', 'Кардамон'],
+      base: ['Хвоя сосны', 'Белый кедр']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-zheleznaya-volya',
+    name: 'Адмиралъ: Железная воля',
+    brand: 'Sergio Nero',
+    xCoord: 0.65,
+    yCoord: -0.70,
+    diffusion: 'Ударная',
+    dominantVibe: 'Листья табака, пряности, ваниль, какао, бобы тонка, цветок табака, сухофрукты',
+    bestOccasion: 'Зимний вечер, свидание, ресторан, уютный бар, морозная ночь',
+    whyFitsOutfit: 'Согревающий табачно-ванильный восток (Tobacco Vanille vibe): великолепен с кашемировым свитером, пальто и кожаной курткой.',
+    colorTheme: 'from-amber-700 to-stone-900',
+    pyramid: {
+      top: ['Листья табака', 'Пряные ноты'],
+      heart: ['Ваниль', 'Какао', 'Бобы тонка', 'Цветок табака'],
+      base: ['Сухофрукты', 'Древесные ноты']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-patriot',
+    name: 'Адмиралъ: Патриот',
+    brand: 'Sergio Nero',
+    xCoord: -0.65,
+    yCoord: -0.60,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Красное дерево, лаванда, шалфей, бергамот, герань, роза, пачули, кедр, сандал, янтарь',
+    bestOccasion: 'Вечерний протокол, торжественные приемы, темный костюм, статусная дистанция',
+    whyFitsOutfit: 'Плотный ориентально-древесный силуэт: требует темного шерстяного пальто, классического пиджака и статусных аксессуаров.',
+    colorTheme: 'from-red-950 via-slate-900 to-black',
+    pyramid: {
+      top: ['Лаванда', 'Шалфей', 'Бергамот', 'Красное дерево'],
+      heart: ['Герань', 'Роза', 'Ландыш', 'Жасмин'],
+      base: ['Пачули', 'Кедр', 'Ваниль', 'Сандал', 'Янтарь']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-posledniy-geroy',
+    name: 'Адмиралъ: Последний герой',
+    brand: 'Sergio Nero',
+    xCoord: 0.35,
+    yCoord: -0.20,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Спелое яблоко, слива, корица, гвоздика, красное дерево, ваниль, сандал, кедр',
+    bestOccasion: 'Осень, дождливый октябрь, кофейня, встречи с друзьями, мягкий трикотаж',
+    whyFitsOutfit: 'Уютный яблочно-коричный древесный шлейф (Boss Bottled vibe): идеален с замшевой курткой, фланелевой рубашкой и джинсами.',
+    colorTheme: 'from-amber-600 to-orange-950',
+    pyramid: {
+      top: ['Яблоко', 'Слива', 'Бергамот', 'Лимон'],
+      heart: ['Корица', 'Гвоздика', 'Красное дерево'],
+      base: ['Ваниль', 'Сандал', 'Ветивер', 'Кедр']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-rossiyskiy-flot',
+    name: 'Адмиралъ: Российский флот',
+    brand: 'Sergio Nero',
+    xCoord: -0.40,
+    yCoord: -0.10,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Грейпфрут, лимон, розовый перец, имбирь, мята, мускатный орех, темный ладан, кедр',
+    bestOccasion: 'Прохладная погода, межсезонье, офис, деловой блейзер, морской характер',
+    whyFitsOutfit: 'Глубокий древесно-цитрусовый смолистый аккорд (Bleu de Chanel vibe): солиден, дисциплинирован и устойчив к ветру.',
+    colorTheme: 'from-blue-900 via-slate-900 to-indigo-950',
+    pyramid: {
+      top: ['Грейпфрут', 'Лимон', 'Розовый перец'],
+      heart: ['Имбирь', 'Мускатный орех', 'Мята'],
+      base: ['Кедр', 'Жасмин', 'Ладан']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-russkiy-harakter',
+    name: 'Адмиралъ: Русский Характер',
+    brand: 'Sergio Nero',
+    xCoord: -0.05,
+    yCoord: 0.45,
+    diffusion: 'Умеренная',
+    dominantVibe: 'Зеленый чай, грейпфрут, лаванда, шалфей, розмарин, ветивер, кедр, дубовый мох',
+    bestOccasion: 'Весеннее пробуждение, утренний город, прогулки на свежем воздухе',
+    whyFitsOutfit: 'Интеллектуальный травяной фужер с зеленым чаем: прекрасно сочетается со светлым трикотажем, поло и хлопковыми брюками.',
+    colorTheme: 'from-emerald-600 to-teal-900',
+    pyramid: {
+      top: ['Грейпфрут', 'Зеленый чай', 'Лаванда'],
+      heart: ['Шалфей', 'Герань', 'Розмарин', 'Ветивер', 'Кедр', 'Бергамот'],
+      base: ['Дубовый мох', 'Мускус', 'Ваниль']
+    }
+  },
+  {
+    id: 'sergio-nero-admiral-triumf',
+    name: 'Адмиралъ: Триумф',
+    brand: 'Sergio Nero',
+    xCoord: 0.45,
+    yCoord: 0.15,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Калабрийский бергамот, сычуаньский перец, лаванда, амброксан, кедр, элеми',
+    bestOccasion: 'Динамичный день, город, открытые террасы, вечерний драйв',
+    whyFitsOutfit: 'Сверхдиффузный минерально-бергамотовый фужер (Dior Sauvage vibe): создает притягательную ауру уверенности в любой неформальной обстановке.',
+    colorTheme: 'from-indigo-600 via-blue-800 to-slate-950',
+    pyramid: {
+      top: ['Калабрийский бергамот', 'Сычуаньский перец'],
+      heart: ['Лаванда', 'Розовый перец', 'Ветивер', 'Пачули', 'Герань', 'Элеми'],
+      base: ['Амброксан', 'Белый кедр', 'Лабданум']
+    }
+  },
+  {
+    id: 'sergio-nero-scan-your-life-silver',
+    name: 'Scan Your Life Silver',
+    brand: 'Sergio Nero',
+    xCoord: 0.45,
+    yCoord: 0.55,
+    diffusion: 'Шлейфовая',
+    dominantVibe: 'Морские ноты, грейпфрут, мандарин, лавровый лист, жасмин, серая амбра, гуаяк, пачули',
+    bestOccasion: 'Лето, спортзал, активные встречи, драйвовый молодежный стиль',
+    whyFitsOutfit: 'Победоносный акватически-амбровый шлейф (Invictus vibe): отлично сидит со спортивным худи, белыми кроссовками и бомбером.',
+    colorTheme: 'from-slate-400 via-cyan-600 to-slate-900',
+    pyramid: {
+      top: ['Грейпфрут', 'Мандарин', 'Морские ноты'],
+      heart: ['Лавровый лист', 'Жасмин'],
+      base: ['Серая амбра', 'Дерево гуаяк', 'Дубовый мох', 'Пачули']
+    }
+  },
 ];
 
 // Готовые капсульные пресеты для быстрого старта пользователя
 export const SHELF_PRESETS: ShelfPreset[] = [
+  {
+    id: 'my-personal-collection',
+    name: 'Моя коллекция (57)',
+    description: 'Персональная коллекция владельца: 57 флаконов, включая полную серию «Адмиралъ», Scan Your Life Silver и Prime Minister Action Décisive.',
+    perfumeIds: [
+      '4711-eau-de-cologne',
+      'abercrombie-first-instinct',
+      'al-haramain-detour-noir',
+      'antonio-banderas-blue-seduction',
+      'armaf-club-de-nuit-intense',
+      'bleu-de-chanel-edp',
+      'dior-fahrenheit',
+      'dior-sauvage',
+      'guess-1981-los-angeles',
+      'hugo-boss-boss-bottled',
+      'lattafa-al-nashama-caprice',
+      'lattafa-ansaam-silver',
+      'lattafa-asad',
+      'lattafa-badee-al-oud-honor-glory',
+      'lattafa-emeer',
+      'lattafa-khamrah',
+      'lattafa-qaed-al-fursan',
+      'lattafa-ramz-silver',
+      'lattafa-fakhr-black',
+      'lattafa-najdia',
+      'lattafa-al-qiam-silver',
+      'loewe-solo-cedro',
+      'maison-alhambra-alpine-homme-sport',
+      'moschino-toy-boy',
+      'pendora-scents-the-dream-catcher',
+      'versace-blue-jeans',
+      'versace-dylan-blue-edt',
+      'versace-eros',
+      'versace-l-homme-1984',
+      'versace-man-eau-fraiche',
+      'versace-pour-homme',
+      'versace-the-dreamer',
+      'dior-eau-sauvage',
+      'guy-laroche-drakkar-noir',
+      'acqua-di-gio',
+      'jpg-le-male',
+      'terre-dhermes',
+      'davidoff-cool-water',
+      'nautica-voyage',
+      'bentley-for-men-intense',
+      'salvatore-ferragamo-f-by-ferragamo',
+      'armani-code',
+      'viktor-rolf-spicebomb',
+      'mancera-cedrat-boise',
+      'maison-alhambra-opulence-leather',
+      'fragrance-world-woody-oud',
+      'prime-minister-action-decisive',
+      'sergio-nero-admiral-classic',
+      'sergio-nero-admiral-andreevsky-flag',
+      'sergio-nero-admiral-arktika',
+      'sergio-nero-admiral-zheleznaya-volya',
+      'sergio-nero-admiral-patriot',
+      'sergio-nero-admiral-posledniy-geroy',
+      'sergio-nero-admiral-rossiyskiy-flot',
+      'sergio-nero-admiral-russkiy-harakter',
+      'sergio-nero-admiral-triumf',
+      'sergio-nero-scan-your-life-silver',
+    ],
+  },
+  {
+    id: 'russian-admiral-collection',
+    name: 'Русская коллекция: Sergio Nero & Prime Minister',
+    description: 'Полная серия «Адмиралъ» (9 флаконов) + Scan Your Life Silver + Prime Minister Action Décisive.',
+    perfumeIds: [
+      'prime-minister-action-decisive',
+      'sergio-nero-admiral-classic',
+      'sergio-nero-admiral-andreevsky-flag',
+      'sergio-nero-admiral-arktika',
+      'sergio-nero-admiral-zheleznaya-volya',
+      'sergio-nero-admiral-patriot',
+      'sergio-nero-admiral-posledniy-geroy',
+      'sergio-nero-admiral-rossiyskiy-flot',
+      'sergio-nero-admiral-russkiy-harakter',
+      'sergio-nero-admiral-triumf',
+      'sergio-nero-scan-your-life-silver',
+    ],
+  },
   {
     id: 'golden-21',
     name: 'Золотой Канон 21 (Периодическая таблица)',

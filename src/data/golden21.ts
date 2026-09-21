@@ -16,25 +16,25 @@ export const GOLDEN_PERFUME_IDS_21: string[] = [
   'chanel-platinum-egoiste',  // Запад (-X: Барьер, дистанция, субординация)
   'jpg-ultra-male',           // Восток (+X: Сближение, контакт, призыв)
 
-  // 3. КВАДРАНТ I: (+X, +Y) ОТКРЫТАЯ СВЕЖЕСТЬ (4 аромата)
+  // 3. КВАДРАНТ I: (+X, +Y) ЛЕГКОСТЬ (4 аромата)
   'versace-man-eau-fraiche',  // (+0.35, +0.75)
   'acqua-di-gio',             // (+0.70, +0.75)
   'dior-sauvage',             // (+0.35, +0.35)
   'dior-homme-cologne',       // (+0.70, +0.35)
 
-  // 4. КВАДРАНТ II: (-X, +Y) ХОЛОДНЫЙ КОНТРОЛЬ (4 аромата)
+  // 4. КВАДРАНТ II: (-X, +Y) СОБРАННОСТЬ (4 аромата)
   'dior-eau-sauvage',         // (-0.70, +0.75)
   'prada-lhomme',             // (-0.35, +0.75)
   'paco-rabanne-pour-homme',   // (-0.70, +0.35)
   'ysl-lhomme',               // (-0.35, +0.35)
 
-  // 5. КВАДРАНТ III: (-X, -Y) ТЕМНЫЙ СТАТУС (4 аромата)
+  // 5. КВАДРАНТ III: (-X, -Y) ВЛАСТЬ (4 аромата)
   'terre-dhermes',            // (-0.70, -0.35)
   'guy-laroche-drakkar-noir', // (-0.35, -0.35)
   'dior-homme-intense',       // (-0.70, -0.75)
   'versace-oud-noir',         // (-0.35, -0.75)
 
-  // 6. КВАДРАНТ IV: (+X, -Y) ТАКТИЛЬНОЕ ТЕПЛО (4 аромата)
+  // 6. КВАДРАНТ IV: (+X, -Y) ПРИТЯЖЕНИЕ (4 аромата)
   'creed-aventus',            // (+0.35, -0.35)
   'versace-eros',             // (+0.70, -0.35)
   'jpg-le-male',              // (+0.35, -0.75)
@@ -84,7 +84,7 @@ export const GOLDEN_WARDROBE_21: WardrobeItem[] = GOLDEN_WARDROBE_IDS_21
 
 // ============================================================================
 // ПЕРИОДИЧЕСКАЯ ТАБЛИЦА ОДЕЖДЫ АНЬЯНОВА: 21 ЭЛЕМЕНТ (СИМВОЛЫ МЕНДЕЛЕЕВА)
-// 4 Периода (Слои L1-L4) x 5 Групп (Степени формальности от Casual до Black Tie)
+// 4 Периода (Слои L1-L4) x 5 Групп (Степени формальности от Casual до Formal)
 // ============================================================================
 export interface PeriodicWardrobeElement {
   number: number;
@@ -105,7 +105,7 @@ export const PERIODIC_WARDROBE_ELEMENTS_21: PeriodicWardrobeElement[] = [
   // Период I: L1 Обувь
   { number: 1, symbol: 'Sn', name: 'Белые кеды', layer: 'L1', group: 'I', groupLabel: 'Casual', formalIndex: 1.0, color: '#ffffff', colorName: 'Белый', fabric: 'Кожа', vibe: 'Легкость, комфорт' },
   { number: 2, symbol: 'Lf', name: 'Лоферы', layer: 'L1', group: 'III', groupLabel: 'Smart/Business Casual', formalIndex: 2.0, color: '#78350f', colorName: 'Шоколадный', fabric: 'Замша/Кожа', vibe: 'Баланс, стиль', isCore: true },
-  { number: 3, symbol: 'Ox', name: 'Оксфорды', layer: 'L1', group: 'IV', groupLabel: 'Business Formal/Black Tie', formalIndex: 3.0, color: '#0f172a', colorName: 'Черный', fabric: 'Глянцевая кожа', vibe: 'Протокол, статус' },
+  { number: 3, symbol: 'Ox', name: 'Оксфорды', layer: 'L1', group: 'IV', groupLabel: 'Business Formal / Протокол', formalIndex: 3.0, color: '#0f172a', colorName: 'Черный', fabric: 'Глянцевая кожа', vibe: 'Протокол, статус' },
 
   // Период II: L2 Брюки
   { number: 4, symbol: 'Sl', name: 'Слаксы', layer: 'L2', group: 'I', groupLabel: 'Casual Light', formalIndex: 1.0, color: '#e2e8f0', colorName: 'Светло-серый', fabric: 'Хлопок', vibe: 'Свобода' },
@@ -113,7 +113,7 @@ export const PERIODIC_WARDROBE_ELEMENTS_21: PeriodicWardrobeElement[] = [
   { number: 6, symbol: 'Ch', name: 'Чиносы беж', layer: 'L2', group: 'III', groupLabel: 'Smart Casual', formalIndex: 2.0, color: '#d97706', colorName: 'Бежевый', fabric: 'Хлопковый твил', vibe: 'Ядро баланса', isCore: true },
   { number: 7, symbol: 'Np', name: 'Непарные брюки', layer: 'L2', group: 'III', groupLabel: 'Office Smart', formalIndex: 2.3, color: '#475569', colorName: 'Серо-стальной', fabric: 'Хлопок-шерсть', vibe: 'Деловой силуэт' },
   { number: 8, symbol: 'Wp', name: 'Шерстяные брюки Navy', layer: 'L2', group: 'IV', groupLabel: 'Business Formal', formalIndex: 2.8, color: '#1e293b', colorName: 'Темно-синий', fabric: 'Шерсть со стрелкой', vibe: 'Дисциплина' },
-  { number: 9, symbol: 'Wc', name: 'Костюмные брюки серые', layer: 'L2', group: 'V', groupLabel: 'Formal/Black Tie', formalIndex: 3.0, color: '#334155', colorName: 'Графитовый', fabric: 'Костюмная шерсть', vibe: 'Вечерний вес' },
+  { number: 9, symbol: 'Wc', name: 'Костюмные брюки серые', layer: 'L2', group: 'V', groupLabel: 'Night Formal (Вечерний вес)', formalIndex: 3.0, color: '#334155', colorName: 'Графитовый', fabric: 'Костюмная шерсть', vibe: 'Вечерний вес' },
 
   // Период III: L3 Торс
   { number: 10, symbol: 'Ts', name: 'Белая футболка', layer: 'L3', group: 'I', groupLabel: 'Casual Light', formalIndex: 1.0, color: '#ffffff', colorName: 'Белый', fabric: 'Хлопок 240г', vibe: 'Базовая чистота' },
@@ -129,7 +129,7 @@ export const PERIODIC_WARDROBE_ELEMENTS_21: PeriodicWardrobeElement[] = [
   { number: 18, symbol: 'Bz', name: 'Блейзер Navy', layer: 'L4', group: 'III', groupLabel: 'Smart/Business Casual', formalIndex: 2.0, color: '#1e3a8a', colorName: 'Navy', fabric: 'Hopsack шерсть', vibe: 'Ядро гардероба', isCore: true },
   { number: 19, symbol: 'Nj', name: 'Непарный серый пиджак', layer: 'L4', group: 'III', groupLabel: 'Smart/Office', formalIndex: 2.4, color: '#475569', colorName: 'Серый меланж', fabric: 'Фланель', vibe: 'Интеллект' },
   { number: 20, symbol: 'Sj', name: 'Костюмный пиджак Navy', layer: 'L4', group: 'IV', groupLabel: 'Business Formal', formalIndex: 2.8, color: '#0f172a', colorName: 'Глубокий Navy', fabric: 'Шерсть Super 130s', vibe: 'Власть' },
-  { number: 21, symbol: 'Sc', name: 'Костюмный пиджак серый', layer: 'L4', group: 'V', groupLabel: 'Black Tie', formalIndex: 3.0, color: '#18181b', colorName: 'Графит/Смокинг', fabric: 'Шерсть/Шелк', vibe: 'Монумент' },
+  { number: 21, symbol: 'Sc', name: 'Костюмный пиджак серый', layer: 'L4', group: 'V', groupLabel: 'Night Formal', formalIndex: 3.0, color: '#18181b', colorName: 'Графит / Вечерний', fabric: 'Шерсть/Шелк', vibe: 'Монумент' },
 ];
 
 export interface GoldenMirrorPair {
@@ -159,7 +159,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Синий Камертон»',
     quadrantCode: 'CENTER',
     periodicRole: 'center',
-    quadrantName: 'Центр • Нулевой Камертон Баланса',
+    quadrantName: 'Центр • Равновесие',
     badge: 'Камертон (0, 0)',
     releaseYear: 2010,
     suggestedOutfit: {
@@ -263,7 +263,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Ривьера»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
-    quadrantName: 'Квадрант I • Открытая Свежесть',
+    quadrantName: 'Квадрант I • Легкость',
     badge: 'Курортный Бриз',
     releaseYear: 2006,
     suggestedOutfit: {
@@ -279,7 +279,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Океанский Бриз»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
-    quadrantName: 'Квадрант I • Открытая Свежесть',
+    quadrantName: 'Квадрант I • Легкость',
     badge: 'Эталон Акватики',
     releaseYear: 1996,
     suggestedOutfit: {
@@ -295,7 +295,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Городской Драйв»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
-    quadrantName: 'Квадрант I • Открытая Свежесть',
+    quadrantName: 'Квадрант I • Легкость',
     badge: 'Мега-Проекция',
     releaseYear: 2015,
     suggestedOutfit: {
@@ -311,7 +311,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Белый Хлопок»',
     quadrantCode: 'NE_EASE',
     periodicRole: 'q1',
-    quadrantName: 'Квадрант I • Открытая Свежесть',
+    quadrantName: 'Квадрант I • Легкость',
     badge: 'Ледяной Хлопок',
     releaseYear: 2013,
     suggestedOutfit: {
@@ -331,7 +331,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Протокол»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
-    quadrantName: 'Квадрант II • Холодный Контроль',
+    quadrantName: 'Квадрант II • Собранность',
     badge: 'Аристократичный Шипр',
     releaseYear: 1966,
     suggestedOutfit: {
@@ -348,7 +348,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Белый Воротник»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
-    quadrantName: 'Квадрант II • Холодный Контроль',
+    quadrantName: 'Квадрант II • Собранность',
     badge: 'Офисная Дипломатия',
     releaseYear: 2016,
     suggestedOutfit: {
@@ -365,7 +365,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Стальной Дипломат»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
-    quadrantName: 'Квадрант II • Холодный Контроль',
+    quadrantName: 'Квадрант II • Собранность',
     badge: 'Барбершоп 70-х',
     releaseYear: 1973,
     suggestedOutfit: {
@@ -382,7 +382,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Аналитик»',
     quadrantCode: 'NW_FOCUS',
     periodicRole: 'q2',
-    quadrantName: 'Квадрант II • Холодный Контроль',
+    quadrantName: 'Квадрант II • Собранность',
     badge: 'Деловой Этикет',
     releaseYear: 2006,
     suggestedOutfit: {
@@ -402,7 +402,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Минеральный Титан»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
-    quadrantName: 'Квадрант III • Темный Статус',
+    quadrantName: 'Квадрант III • Власть',
     badge: 'Минеральный Кремень',
     releaseYear: 2006,
     suggestedOutfit: {
@@ -419,7 +419,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Тень Нуара»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
-    quadrantName: 'Квадрант III • Темный Статус',
+    quadrantName: 'Квадрант III • Власть',
     badge: 'Пауэрхаус 80-х',
     releaseYear: 1982,
     suggestedOutfit: {
@@ -436,7 +436,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Гранд-Опера»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
-    quadrantName: 'Квадрант III • Темный Статус',
+    quadrantName: 'Квадрант III • Власть',
     badge: 'Вечерний Смокинг',
     releaseYear: 2007,
     suggestedOutfit: {
@@ -453,7 +453,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Чёрный Кардинал»',
     quadrantCode: 'SW_POWER',
     periodicRole: 'q3',
-    quadrantName: 'Квадрант III • Темный Статус',
+    quadrantName: 'Квадрант III • Власть',
     badge: 'Пряный Нуар',
     releaseYear: 2013,
     suggestedOutfit: {
@@ -474,7 +474,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Триумфатор»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
-    quadrantName: 'Квадрант IV • Тактильное Тепло',
+    quadrantName: 'Квадрант IV • Притяжение',
     badge: 'Нео-Шипр Победы',
     releaseYear: 2010,
     suggestedOutfit: {
@@ -491,7 +491,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Кашемировый Магнит»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
-    quadrantName: 'Квадрант IV • Тактильное Тепло',
+    quadrantName: 'Квадрант IV • Притяжение',
     badge: 'Клубный Магнетизм',
     releaseYear: 2012,
     suggestedOutfit: {
@@ -508,7 +508,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Ночной Барвелюр»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
-    quadrantName: 'Квадрант IV • Тактильное Тепло',
+    quadrantName: 'Квадрант IV • Притяжение',
     badge: 'Культовая Нежность',
     releaseYear: 1995,
     suggestedOutfit: {
@@ -524,7 +524,7 @@ export const GOLDEN_MIRROR_PAIRS_21: GoldenMirrorPair[] = [
     outfitName: '«Пряный Гедонизм»',
     quadrantCode: 'SE_SEDUCTION',
     periodicRole: 'q4',
-    quadrantName: 'Квадрант IV • Тактильное Тепло',
+    quadrantName: 'Квадрант IV • Притяжение',
     badge: 'Восточная Нега',
     releaseYear: 2022,
     suggestedOutfit: {

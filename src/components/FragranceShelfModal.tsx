@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { X, Search, Check, Sparkles, SlidersHorizontal, RotateCcw, CheckSquare, Layers, HeartHandshake, Plus, Trash2 } from 'lucide-react';
-import { PERFUME_DATABASE, SHELF_PRESETS, getPerfumeBottleImage, saveCustomPerfume, deleteCustomPerfume } from '../data/fragrances';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { X, Search, Check, Sparkles, SlidersHorizontal, RotateCcw, CheckSquare, Layers, HeartHandshake, Plus, Trash2, Filter } from 'lucide-react';
+import { PERFUME_DATABASE, SHELF_PRESETS, ShelfPreset, getPerfumeBottleImage, saveCustomPerfume, deleteCustomPerfume } from '../data/fragrances';
 import { HUMAN_VIBE_ARCHETYPES } from '../data/humanScents';
+import { getQuadrantInfo } from '../engine/anyanovMatrix';
 import { AddPerfumeModal } from './AddPerfumeModal';
 import { PerfumeItem } from '../types';
 
@@ -13,7 +14,7 @@ interface FragranceShelfModalProps {
   onOpenHumanFinder?: () => void;
 }
 
-type QuadrantFilter = 'ALL' | 'NW' | 'NE' | 'SW' | 'SE';
+type QuadrantFilter = 'ALL' | 'CENTER' | 'NW' | 'NE' | 'SW' | 'SE';
 
 export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
   isOpen,
@@ -24,8 +25,20 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [quadrantFilter, setQuadrantFilter] = useState<QuadrantFilter>('ALL');
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+  const [onlyOwnedFilter, setOnlyOwnedFilter] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [perfumesVersion, setPerfumesVersion] = useState(0);
+
+  // Сброс фильтров при закрытии модального окна
+  useEffect(() => {
+    if (!isOpen) {
+      setActivePresetId(null);
+      setOnlyOwnedFilter(false);
+      setQuadrantFilter('ALL');
+      setSearchQuery('');
+    }
+  }, [isOpen]);
 
   const handleAddCustomPerfume = useCallback((newPerfume: PerfumeItem) => {
     saveCustomPerfume(newPerfume);
@@ -40,11 +53,23 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
     setPerfumesVersion((v) => v + 1);
   }, [ownedIds, onUpdateOwnedIds]);
 
-  // Фильтрация списка ароматов по поиску и квадрантам
+  // Фильтрация списка ароматов: пресеты, только на полке, поиск и квадранты
   const filteredPerfumes = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
+    const activePreset = SHELF_PRESETS.find((p) => p.id === activePresetId);
+
     return PERFUME_DATABASE.filter((item) => {
-      // Поиск по названию, бренду, нотам или человеческим ассоциациям/метафорам
+      // 1. Фильтр по пресету: при выборе пресета отображаются ТОЛЬКО его карточки
+      if (activePreset && !activePreset.perfumeIds.includes(item.id)) {
+        return false;
+      }
+
+      // 2. Фильтр "Только на полке": скрывать флаконы, которых нет на полке
+      if (onlyOwnedFilter && !ownedIds.includes(item.id)) {
+        return false;
+      }
+
+      // 3. Поиск по названию, бренду, нотам или человеческим ассоциациям/метафорам
       const archetype = HUMAN_VIBE_ARCHETYPES.find((a) => a.targetPerfumeId === item.id);
       const matchesVibe = archetype
         ? archetype.title.toLowerCase().includes(q) ||
@@ -65,16 +90,18 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
 
       if (!matchesSearch) return false;
 
-      // Фильтр по квадрантам
+      // 4. Фильтр по квадрантам и центру
       if (quadrantFilter === 'ALL') return true;
-      if (quadrantFilter === 'NW') return item.xCoord <= 0 && item.yCoord >= 0;
-      if (quadrantFilter === 'NE') return item.xCoord > 0 && item.yCoord >= 0;
-      if (quadrantFilter === 'SW') return item.xCoord <= 0 && item.yCoord < 0;
-      if (quadrantFilter === 'SE') return item.xCoord > 0 && item.yCoord < 0;
+      const qCode = getQuadrantInfo(item.xCoord, item.yCoord).code;
+      if (quadrantFilter === 'CENTER') return qCode === 'CENTER_BALANCE';
+      if (quadrantFilter === 'NW') return qCode === 'NW_FOCUS';
+      if (quadrantFilter === 'NE') return qCode === 'NE_EASE';
+      if (quadrantFilter === 'SW') return qCode === 'SW_POWER';
+      if (quadrantFilter === 'SE') return qCode === 'SE_SEDUCTION';
 
       return true;
     });
-  }, [searchQuery, quadrantFilter, perfumesVersion]);
+  }, [searchQuery, quadrantFilter, perfumesVersion, activePresetId, onlyOwnedFilter, ownedIds]);
 
   if (!isOpen) return null;
 
@@ -88,14 +115,31 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
 
   const handleSelectAll = () => {
     onUpdateOwnedIds(PERFUME_DATABASE.map((p) => p.id));
+    setActivePresetId(null);
+    setOnlyOwnedFilter(false);
   };
 
   const handleClearAll = () => {
     onUpdateOwnedIds([]);
+    setActivePresetId(null);
+    setOnlyOwnedFilter(false);
   };
 
-  const handleApplyPreset = (presetIds: string[]) => {
-    onUpdateOwnedIds(presetIds);
+  const handleApplyPreset = (preset: ShelfPreset) => {
+    if (activePresetId === preset.id) {
+      // Повторный клик по активному пресету снимает фильтрацию (показывает все карточки)
+      setActivePresetId(null);
+    } else {
+      setActivePresetId(preset.id);
+      onUpdateOwnedIds(preset.perfumeIds);
+    }
+  };
+
+  const handleResetAllFilters = () => {
+    setActivePresetId(null);
+    setOnlyOwnedFilter(false);
+    setQuadrantFilter('ALL');
+    setSearchQuery('');
   };
 
   return (
@@ -149,36 +193,42 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
             Пресеты в 1 клик:
           </span>
           {SHELF_PRESETS.map((preset) => {
+            const isPresetActive = activePresetId === preset.id;
             const isFullyActive =
               preset.perfumeIds.length === ownedIds.length &&
               preset.perfumeIds.every((id) => ownedIds.includes(id));
             return (
               <button
                 key={preset.id}
-                onClick={() => handleApplyPreset(preset.perfumeIds)}
-                className={`text-xs px-2.5 py-1 rounded-lg border transition-all flex items-center gap-1.5 ${
-                  isFullyActive
-                    ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-bold'
+                onClick={() => handleApplyPreset(preset)}
+                className={`text-xs px-2.5 py-1 rounded-lg border transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isPresetActive
+                    ? 'bg-amber-500/25 border-amber-400 text-amber-200 font-bold ring-2 ring-amber-500/30 shadow-md shadow-amber-500/20'
+                    : isFullyActive
+                    ? 'bg-amber-500/15 border-amber-500/50 text-amber-300'
                     : 'bg-slate-800/60 border-slate-700/60 text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
-                title={preset.description}
+                title={isPresetActive ? 'Активный пресет (кликните, чтобы показать все карточки)' : preset.description}
               >
                 <span>{preset.name}</span>
                 <span className="text-[10px] font-mono opacity-70">({preset.perfumeIds.length})</span>
+                {isPresetActive && <span className="text-[10px] text-amber-400 ml-0.5 font-bold">✕</span>}
               </button>
             );
           })}
           <div className="ml-auto flex items-center gap-1.5">
             <button
               onClick={handleSelectAll}
-              className="text-[11px] font-mono px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-600 transition-colors flex items-center gap-1"
+              className="text-[11px] font-mono px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-600 transition-colors flex items-center gap-1 cursor-pointer"
+              title="Выбрать все флаконы в базе"
             >
               <CheckSquare className="w-3 h-3 text-sky-400" />
               Все
             </button>
             <button
               onClick={handleClearAll}
-              className="text-[11px] font-mono px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-900 transition-colors flex items-center gap-1"
+              className="text-[11px] font-mono px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-900 transition-colors flex items-center gap-1 cursor-pointer"
+              title="Сбросить выбор флаконов"
             >
               <RotateCcw className="w-3 h-3 text-rose-400" />
               Сброс
@@ -201,68 +251,97 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-slate-300 cursor-pointer"
+                title="Очистить"
               >
                 ✕
               </button>
             )}
           </div>
 
-          {/* Quadrant Filter Tabs */}
+          {/* Quadrant & Shelf Filter Tabs */}
           <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 text-xs">
             <button
               onClick={() => setQuadrantFilter('ALL')}
-              className={`px-2.5 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap ${
+              className={`px-2.5 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap cursor-pointer ${
                 quadrantFilter === 'ALL'
                   ? 'bg-slate-700 text-white border-slate-500'
                   : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
               }`}
             >
-              Все
+              Все квадранты
             </button>
             <button
-              onClick={() => setQuadrantFilter('NW')}
-              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap ${
+              onClick={() => setQuadrantFilter(quadrantFilter === 'CENTER' ? 'ALL' : 'CENTER')}
+              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap cursor-pointer ${
+                quadrantFilter === 'CENTER'
+                  ? 'bg-amber-950 text-amber-200 border-amber-500/70 font-bold'
+                  : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
+              }`}
+              title="Центр: Точка Равновесия (365 дней)"
+            >
+              ⚖️ Центр: Равновесие
+            </button>
+            <button
+              onClick={() => setQuadrantFilter(quadrantFilter === 'NW' ? 'ALL' : 'NW')}
+              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap cursor-pointer ${
                 quadrantFilter === 'NW'
                   ? 'bg-sky-950 text-sky-200 border-sky-500/70 font-bold'
                   : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
               }`}
-              title="Северо-Запад: Офис / Переговоры / Холод"
+              title="Квадрант II (Северо-Запад): Собранность / Офис / Дистанция"
             >
-              💼 СЗ: Фокус
+              💼 СЗ: Собранность
             </button>
             <button
-              onClick={() => setQuadrantFilter('NE')}
-              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap ${
+              onClick={() => setQuadrantFilter(quadrantFilter === 'NE' ? 'ALL' : 'NE')}
+              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap cursor-pointer ${
                 quadrantFilter === 'NE'
                   ? 'bg-emerald-950 text-emerald-200 border-emerald-500/70 font-bold'
                   : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
               }`}
-              title="Северо-Восток: Лето / Свежесть / Сближение"
+              title="Квадрант I (Северо-Восток): Легкость / Лето / Воздух"
             >
-              ☀️ СВ: Лёгкость
+              ☀️ СВ: Легкость
             </button>
             <button
-              onClick={() => setQuadrantFilter('SW')}
-              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap ${
+              onClick={() => setQuadrantFilter(quadrantFilter === 'SW' ? 'ALL' : 'SW')}
+              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap cursor-pointer ${
                 quadrantFilter === 'SW'
                   ? 'bg-purple-950 text-purple-200 border-purple-500/70 font-bold'
                   : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
               }`}
-              title="Юго-Запад: Власть / Статус / Зима"
+              title="Квадрант III (Юго-Запад): Власть / Вес / Монументальность"
             >
               👑 ЮЗ: Власть
             </button>
             <button
-              onClick={() => setQuadrantFilter('SE')}
-              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap ${
+              onClick={() => setQuadrantFilter(quadrantFilter === 'SE' ? 'ALL' : 'SE')}
+              className={`px-2 py-1.5 rounded-lg border font-mono transition-colors whitespace-nowrap cursor-pointer ${
                 quadrantFilter === 'SE'
                   ? 'bg-amber-950 text-amber-200 border-amber-500/70 font-bold'
                   : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-slate-200'
               }`}
-              title="Юго-Восток: Свидание / Тепло / Соблазн"
+              title="Квадрант IV (Юго-Восток): Притяжение / Тепло / Близость"
             >
-              🔥 ЮВ: Соблазн
+              🔥 ЮВ: Притяжение
+            </button>
+
+            {/* Разделитель */}
+            <div className="h-5 w-px bg-slate-800 mx-1 hidden sm:block" />
+
+            {/* Фильтр: Только на полке */}
+            <button
+              onClick={() => setOnlyOwnedFilter((prev) => !prev)}
+              className={`px-2.5 py-1.5 rounded-lg border font-mono transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                onlyOwnedFilter
+                  ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold shadow-md shadow-amber-500/20'
+                  : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-amber-300 hover:border-slate-700'
+              }`}
+              title={onlyOwnedFilter ? 'Показаны только ваши флаконы (кликните, чтобы показать всю базу)' : 'Показать только флаконы с вашей полки'}
+            >
+              <CheckSquare className="w-3.5 h-3.5" />
+              <span>Только на полке ({ownedIds.length})</span>
             </button>
           </div>
         </div>
@@ -274,15 +353,22 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
               <HeartHandshake className="w-3 h-3 text-cyan-400" />
               Понятные вайбы:
             </span>
-            {['Чистота', 'Кожа', 'Кофе', 'Лес', 'Море', 'Табак', 'Барбершоп', 'Глянец'].map((tag) => (
-              <button
-                key={tag}
-                onClick={() => setSearchQuery(tag)}
-                className="text-[11px] px-2 py-0.5 rounded-md bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-cyan-300 border border-slate-800 transition-colors cursor-pointer whitespace-nowrap"
-              >
-                {tag}
-              </button>
-            ))}
+            {['Чистота', 'Кожа', 'Кофе', 'Лес', 'Море', 'Табак', 'Барбершоп', 'Глянец'].map((tag) => {
+              const isActive = searchQuery.toLowerCase() === tag.toLowerCase();
+              return (
+                <button
+                  key={tag}
+                  onClick={() => setSearchQuery(isActive ? '' : tag)}
+                  className={`text-[11px] px-2 py-0.5 rounded-md border transition-colors cursor-pointer whitespace-nowrap ${
+                    isActive
+                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/60 font-bold'
+                      : 'bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-cyan-300 border-slate-800'
+                  }`}
+                >
+                  {tag}
+                </button>
+              );
+            })}
           </div>
 
           {onOpenHumanFinder && (
@@ -297,6 +383,83 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
             </button>
           )}
         </div>
+
+        {/* 3.2 Active Filters Banner */}
+        {(activePresetId || onlyOwnedFilter || quadrantFilter !== 'ALL' || searchQuery) && (
+          <div className="px-4 sm:px-5 py-2 bg-amber-500/[0.07] border-b border-amber-500/20 flex items-center justify-between gap-2 flex-wrap text-xs">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[11px] font-mono text-amber-400 flex items-center gap-1 font-bold">
+                <Filter className="w-3.5 h-3.5" />
+                Показано: {filteredPerfumes.length} из {PERFUME_DATABASE.length}
+              </span>
+
+              {activePresetId && (
+                <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-200 border border-amber-500/40 text-[11px] flex items-center gap-1.5">
+                  <span>Пресет: {SHELF_PRESETS.find((p) => p.id === activePresetId)?.name}</span>
+                  <button
+                    onClick={() => setActivePresetId(null)}
+                    className="hover:text-white font-bold cursor-pointer"
+                    title="Снять фильтр пресета"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {onlyOwnedFilter && (
+                <span className="px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-200 border border-sky-500/40 text-[11px] flex items-center gap-1.5">
+                  <span>Только на полке ({ownedIds.length})</span>
+                  <button
+                    onClick={() => setOnlyOwnedFilter(false)}
+                    className="hover:text-white font-bold cursor-pointer"
+                    title="Показать все флаконы базы"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {quadrantFilter !== 'ALL' && (
+                <span className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-200 border border-purple-500/40 text-[11px] flex items-center gap-1.5">
+                  <span>
+                    {quadrantFilter === 'CENTER' && '⚖️ Центр'}
+                    {quadrantFilter === 'NW' && '💼 СЗ: Фокус'}
+                    {quadrantFilter === 'NE' && '☀️ СВ: Лёгкость'}
+                    {quadrantFilter === 'SW' && '👑 ЮЗ: Власть'}
+                    {quadrantFilter === 'SE' && '🔥 ЮВ: Соблазн'}
+                  </span>
+                  <button
+                    onClick={() => setQuadrantFilter('ALL')}
+                    className="hover:text-white font-bold cursor-pointer"
+                    title="Сбросить фильтр квадранта"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+
+              {searchQuery && (
+                <span className="px-2 py-0.5 rounded-md bg-slate-800 text-slate-200 border border-slate-700 text-[11px] flex items-center gap-1.5">
+                  <span>Поиск: «{searchQuery}»</span>
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="hover:text-white font-bold cursor-pointer"
+                    title="Очистить поиск"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={handleResetAllFilters}
+              className="text-[11px] font-semibold text-slate-400 hover:text-white underline cursor-pointer ml-auto"
+            >
+              Сбросить фильтры (показать все)
+            </button>
+          </div>
+        )}
 
         {/* 4. Fragrance Catalog Grid */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -381,8 +544,14 @@ export const FragranceShelfModal: React.FC<FragranceShelfModalProps> = ({
           })}
 
           {filteredPerfumes.length === 0 && (
-            <div className="col-span-full py-12 text-center text-slate-500 text-xs">
-              Ничего не найдено по запросу «{searchQuery}». Попробуйте изменить фильтры.
+            <div className="col-span-full py-12 flex flex-col items-center justify-center text-center gap-2 text-xs text-slate-400">
+              <p>Нет флаконов, соответствующих выбранным критериям.</p>
+              <button
+                onClick={handleResetAllFilters}
+                className="mt-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                Сбросить все фильтры и показать все флаконы ({PERFUME_DATABASE.length})
+              </button>
             </div>
           )}
         </div>

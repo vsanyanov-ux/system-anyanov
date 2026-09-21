@@ -39,8 +39,8 @@ interface PresetSet {
 const PRESET_SETS: PresetSet[] = [
   {
     id: 'trio-1259',
-    name: 'Канон 1–2–5–9 (Триада Брендов)',
-    tag: 'Флагман 1-2-5-9',
+    name: 'Канон 1–3–5–9 (Триада Брендов)',
+    tag: 'Флагман 1-3-5-9',
     description: 'Математический баланс 3 миров: Dylan Blue (Центр), Grey Vetiver (Офис), Tuscan Leather (Власть) и Khamrah (Соблазн)',
     perfumeIds: [
       'versace-dylan-blue-edt',

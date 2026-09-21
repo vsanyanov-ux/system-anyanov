@@ -34,24 +34,24 @@ export const AnyanovSliders: React.FC<AnyanovSlidersProps> = ({
   const degX = Math.round(coords.socialX * 90);
   const degY = Math.round(coords.thermoY * 90);
 
-  // Живая формула квадранта / сценария по зарисовкам
+  // Живая формула квадранта / сценария по канону Аньянова
   const getScenarioLabel = () => {
     const { socialX: x, thermoY: y } = coords;
     if (Math.abs(x) < 0.25 && Math.abs(y) < 0.25) {
-      return { title: 'УНИВЕРСАЛ', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → Dylan Blue` };
+      return { title: 'РАВНОВЕСИЕ (ЦЕНТР)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → Dylan Blue` };
     }
     if (x <= 0 && y >= 0) {
-      return { title: 'РАБОТА (СЗ)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → Pour Homme` };
+      return { title: 'СОБРАННОСТЬ (СЗ • Q2)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → Pour Homme` };
     }
     if (x > 0 && y >= 0) {
       const p = season === 'summer' ? 'Man Eau Fraîche' : 'The Dreamer';
-      return { title: 'ОТДЫХ / ПЛЯЖ (СВ)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → ${p}` };
+      return { title: 'ЛЕГКОСТЬ (СВ • Q1)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → ${p}` };
     }
     if (x <= 0 && y < 0) {
-      return { title: 'ТЕАТР / ВЕЧЕР (ЮЗ)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → Oud Noir` };
+      return { title: 'ВЛАСТЬ (ЮЗ • Q3)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → Oud Noir` };
     }
     const p = season === 'summer' ? 'Eros EDT' : 'Eros EDP';
-    return { title: 'СВИДАНИЕ / СОБЛАЗН (ЮВ)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → ${p}` };
+    return { title: 'ПРИТЯЖЕНИЕ (ЮВ • Q4)', formula: `X: ${x.toFixed(2)}, Y: ${y.toFixed(2)} → ${p}` };
   };
 
   const scenarioInfo = getScenarioLabel();
@@ -158,7 +158,7 @@ export const AnyanovSliders: React.FC<AnyanovSlidersProps> = ({
             className="w-full h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-purple-500 border border-slate-800"
           />
           <div className="flex justify-between w-full text-[10px] font-mono text-slate-400 px-1">
-            <span>{activeMode === 'outfit' ? '◄ Black Tie' : '◄ Далеко (Шлейф)'}</span>
+            <span>{activeMode === 'outfit' ? '◄ Formal (Костюм)' : '◄ Далеко (Шлейф)'}</span>
             <span>{activeMode === 'outfit' ? 'Casual ►' : 'Близко (Интим) ►'}</span>
           </div>
         </div>

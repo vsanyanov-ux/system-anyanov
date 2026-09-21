@@ -67,23 +67,23 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
     { title: string; subtitle: string; formula: string; quote: string }
   > = {
     1: {
-      title: 'Уровень 1: Камертон Баланса (0, 0)',
+      title: 'Уровень 1: Равновесие (Центр 0, 0)',
       subtitle: '1 внесезонный флакон-хамелеон на круглый год',
       formula: '1 Флакон = 80% задач (Офис, Street, Спорт, Переговоры)',
       quote:
         '«Один флакон, чтобы никогда не ошибиться. Точка покоя в центре координат, не вызывающая отторжения ни в зной +30°C, ни в мороз -20°C.»',
     },
-    2: {
-      title: 'Уровень 2: Бинарный фундамент (День ☀️ / Вечер 🌙)',
-      subtitle: 'Демаркационная линия между социумом и личной жизнью',
-      formula: '2 Флакона = 1 Дневной Камертон (0, 0) + 1 Вечерний Полюс (SE или SW)',
+    3: {
+      title: 'Уровень 3: Триада Жизни (Равновесие ⚖️ / Собранность 💼 / Притяжение 🔥)',
+      subtitle: 'Демаркационная линия между социумом, работой и личной жизнью',
+      formula: '3 Флакона = Равновесие (0, 0) + Собранность (NW) + Притяжение (SE)',
       quote:
-        '«Днем вы надеваете доспехи социальной дистанции, а вечером переключаетесь в режим тепла, соблазна или темного статуса.»',
+        '«Днем — собранность и чистая сорочка (-X), вечером — тепло и сокращение дистанции (+X), а в центре — точка равновесия (0, 0) для любых задач.»',
     },
     5: {
-      title: 'Уровень 5: Квинтет Стихий (Центр + 4 Квадранта)',
+      title: 'Уровень 5: Квинтет Стихий (Равновесие + 4 Квадранта)',
       subtitle: 'Тотальный контроль над 4 временами года и 4 социальными ролями',
-      formula: '5 Флаконов = Центр (0,0) + NE (Лето) + NW (Офис) + SW (Власть) + SE (Эрос)',
+      formula: '5 Флаконов = Равновесие (0,0) + Легкость (NE) + Собранность (NW) + Власть (SW) + Притяжение (SE)',
       quote:
         '«Золотое сечение гардероба. У вас больше нет брешей в календаре: каждый сезон и каждый психологический контекст закрыты эталоном.»',
     },
@@ -108,12 +108,19 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
       x: number;
       y: number;
       tier: string;
+      isBridge?: boolean;
+      isCenter?: boolean;
+      bridgeSeason?: 'spring' | 'summer' | 'autumn' | 'winter';
+      roleTag?: string;
     }[] = [];
 
     const getBrandColor = (brandName: string) => {
-      if (brandName.toLowerCase().includes('versace')) return '#38bdf8'; // sky-400
-      if (brandName.toLowerCase().includes('tom ford')) return '#fbbf24'; // amber-400
-      return '#34d399'; // emerald-400
+      const lower = brandName.toLowerCase();
+      if (lower.includes('versace')) return '#38bdf8'; // sky-400
+      if (lower.includes('tom ford')) return '#fbbf24'; // amber-400
+      if (lower.includes('lattafa')) return '#34d399'; // emerald-400
+      if (lower.includes('admiral') || lower.includes('адмирал') || lower.includes('sergio nero')) return '#60a5fa'; // blue-400
+      return '#a855f7'; // purple-400
     };
 
     if (viewMode === 'battle') {
@@ -121,13 +128,40 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
       CROSS_BRAND_SLOTS.forEach((slot) => {
         // Уровень 1 показывает только центр
         if (level === 1 && slot.slotKey !== 'center_calibrator') return;
-        // Уровень 2 показывает центр и SE/SW
+        // Уровень 3 показывает центр, NW (офис) и SE (соблазн)
         if (
-          level === 2 &&
+          level === 3 &&
           slot.slotKey !== 'center_calibrator' &&
+          slot.slotKey !== 'nw_boardroom_focus' &&
           slot.slotKey !== 'se_seduction_gourmand'
         )
           return;
+        // Уровень 5 показывает 5 базовых слотов матрицы (без климатических мостов)
+        if (level === 5 && slot.slotKey.startsWith('bridge_')) return;
+
+        const isCenter = slot.slotKey === 'center_calibrator';
+        const isBridge = slot.slotKey.startsWith('bridge_');
+        const bridgeSeason = slot.slotKey === 'bridge_spring'
+          ? 'spring'
+          : slot.slotKey === 'bridge_summer'
+          ? 'summer'
+          : slot.slotKey === 'bridge_autumn'
+          ? 'autumn'
+          : slot.slotKey === 'bridge_winter'
+          ? 'winter'
+          : undefined;
+
+        const roleTag = isCenter
+          ? '⚖️ Камертон 365 (Центр 0,0)'
+          : slot.slotKey === 'bridge_spring'
+          ? '🌸 Мост: Весна & Пробуждение (NW ⟷ NE)'
+          : slot.slotKey === 'bridge_summer'
+          ? '☀️ Мост: Зной & Драйв (NE ⟷ SE)'
+          : slot.slotKey === 'bridge_autumn'
+          ? '🍂 Мост: Бархатная Осень (SE ⟷ SW)'
+          : slot.slotKey === 'bridge_winter'
+          ? '❄️ Мост: Морозная Зима (SW ⟷ NW)'
+          : slot.slotTitle;
 
         list.push({
           id: slot.versaceItem.id,
@@ -137,6 +171,10 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           x: slot.versaceItem.x,
           y: slot.versaceItem.y,
           tier: 'Люкс',
+          isCenter,
+          isBridge,
+          bridgeSeason,
+          roleTag,
         });
         list.push({
           id: slot.tomFordItem.id,
@@ -146,6 +184,10 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           x: slot.tomFordItem.x,
           y: slot.tomFordItem.y,
           tier: 'Ниша',
+          isCenter,
+          isBridge,
+          bridgeSeason,
+          roleTag,
         });
         list.push({
           id: slot.lattafaItem.id,
@@ -155,6 +197,23 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           x: slot.lattafaItem.x,
           y: slot.lattafaItem.y,
           tier: 'Smart Dupe',
+          isCenter,
+          isBridge,
+          bridgeSeason,
+          roleTag,
+        });
+        list.push({
+          id: slot.admiralItem.id,
+          name: slot.admiralItem.name,
+          brand: 'Sergio Nero',
+          brandColor: '#60a5fa',
+          x: slot.admiralItem.x,
+          y: slot.admiralItem.y,
+          tier: 'Смарт-Классика',
+          isCenter,
+          isBridge,
+          bridgeSeason,
+          roleTag,
         });
       });
     } else {
@@ -168,14 +227,28 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           id: item.id,
           name: item.name,
           brand: b.name,
-          brandColor: color,
+          brandColor: '#fbbf24',
           x: item.x,
           y: item.y,
           tier: b.categoryTitle,
+          isCenter: true,
+          roleTag: '⚖️ Камертон 365 (Центр 0,0)',
         });
-      } else if (level === 2) {
-        const d = b.levels[2].day;
-        const e = b.levels[2].evening;
+      } else if (level === 3) {
+        const c = b.levels[3].center;
+        const d = b.levels[3].day;
+        const e = b.levels[3].evening;
+        list.push({
+          id: c.id,
+          name: c.name,
+          brand: b.name,
+          brandColor: '#fbbf24',
+          x: c.x,
+          y: c.y,
+          tier: 'Камертон (Центр)',
+          isCenter: true,
+          roleTag: '⚖️ Камертон (Центр 0,0)',
+        });
         list.push({
           id: d.id,
           name: d.name,
@@ -183,7 +256,8 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           brandColor: color,
           x: d.x,
           y: d.y,
-          tier: 'День',
+          tier: 'День (Офис)',
+          roleTag: '☀️ День: Собранность (NW)',
         });
         list.push({
           id: e.id,
@@ -192,43 +266,165 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           brandColor: color,
           x: e.x,
           y: e.y,
-          tier: 'Вечер',
+          tier: 'Вечер (Соблазн)',
+          roleTag: '🌙 Вечер: Притяжение (SE)',
         });
       } else if (level === 5) {
         const l5 = b.levels[5];
-        [l5.center, l5.ne, l5.nw, l5.sw, l5.se].forEach((item) => {
-          list.push({
-            id: item.id,
-            name: item.name,
-            brand: b.name,
-            brandColor: color,
-            x: item.x,
-            y: item.y,
-            tier: b.categoryTitle,
-          });
+        list.push({
+          id: l5.center.id,
+          name: l5.center.name,
+          brand: b.name,
+          brandColor: '#fbbf24',
+          x: l5.center.x,
+          y: l5.center.y,
+          tier: 'Камертон (0, 0)',
+          isCenter: true,
+          roleTag: '⚖️ Камертон 365 (Центр 0,0)',
+        });
+        list.push({
+          id: l5.ne.id,
+          name: l5.ne.name,
+          brand: b.name,
+          brandColor: color,
+          x: l5.ne.x,
+          y: l5.ne.y,
+          tier: 'NE: Легкость',
+          roleTag: 'Полюс NE: Легкость (+X, +Y)',
+        });
+        list.push({
+          id: l5.nw.id,
+          name: l5.nw.name,
+          brand: b.name,
+          brandColor: color,
+          x: l5.nw.x,
+          y: l5.nw.y,
+          tier: 'NW: Собранность',
+          roleTag: 'Полюс NW: Собранность (-X, +Y)',
+        });
+        list.push({
+          id: l5.sw.id,
+          name: l5.sw.name,
+          brand: b.name,
+          brandColor: color,
+          x: l5.sw.x,
+          y: l5.sw.y,
+          tier: 'SW: Власть',
+          roleTag: 'Полюс SW: Власть (-X, -Y)',
+        });
+        list.push({
+          id: l5.se.id,
+          name: l5.se.name,
+          brand: b.name,
+          brandColor: color,
+          x: l5.se.x,
+          y: l5.se.y,
+          tier: 'SE: Притяжение',
+          roleTag: 'Полюс SE: Притяжение (+X, -Y)',
         });
       } else if (level === 9) {
         const l9 = b.levels[9];
-        [
-          l9.center,
-          l9.ne,
-          l9.nw,
-          l9.sw,
-          l9.se,
-          l9.bridges.spring,
-          l9.bridges.summerHeat,
-          l9.bridges.autumn,
-          l9.bridges.winterFrost,
-        ].forEach((item) => {
-          list.push({
-            id: item.id,
-            name: item.name,
-            brand: b.name,
-            brandColor: color,
-            x: item.x,
-            y: item.y,
-            tier: b.categoryTitle,
-          });
+        // 1 Центр
+        list.push({
+          id: l9.center.id,
+          name: l9.center.name,
+          brand: b.name,
+          brandColor: '#fbbf24',
+          x: l9.center.x,
+          y: l9.center.y,
+          tier: 'Камертон (0, 0)',
+          isCenter: true,
+          roleTag: '⚖️ Камертон 365 (Центр 0,0)',
+        });
+        // 4 Полярных квадранта (Опорные столпы)
+        list.push({
+          id: l9.ne.id,
+          name: l9.ne.name,
+          brand: b.name,
+          brandColor: color,
+          x: l9.ne.x,
+          y: l9.ne.y,
+          tier: 'Полюс NE: Легкость',
+          roleTag: 'Полюс NE: Легкость (+X, +Y)',
+        });
+        list.push({
+          id: l9.nw.id,
+          name: l9.nw.name,
+          brand: b.name,
+          brandColor: color,
+          x: l9.nw.x,
+          y: l9.nw.y,
+          tier: 'Полюс NW: Собранность',
+          roleTag: 'Полюс NW: Собранность (-X, +Y)',
+        });
+        list.push({
+          id: l9.sw.id,
+          name: l9.sw.name,
+          brand: b.name,
+          brandColor: color,
+          x: l9.sw.x,
+          y: l9.sw.y,
+          tier: 'Полюс SW: Власть',
+          roleTag: 'Полюс SW: Власть (-X, -Y)',
+        });
+        list.push({
+          id: l9.se.id,
+          name: l9.se.name,
+          brand: b.name,
+          brandColor: color,
+          x: l9.se.x,
+          y: l9.se.y,
+          tier: 'Полюс SE: Притяжение',
+          roleTag: 'Полюс SE: Притяжение (+X, -Y)',
+        });
+        // 4 Климатических моста (Переходы между квадрантами)
+        list.push({
+          id: l9.bridges.spring.id,
+          name: l9.bridges.spring.name,
+          brand: b.name,
+          brandColor: '#10b981',
+          x: l9.bridges.spring.x,
+          y: l9.bridges.spring.y,
+          tier: 'Мост Весна (NW ⟷ NE)',
+          isBridge: true,
+          bridgeSeason: 'spring',
+          roleTag: '🌸 Мост: Весна & Пробуждение (NW ⟷ NE)',
+        });
+        list.push({
+          id: l9.bridges.summerHeat.id,
+          name: l9.bridges.summerHeat.name,
+          brand: b.name,
+          brandColor: '#f59e0b',
+          x: l9.bridges.summerHeat.x,
+          y: l9.bridges.summerHeat.y,
+          tier: 'Мост Зной (NE ⟷ SE)',
+          isBridge: true,
+          bridgeSeason: 'summer',
+          roleTag: '☀️ Мост: Зной & Драйв (NE ⟷ SE)',
+        });
+        list.push({
+          id: l9.bridges.autumn.id,
+          name: l9.bridges.autumn.name,
+          brand: b.name,
+          brandColor: '#f97316',
+          x: l9.bridges.autumn.x,
+          y: l9.bridges.autumn.y,
+          tier: 'Мост Осень (SE ⟷ SW)',
+          isBridge: true,
+          bridgeSeason: 'autumn',
+          roleTag: '🍂 Мост: Бархатная Осень (SE ⟷ SW)',
+        });
+        list.push({
+          id: l9.bridges.winterFrost.id,
+          name: l9.bridges.winterFrost.name,
+          brand: b.name,
+          brandColor: '#38bdf8',
+          x: l9.bridges.winterFrost.x,
+          y: l9.bridges.winterFrost.y,
+          tier: 'Мост Зима (SW ⟷ NW)',
+          isBridge: true,
+          bridgeSeason: 'winter',
+          roleTag: '❄️ Мост: Морозная Зима (SW ⟷ NW)',
         });
       }
     }
@@ -257,7 +453,7 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                 <Compass className="w-3.5 h-3.5" />
-                Глава 5.2 • Архитектура 1–2–5–9
+                Глава 5.2 • Архитектура 1–3–5–9
               </span>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                 Cross-Brand Radar
@@ -270,8 +466,9 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
               Раскладывание культовых домов (
               <span className="text-sky-400 font-semibold">Versace</span>,{' '}
               <span className="text-amber-400 font-semibold">Tom Ford</span>,{' '}
-              <span className="text-emerald-400 font-semibold">Lattafa</span>) по математической
-              формуле 1–2–5–9. Сравнивайте одни и те же ольфакторные роли разных брендов слот-в-слот!
+              <span className="text-emerald-400 font-semibold">Lattafa</span>,{' '}
+              <span className="text-blue-400 font-semibold">Sergio Nero «Адмиралъ»</span>) по математической
+              формуле 1–3–5–9. Сравнивайте одни и те же ольфакторные роли разных домов слот-в-слот!
             </p>
           </div>
 
@@ -286,7 +483,7 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
               }`}
             >
               <Swords className="w-4 h-4" />
-              Спарринг 3 Брендов
+              Кросс-Спарринг 4 Домов
             </button>
             <button
               onClick={() => setViewMode('solo')}
@@ -329,9 +526,9 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
         )}
       </div>
 
-      {/* 2. Interactive Level Selector 1 – 2 – 5 – 9 */}
+      {/* 2. Interactive Level Selector 1 – 3 – 5 – 9 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {([1, 2, 5, 9] as GraduationLevel[]).map((lvl) => {
+        {([1, 3, 5, 9] as GraduationLevel[]).map((lvl) => {
           const isCurrent = level === lvl;
           return (
             <button
@@ -356,6 +553,9 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
                 {lvl === 5 && (
                   <span className="text-[10px] font-bold text-amber-400 font-mono">Канон</span>
                 )}
+                {lvl === 9 && (
+                  <span className="text-[10px] font-bold text-amber-400 font-mono">Сомелье</span>
+                )}
               </div>
               <span
                 className={`text-sm font-bold tracking-tight mt-1 ${
@@ -363,13 +563,13 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
                 }`}
               >
                 {lvl === 1 && 'Камертон 365'}
-                {lvl === 2 && 'День / Вечер'}
+                {lvl === 3 && 'Триада Жизни'}
                 {lvl === 5 && 'Квинтет Стихий'}
                 {lvl === 9 && 'Палитра 9 Мостов'}
               </span>
               <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">
                 {lvl === 1 && '1 флакон на 80% задач'}
-                {lvl === 2 && 'Работа vs Личная жизнь'}
+                {lvl === 3 && 'Баланс + Офис + Соблазн'}
                 {lvl === 5 && 'Все 4 квадранта матрицы'}
                 {lvl === 9 && 'Полутона и межсезонья'}
               </p>
@@ -410,6 +610,10 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
               <span>Lattafa (Smart Dupe)</span>
             </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />
+              <span>Адмиралъ (РФ)</span>
+            </div>
           </div>
         </div>
 
@@ -441,54 +645,217 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
               <circle cx="0" cy="0" r="0.8" fill="none" stroke="#1e293b" strokeWidth="0.01" strokeDasharray="0.04 0.04" />
 
               {/* Подписи осей */}
-              <text x="0" y="-1.05" fill="#64748b" fontSize="0.08" textAnchor="middle" fontFamily="monospace">
+              <text x="0" y="-1.05" fill="#64748b" fontSize="0.075" textAnchor="middle" fontFamily="monospace">
                 +Y Лето / Свежесть
               </text>
-              <text x="0" y="1.12" fill="#64748b" fontSize="0.08" textAnchor="middle" fontFamily="monospace">
+              <text x="0" y="1.12" fill="#64748b" fontSize="0.075" textAnchor="middle" fontFamily="monospace">
                 -Y Зима / Плотность
               </text>
-              <text x="-1.05" y="0.03" fill="#64748b" fontSize="0.08" textAnchor="end" fontFamily="monospace">
+              <text x="-1.05" y="0.025" fill="#64748b" fontSize="0.075" textAnchor="end" fontFamily="monospace">
                 -X Власть
               </text>
-              <text x="1.05" y="0.03" fill="#64748b" fontSize="0.08" textAnchor="start" fontFamily="monospace">
+              <text x="1.05" y="0.025" fill="#64748b" fontSize="0.075" textAnchor="start" fontFamily="monospace">
                 +X Эрос
               </text>
 
-              {/* Отрисовка точек флаконов */}
-              {radarPoints.map((pt) => {
-                // В SVG ось Y направлена вниз, а у нас +Y это лето (вверх), поэтому инвертируем Y: cy = -pt.y
-                const cx = pt.x;
-                const cy = -pt.y;
-                const isHovered = activeHoverId === pt.id;
+              {/* Уровень 9: Подписи климатических переходных ворот (Мостов) */}
+              {level === 9 && (
+                <g opacity="0.85">
+                  <text x="0" y="-0.88" fill="#10b981" fontSize="0.055" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                    🌸 ВЕСНА (NW ↔ NE)
+                  </text>
+                  <text x="0.82" y="0.02" fill="#f59e0b" fontSize="0.05" fontWeight="bold" textAnchor="middle" fontFamily="monospace" transform="rotate(90, 0.82, 0.02)">
+                    ☀️ ЗНОЙ (NE ↔ SE)
+                  </text>
+                  <text x="0" y="0.94" fill="#f97316" fontSize="0.055" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                    🍂 ОСЕНЬ (SE ↔ SW)
+                  </text>
+                  <text x="-0.82" y="0.02" fill="#38bdf8" fontSize="0.05" fontWeight="bold" textAnchor="middle" fontFamily="monospace" transform="rotate(-90, -0.82, 0.02)">
+                    ❄️ ЗИМА (SW ↔ NW)
+                  </text>
+                </g>
+              )}
 
-                return (
-                  <g
-                    key={pt.id}
-                    className="cursor-pointer transition-transform duration-200"
-                    onMouseEnter={() => setActiveHoverId(pt.id)}
-                    onMouseLeave={() => setActiveHoverId(null)}
-                  >
-                    {isHovered && (
-                      <circle cx={cx} cy={cy} r="0.12" fill={pt.brandColor} opacity="0.25" />
-                    )}
-                    <circle
-                      cx={cx}
-                      cy={cy}
-                      r={isHovered ? '0.065' : '0.045'}
-                      fill={pt.brandColor}
-                      stroke="#05070d"
-                      strokeWidth="0.015"
-                    />
-                  </g>
-                );
-              })}
+              {/* Уровень 9: Орбиты климатических переходов (Ромб сезонной трансформации) */}
+              {level === 9 && (
+                <g className="transition-all duration-300">
+                  {Array.from(new Set(radarPoints.map((p) => p.brand))).map((brandName) => {
+                    const bPoints = radarPoints.filter((p) => p.brand === brandName);
+                    const bSpring = bPoints.find((p) => p.bridgeSeason === 'spring');
+                    const bSummer = bPoints.find((p) => p.bridgeSeason === 'summer');
+                    const bAutumn = bPoints.find((p) => p.bridgeSeason === 'autumn');
+                    const bWinter = bPoints.find((p) => p.bridgeSeason === 'winter');
+                    if (!bSpring || !bSummer || !bAutumn || !bWinter) return null;
+
+                    const activePt = radarPoints.find((p) => p.id === activeHoverId);
+                    const isThisBrandHovered = activePt?.brand === brandName;
+                    const isAnyHovered = Boolean(activePt);
+                    const strokeColor = bSpring.brandColor || '#f59e0b';
+
+                    return (
+                      <polygon
+                        key={brandName}
+                        points={`${bSpring.x},${-bSpring.y} ${bSummer.x},${-bSummer.y} ${bAutumn.x},${-bAutumn.y} ${bWinter.x},${-bWinter.y}`}
+                        fill={isThisBrandHovered ? strokeColor : 'none'}
+                        fillOpacity={isThisBrandHovered ? 0.08 : 0}
+                        stroke={strokeColor}
+                        strokeWidth={isThisBrandHovered ? 0.022 : isAnyHovered ? 0.008 : 0.014}
+                        strokeDasharray={isThisBrandHovered ? 'none' : '0.04 0.025'}
+                        opacity={isThisBrandHovered ? 1 : isAnyHovered ? 0.2 : 0.6}
+                        className="transition-all duration-300"
+                      />
+                    );
+                  })}
+                </g>
+              )}
+
+              {/* Отрисовка точек флаконов */}
+              {[...radarPoints]
+                .sort((a, b) => (a.id === activeHoverId ? 1 : b.id === activeHoverId ? -1 : 0))
+                .map((pt) => {
+                  // В SVG ось Y направлена вниз, а у нас +Y это лето (вверх), поэтому инвертируем Y: cy = -pt.y
+                  const cx = pt.x;
+                  const cy = -pt.y;
+                  const isHovered = activeHoverId === pt.id;
+
+                  return (
+                    <g
+                      key={pt.id}
+                      className="cursor-pointer transition-transform duration-200"
+                      onMouseEnter={() => setActiveHoverId(pt.id)}
+                      onMouseLeave={() => setActiveHoverId(null)}
+                      onClick={() => {
+                        const tempC = Math.round(18 + pt.y * 12);
+                        onApplyCoords({
+                          socialX: pt.x,
+                          thermoY: pt.y,
+                          formalIndex: pt.x < -0.3 ? 3 : pt.x > 0.3 ? 1 : 2,
+                          temperatureC: Math.max(-10, Math.min(35, tempC)),
+                        });
+                      }}
+                    >
+                      <title>
+                        {pt.brand}: {pt.name} ({pt.x > 0 ? `+${pt.x.toFixed(2)}` : pt.x.toFixed(2)}, {pt.y > 0 ? `+${pt.y.toFixed(2)}` : pt.y.toFixed(2)})
+                      </title>
+
+                      {/* Подсветка при наведении */}
+                      {isHovered && (
+                        <circle cx={cx} cy={cy} r="0.12" fill={pt.brandColor} opacity="0.25" />
+                      )}
+
+                      {/* Центр / Камертон (0,0): Двойное золотое кольцо */}
+                      {pt.isCenter && (
+                        <>
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r="0.08"
+                            fill="none"
+                            stroke="#fbbf24"
+                            strokeWidth="0.012"
+                            strokeDasharray="0.02 0.02"
+                            opacity="0.8"
+                          />
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r={isHovered ? 0.065 : 0.05}
+                            fill="#fbbf24"
+                            stroke="#05070d"
+                            strokeWidth="0.015"
+                          />
+                          <circle cx={cx} cy={cy} r="0.018" fill="#05070d" />
+                        </>
+                      )}
+
+                      {/* Климатический мост: Ореол сезонного перехода */}
+                      {pt.isBridge && (
+                        <>
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r={isHovered ? 0.085 : 0.068}
+                            fill="none"
+                            stroke={pt.brandColor}
+                            strokeWidth="0.012"
+                            strokeDasharray="0.02 0.015"
+                            opacity={isHovered ? 1 : 0.75}
+                          />
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r={isHovered ? 0.06 : 0.045}
+                            fill={pt.brandColor}
+                            stroke="#05070d"
+                            strokeWidth="0.015"
+                          />
+                          <circle cx={cx} cy={cy} r="0.015" fill="#ffffff" opacity={isHovered ? 1 : 0.85} />
+                        </>
+                      )}
+
+                      {/* Обычная полярная точка */}
+                      {!pt.isCenter && !pt.isBridge && (
+                        <circle
+                          cx={cx}
+                          cy={cy}
+                          r={isHovered ? 0.065 : 0.045}
+                          fill={pt.brandColor}
+                          stroke="#05070d"
+                          strokeWidth="0.015"
+                        />
+                      )}
+                    </g>
+                  );
+                })}
             </svg>
           </div>
 
-          {/* Легенда под радаром */}
-          {activeHoverId && (
-            <div className="mt-2 text-center text-xs font-mono font-semibold text-amber-300 bg-slate-900 px-3 py-1 rounded-full border border-amber-500/30">
-              {radarPoints.find((p) => p.id === activeHoverId)?.name}
+          {/* Интерактивная плашка под радаром */}
+          {activeHoverId ? (
+            (() => {
+              const hovered = radarPoints.find((p) => p.id === activeHoverId);
+              if (!hovered) return null;
+              return (
+                <div
+                  onClick={() => {
+                    const tempC = Math.round(18 + hovered.y * 12);
+                    onApplyCoords({
+                      socialX: hovered.x,
+                      thermoY: hovered.y,
+                      formalIndex: hovered.x < -0.3 ? 3 : hovered.x > 0.3 ? 1 : 2,
+                      temperatureC: Math.max(-10, Math.min(35, tempC)),
+                    });
+                  }}
+                  className="mt-3 w-full text-center px-3.5 py-2.5 rounded-xl bg-slate-900/95 border border-amber-500/40 shadow-xl cursor-pointer hover:border-amber-400 transition-all"
+                >
+                  <div className="text-xs font-bold text-white flex items-center justify-center gap-1.5 flex-wrap">
+                    <span
+                      className="w-2 h-2 rounded-full inline-block"
+                      style={{ backgroundColor: hovered.brandColor }}
+                    />
+                    <span>{hovered.brand}</span>
+                    <span className="text-slate-500">•</span>
+                    <span className="text-amber-300 font-extrabold">{hovered.name}</span>
+                  </div>
+                  <div className="text-[11px] font-mono text-slate-300 mt-1">
+                    {hovered.roleTag}
+                  </div>
+                  <div className="text-[10px] font-mono text-emerald-400 mt-1 flex items-center justify-center gap-2">
+                    <span>
+                      ({hovered.x > 0 ? `+${hovered.x.toFixed(2)}` : hovered.x.toFixed(2)},{' '}
+                      {hovered.y > 0 ? `+${hovered.y.toFixed(2)}` : hovered.y.toFixed(2)})
+                    </span>
+                    <span className="text-slate-600">|</span>
+                    <span className="text-amber-400/90 underline">Клик — применить в Систему</span>
+                  </div>
+                </div>
+              );
+            })()
+          ) : (
+            <div className="mt-3 text-center text-[11px] font-mono text-slate-500 px-2 leading-relaxed">
+              {level === 9
+                ? '🔄 Уровень 9: Пунктирный ромб объединяет 4 моста-перехода между временами года'
+                : 'Наведите на точку аромата для просмотра координат и роли'}
             </div>
           )}
         </div>
@@ -515,12 +882,14 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
           <div className="space-y-6">
             {CROSS_BRAND_SLOTS.filter((slot) => {
               if (level === 1) return slot.slotKey === 'center_calibrator';
-              if (level === 2)
+              if (level === 3)
                 return (
                   slot.slotKey === 'center_calibrator' ||
+                  slot.slotKey === 'nw_boardroom_focus' ||
                   slot.slotKey === 'se_seduction_gourmand'
                 );
-              return true;
+              if (level === 5) return !slot.slotKey.startsWith('bridge_');
+              return true; // level === 9 shows all 9 slots (5 core + 4 climate bridges)
             }).map((slot) => {
               const distTfLattafa = calculateCoordDistance(
                 slot.tomFordItem,
@@ -556,8 +925,8 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
                     </div>
                   </div>
 
-                  {/* 3 Fragrances Grid (Side by Side) */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800">
+                  {/* 4 Fragrances Grid (Side by Side: Люкс, Ниша, Смарт-Дуп, Отечественная классика) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-800">
                     {/* Brand 1: Versace */}
                     <div
                       onMouseEnter={() => setActiveHoverId(slot.versaceItem.id)}
@@ -770,16 +1139,94 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
                         )}
                       </div>
                     </div>
+
+                    {/* Brand 4: Sergio Nero Адмиралъ */}
+                    <div
+                      onMouseEnter={() => setActiveHoverId(slot.admiralItem.id)}
+                      onMouseLeave={() => setActiveHoverId(null)}
+                      className={`p-5 flex flex-col justify-between space-y-4 transition-colors ${
+                        activeHoverId === slot.admiralItem.id
+                          ? 'bg-blue-500/5'
+                          : 'bg-transparent'
+                      }`}
+                    >
+                      <div className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-extrabold text-blue-400 uppercase tracking-wider">
+                            Адмиралъ (РФ)
+                          </span>
+                          <span className="text-[11px] font-mono text-blue-300 font-bold">
+                            {slot.admiralItem.priceCategory}
+                          </span>
+                        </div>
+                        <div>
+                          <h5 className="text-base font-extrabold text-white">
+                            {slot.admiralItem.name}
+                          </h5>
+                          <p className="text-[11px] font-mono text-blue-300/80 mt-0.5">
+                            X: {slot.admiralItem.x > 0 ? `+${slot.admiralItem.x.toFixed(2)}` : slot.admiralItem.x.toFixed(2)} | Y: {slot.admiralItem.y > 0 ? `+${slot.admiralItem.y.toFixed(2)}` : slot.admiralItem.y.toFixed(2)} • {slot.admiralItem.diffusion}
+                          </p>
+                        </div>
+                        <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                          {slot.admiralItem.dominantVibe}
+                        </p>
+                        <div className="text-[11px] text-slate-400 flex flex-wrap gap-1">
+                          {slot.admiralItem.topNotes.slice(0, 3).map((n) => (
+                            <span
+                              key={n}
+                              className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-[10px]"
+                            >
+                              {n}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-slate-800/80 flex items-center gap-2">
+                        <button
+                          onClick={() => handleApply(slot.admiralItem)}
+                          className="flex-1 py-1.5 px-3 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 text-xs font-bold transition-all cursor-pointer text-center"
+                        >
+                          Примерить в Системе
+                        </button>
+                        {onToggleShelfId && (
+                          <button
+                            onClick={() =>
+                              onToggleShelfId(
+                                slot.admiralItem.databaseId || slot.admiralItem.id
+                              )
+                            }
+                            className={`p-2 rounded-lg border text-xs cursor-pointer ${
+                              userShelfIds.includes(
+                                slot.admiralItem.databaseId || slot.admiralItem.id
+                              )
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                                : 'bg-slate-900 hover:bg-slate-800 text-slate-400 border-slate-800'
+                            }`}
+                            title="Добавить на полку"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Battle Bottom Insight */}
-                  <div className="p-4 bg-slate-950/70 border-t border-slate-800/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
-                    <div className="text-slate-300 flex-1 leading-relaxed">
-                      <span className="font-bold text-amber-400 mr-1.5">Анализ спарринга:</span>
+                  <div className="p-4 md:p-5 bg-slate-950/80 border-t border-slate-800/80 space-y-3">
+                    <div className="text-xs text-slate-300 leading-relaxed">
+                      <span className="font-bold text-amber-400 mr-1.5 inline-flex items-center gap-1.5">
+                        <Swords className="w-3.5 h-3.5 text-amber-400 inline" />
+                        Анализ спарринга:
+                      </span>
                       {slot.battleAnalysis}
                     </div>
-                    <div className="text-[11px] font-mono text-emerald-300 bg-emerald-950/40 border border-emerald-500/30 px-3 py-1.5 rounded-lg shrink-0">
-                      💡 {slot.dupeVerdict}
+                    <div className="flex items-start gap-2.5 text-xs text-emerald-300 bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-xl leading-relaxed">
+                      <span className="text-sm shrink-0 select-none">💡</span>
+                      <div className="leading-relaxed">
+                        <span className="font-bold text-emerald-400 mr-1.5">Вердикт спарринга:</span>
+                        <span className="text-emerald-200/95">{slot.dupeVerdict}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -817,26 +1264,27 @@ export const BrandMatrixView: React.FC<BrandMatrixViewProps> = ({
             {/* Level 1: Center */}
             {level === 1 && (
               <div className="col-span-full max-w-xl mx-auto w-full">
-                {renderBrandCard(selectedBrand.levels[1].center, 'Камертон Баланса (Центр 0,0)')}
+                {renderBrandCard(selectedBrand.levels[1].center, 'Равновесие (Центр 0,0)')}
               </div>
             )}
 
-            {/* Level 2: Day / Evening */}
-            {level === 2 && (
+            {/* Level 3: Triad (Center, Day Office NW, Evening Seduction SE) */}
+            {level === 3 && (
               <>
-                {renderBrandCard(selectedBrand.levels[2].day, '☀️ Дневной Стержень')}
-                {renderBrandCard(selectedBrand.levels[2].evening, '🌙 Вечерний Полюс')}
+                {renderBrandCard(selectedBrand.levels[3].center, 'Равновесие (Центр 0,0)')}
+                {renderBrandCard(selectedBrand.levels[3].day, '☀️ День: Собранность (NW)')}
+                {renderBrandCard(selectedBrand.levels[3].evening, '🌙 Вечер: Притяжение (SE)')}
               </>
             )}
 
             {/* Level 5: 5 Quadrants */}
             {level === 5 && (
               <>
-                {renderBrandCard(selectedBrand.levels[5].center, 'Камертон (Центр 0, 0)')}
-                {renderBrandCard(selectedBrand.levels[5].ne, 'NE: Лето & Бриз (+X, +Y)')}
-                {renderBrandCard(selectedBrand.levels[5].nw, 'NW: Фокус & Офис (-X, +Y)')}
-                {renderBrandCard(selectedBrand.levels[5].sw, 'SW: Власть & Статус (-X, -Y)')}
-                {renderBrandCard(selectedBrand.levels[5].se, 'SE: Соблазн & Тепло (+X, -Y)')}
+                {renderBrandCard(selectedBrand.levels[5].center, 'Равновесие (Центр 0, 0)')}
+                {renderBrandCard(selectedBrand.levels[5].ne, 'NE: Легкость (+X, +Y)')}
+                {renderBrandCard(selectedBrand.levels[5].nw, 'NW: Собранность (-X, +Y)')}
+                {renderBrandCard(selectedBrand.levels[5].sw, 'SW: Власть (-X, -Y)')}
+                {renderBrandCard(selectedBrand.levels[5].se, 'SE: Притяжение (+X, -Y)')}
               </>
             )}
 

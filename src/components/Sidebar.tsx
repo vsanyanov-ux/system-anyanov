@@ -19,6 +19,7 @@ import {
   X,
   Menu,
   Compass,
+  Repeat,
 } from 'lucide-react';
 import { AnyanovTab } from '../hooks/useAnyanovState';
 import { AnyanovSeason } from '../types';
@@ -73,6 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: 'Популярно',
     },
     {
+      id: 'clone-finder',
+      label: 'Поиск клона',
+      sub: 'Детектор аналогов из базы',
+      icon: <Repeat className="w-4 h-4 text-emerald-400" />,
+      badge: 'Новинка',
+    },
+    {
       id: 'category',
       label: 'Витрина категории',
       sub: 'Каталог, бренды и примерка',
@@ -115,7 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'brand-matrix',
-      label: 'Матрица 1–2–5–9',
+      label: 'Матрица 1–3–5–9',
       sub: 'Бренды & Кросс-радар аналогов',
       icon: <Compass className="w-4 h-4 text-emerald-400" />,
       badge: 'Новинка',

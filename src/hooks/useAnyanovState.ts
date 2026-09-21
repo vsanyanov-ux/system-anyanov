@@ -16,6 +16,7 @@ export type AnyanovTab =
   | 'discovery-set'
   | 'gifting'
   | 'in-store'
+  | 'clone-finder'
   | 'brand-matrix'
   | 'simple'
   | 'pro'
@@ -62,6 +63,7 @@ export function useAnyanovState() {
       'discovery-set',
       'gifting',
       'in-store',
+      'clone-finder',
       'brand-matrix',
       'simple',
       'pro',
@@ -101,16 +103,58 @@ export function useAnyanovState() {
 
   // 4. Личная полка ароматов пользователя
   const [userShelfIds, setUserShelfIdsState] = useState<string[]>(() => {
-    return safeGetJson<string[]>(
+    const raw = safeGetJson<string[]>(
       STORAGE_KEYS.SHELF,
-      SHELF_PRESETS[1].perfumeIds,
+      SHELF_PRESETS[0].perfumeIds,
       (data): data is string[] => Array.isArray(data) && data.length > 0
     );
+    // Автоматическая санитация: заменяем eros-edp на eros, дедуплицируем
+    let sanitized = Array.from(new Set(raw.map((id) => (id === 'versace-eros-edp' ? 'versace-eros' : id))));
+
+    // Разовая миграция: добавление 4711 Original Eau de Cologne в личную полку пользователя
+    const HAS_MIGRATED_4711 = 'anyanov_has_added_4711_v1';
+    if (safeGetItem(HAS_MIGRATED_4711, 'false') !== 'true') {
+      if (!sanitized.includes('4711-eau-de-cologne')) {
+        sanitized = ['4711-eau-de-cologne', ...sanitized];
+      }
+      safeSetItem(HAS_MIGRATED_4711, 'true');
+      safeSetJson(STORAGE_KEYS.SHELF, sanitized);
+    } else if (sanitized.length !== raw.length || raw.includes('versace-eros-edp')) {
+      safeSetJson(STORAGE_KEYS.SHELF, sanitized);
+    }
+
+    // Разовая миграция: добавление 11 русских ароматов (серия «Адмиралъ», Scan Your Life Silver, Prime Minister) в личную полку
+    const HAS_MIGRATED_RUSSIAN = 'anyanov_has_added_russian_collection_v1';
+    const RUSSIAN_PERFUME_IDS = [
+      'prime-minister-action-decisive',
+      'sergio-nero-admiral-classic',
+      'sergio-nero-admiral-andreevsky-flag',
+      'sergio-nero-admiral-arktika',
+      'sergio-nero-admiral-zheleznaya-volya',
+      'sergio-nero-admiral-patriot',
+      'sergio-nero-admiral-posledniy-geroy',
+      'sergio-nero-admiral-rossiyskiy-flot',
+      'sergio-nero-admiral-russkiy-harakter',
+      'sergio-nero-admiral-triumf',
+      'sergio-nero-scan-your-life-silver',
+    ];
+    if (safeGetItem(HAS_MIGRATED_RUSSIAN, 'false') !== 'true') {
+      RUSSIAN_PERFUME_IDS.forEach((id) => {
+        if (!sanitized.includes(id)) {
+          sanitized.push(id);
+        }
+      });
+      safeSetItem(HAS_MIGRATED_RUSSIAN, 'true');
+      safeSetJson(STORAGE_KEYS.SHELF, sanitized);
+    }
+
+    return sanitized;
   });
 
   const updateShelfIds = useCallback((newIds: string[]) => {
-    setUserShelfIdsState(newIds);
-    safeSetJson(STORAGE_KEYS.SHELF, newIds);
+    const sanitized = Array.from(new Set(newIds.map((id) => (id === 'versace-eros-edp' ? 'versace-eros' : id))));
+    setUserShelfIdsState(sanitized);
+    safeSetJson(STORAGE_KEYS.SHELF, sanitized);
   }, []);
 
   const toggleShelfId = useCallback((perfumeId: string) => {

@@ -106,7 +106,7 @@ export interface AnyanovCoordinates {
 export type AnyanovSeason = 'summer' | 'winter';
 export type ControlMode = 'outfit' | 'perfume';
 
-export type QuadrantType = 'NW_FOCUS' | 'NE_EASE' | 'SW_POWER' | 'SE_SEDUCTION';
+export type QuadrantType = 'CENTER_BALANCE' | 'NW_FOCUS' | 'NE_EASE' | 'SW_POWER' | 'SE_SEDUCTION';
 
 export interface QuadrantInfo {
   code: QuadrantType;

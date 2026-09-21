@@ -265,7 +265,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            ❄️ II. Холод (4)
+            ❄️ II. Собранность (4)
           </button>
           <button
             onClick={() => handleQuadrantToggle('NE_EASE')}
@@ -275,7 +275,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            🌊 I. Свежесть (4)
+            🌊 I. Легкость (4)
           </button>
           <button
             onClick={() => handleQuadrantToggle('SW_POWER')}
@@ -285,7 +285,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            🏛️ III. Статус (4)
+            🏛️ III. Власть (4)
           </button>
           <button
             onClick={() => handleQuadrantToggle('SE_SEDUCTION')}
@@ -295,7 +295,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            🔥 IV. Тепло (4)
+            🔥 IV. Притяжение (4)
           </button>
           <button
             onClick={() => handleQuadrantToggle('CENTER')}
@@ -305,7 +305,7 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            🧭 Оси и Центр (5)
+            🧭 Оси и Равновесие (5)
           </button>
         </div>
       </div>
@@ -371,10 +371,10 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
               {/* QUADRANTS CONTAINER (UPPER & LOWER ROWS) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 relative z-10">
                 
-                {/* QUADRANT II (TOP-LEFT): ХОЛОДНЫЙ КОНТРОЛЬ (-X, +Y) */}
+                {/* QUADRANT II (TOP-LEFT): СОБРАННОСТЬ (-X, +Y) */}
                 <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-slate-900/90 to-slate-950/90 border border-slate-800/80 shadow-md">
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/60 text-xs font-bold text-sky-300">
-                    <span className="font-mono">II. ХОЛОДНЫЙ КОНТРОЛЬ (-X, +Y)</span>
+                    <span className="font-mono">II. СОБРАННОСТЬ (-X, +Y)</span>
                     <span className="text-[10px] font-mono text-slate-400">Фокус и Дистанция</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -408,11 +408,11 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                   </div>
                 </div>
 
-                {/* QUADRANT I (TOP-RIGHT): ОТКРЫТАЯ СВЕЖЕСТЬ (+X, +Y) */}
+                {/* QUADRANT I (TOP-RIGHT): ЛЕГКОСТЬ (+X, +Y) */}
                 <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-cyan-950/40 to-slate-950/90 border border-cyan-900/40 shadow-md">
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/60 text-xs font-bold text-cyan-300">
-                    <span className="font-mono">I. ОТКРЫТАЯ СВЕЖЕСТЬ (+X, +Y)</span>
-                    <span className="text-[10px] font-mono text-slate-400">Морской Бриз и Энергия</span>
+                    <span className="font-mono">I. ЛЕГКОСТЬ (+X, +Y)</span>
+                    <span className="text-[10px] font-mono text-slate-400">Морской Бриз и Воздух</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {['versace-man-eau-fraiche', 'acqua-di-gio', 'dior-sauvage', 'dior-homme-cologne'].map((id) => {
@@ -498,12 +498,12 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                       >
                         <div className="flex items-center justify-center gap-1.5 text-[10px] font-mono text-amber-400 font-bold mb-1">
                           <Crown className="w-3 h-3" />
-                          <span>ЦЕНТР • КАМЕРТОН (0.0, 0.0)</span>
+                          <span>ЦЕНТР • РАВНОВЕСИЕ (0.0, 0.0)</span>
                         </div>
                         <div className="text-base font-black text-white tracking-tight">{p.name}</div>
                         <div className="text-xs text-amber-400/90 font-mono uppercase">{p.brand} (2010)</div>
                         <div className="mt-2 text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 inline-block font-bold">
-                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Точка Баланса')}
+                          {pair?.outfitName ? `${pair.outfitName} • ${pair.badge}` : (pair?.badge || 'Точка Равновесия')}
                         </div>
                       </div>
                     );
@@ -545,11 +545,11 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
               {/* LOWER ROW: QUADRANT III & QUADRANT IV */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 relative z-10">
                 
-                {/* QUADRANT III (BOTTOM-LEFT): ТЕМНЫЙ СТАТУС (-X, -Y) */}
+                {/* QUADRANT III (BOTTOM-LEFT): ВЛАСТЬ (-X, -Y) */}
                 <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-zinc-950/90 to-slate-950/90 border border-zinc-800/80 shadow-md">
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/60 text-xs font-bold text-amber-200">
-                    <span className="font-mono">III. ТЕМНЫЙ СТАТУС (-X, -Y)</span>
-                    <span className="text-[10px] font-mono text-slate-400">Монументальная Власть</span>
+                    <span className="font-mono">III. ВЛАСТЬ (-X, -Y)</span>
+                    <span className="text-[10px] font-mono text-slate-400">Монументальный Вес</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {['terre-dhermes', 'guy-laroche-drakkar-noir', 'dior-homme-intense', 'versace-oud-noir'].map((id) => {
@@ -582,11 +582,11 @@ export const BenchmarkTableView: React.FC<BenchmarkTableViewProps> = ({
                   </div>
                 </div>
 
-                {/* QUADRANT IV (BOTTOM-RIGHT): ТАКТИЛЬНОЕ ТЕПЛО (+X, -Y) */}
+                {/* QUADRANT IV (BOTTOM-RIGHT): ПРИТЯЖЕНИЕ (+X, -Y) */}
                 <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-amber-950/30 to-slate-950/90 border border-amber-900/40 shadow-md">
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/60 text-xs font-bold text-rose-300">
-                    <span className="font-mono">IV. ТАКТИЛЬНОЕ ТЕПЛО (+X, -Y)</span>
-                    <span className="text-[10px] font-mono text-slate-400">Соблазн и Уют</span>
+                    <span className="font-mono">IV. ПРИТЯЖЕНИЕ (+X, -Y)</span>
+                    <span className="text-[10px] font-mono text-slate-400">Тепло и Близость</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {['creed-aventus', 'versace-eros', 'jpg-le-male', 'lattafa-khamrah'].map((id) => {
